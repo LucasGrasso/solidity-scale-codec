@@ -326,4 +326,181 @@ contract EndiannessTest is Test {
         );
         assertEq(reconstructed, value);
     }
+
+    // ============ fromLittleEndian unsigned ============
+
+    function test_FromLE8_Basic() public pure {
+        assertEq(Endianness.fromLittleEndian8(bytes1(0xAB)), 0xAB);
+    }
+
+    function test_FromLE16_Basic() public pure {
+        // 0xCDAB (LE) → 0xABCD
+        assertEq(Endianness.fromLittleEndian16(bytes2(0xCDAB)), 0xABCD);
+    }
+
+    function test_FromLE32_Basic() public pure {
+        // 0x78563412 (LE) → 0x12345678
+        assertEq(Endianness.fromLittleEndian32(bytes4(0x78563412)), 0x12345678);
+    }
+
+    function test_FromLE64_Basic() public pure {
+        // 0x0807060504030201 (LE) → 0x0102030405060708
+        assertEq(
+            Endianness.fromLittleEndian64(bytes8(0x0807060504030201)),
+            0x0102030405060708
+        );
+    }
+
+    function test_FromLE128_Basic() public pure {
+        assertEq(
+            Endianness.fromLittleEndian128(
+                bytes16(0x100f0e0d0c0b0a090807060504030201)
+            ),
+            0x0102030405060708090a0b0c0d0e0f10
+        );
+    }
+
+    function test_FromLE256_Basic() public pure {
+        assertEq(
+            Endianness.fromLittleEndian256(
+                bytes32(
+                    0x201f1e1d1c1b1a191817161514131211100f0e0d0c0b0a090807060504030201
+                )
+            ),
+            0x0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20
+        );
+    }
+
+    // ============ fromLittleEndian signed ============
+
+    function test_FromLEi8_Negative() public pure {
+        assertEq(Endianness.fromLittleEndiani8(bytes1(0xff)), int8(-1));
+    }
+
+    function test_FromLEi16_Negative() public pure {
+        assertEq(Endianness.fromLittleEndiani16(bytes2(0xffff)), int16(-1));
+    }
+
+    function test_FromLEi16_Neg256() public pure {
+        // 0x00ff (LE) → 0xff00 (BE) → -256
+        assertEq(Endianness.fromLittleEndiani16(bytes2(0x00ff)), int16(-256));
+    }
+
+    function test_FromLEi32_Negative() public pure {
+        assertEq(Endianness.fromLittleEndiani32(bytes4(0xffffffff)), int32(-1));
+    }
+
+    function test_FromLEi32_Min() public pure {
+        // 0x00000080 (LE) → 0x80000000 (BE) → int32.min
+        assertEq(
+            Endianness.fromLittleEndiani32(bytes4(0x00000080)),
+            type(int32).min
+        );
+    }
+
+    function test_FromLEi64_Negative() public pure {
+        assertEq(
+            Endianness.fromLittleEndiani64(bytes8(0xffffffffffffffff)),
+            int64(-1)
+        );
+    }
+
+    function test_FromLEi128_Negative() public pure {
+        assertEq(
+            Endianness.fromLittleEndiani128(
+                bytes16(0xffffffffffffffffffffffffffffffff)
+            ),
+            int128(-1)
+        );
+    }
+
+    function test_FromLEi256_Negative() public pure {
+        assertEq(
+            Endianness.fromLittleEndiani256(bytes32(type(uint256).max)),
+            int256(-1)
+        );
+    }
+
+    // ============ Fuzz roundtrip: toLE → fromLE ============
+
+    function testFuzz_RoundtripFromLE8(uint8 value) public pure {
+        assertEq(
+            Endianness.fromLittleEndian8(Endianness.toLittleEndian8(value)),
+            value
+        );
+    }
+
+    function testFuzz_RoundtripFromLE16(uint16 value) public pure {
+        assertEq(
+            Endianness.fromLittleEndian16(Endianness.toLittleEndian16(value)),
+            value
+        );
+    }
+
+    function testFuzz_RoundtripFromLE32(uint32 value) public pure {
+        assertEq(
+            Endianness.fromLittleEndian32(Endianness.toLittleEndian32(value)),
+            value
+        );
+    }
+
+    function testFuzz_RoundtripFromLE64(uint64 value) public pure {
+        assertEq(
+            Endianness.fromLittleEndian64(Endianness.toLittleEndian64(value)),
+            value
+        );
+    }
+
+    function testFuzz_RoundtripFromLE128(uint128 value) public pure {
+        assertEq(
+            Endianness.fromLittleEndian128(Endianness.toLittleEndian128(value)),
+            value
+        );
+    }
+
+    function testFuzz_RoundtripFromLE256(uint256 value) public pure {
+        assertEq(
+            Endianness.fromLittleEndian256(Endianness.toLittleEndian256(value)),
+            value
+        );
+    }
+
+    function testFuzz_RoundtripFromLEi16(int16 value) public pure {
+        assertEq(
+            Endianness.fromLittleEndiani16(Endianness.toLittleEndiani16(value)),
+            value
+        );
+    }
+
+    function testFuzz_RoundtripFromLEi32(int32 value) public pure {
+        assertEq(
+            Endianness.fromLittleEndiani32(Endianness.toLittleEndiani32(value)),
+            value
+        );
+    }
+
+    function testFuzz_RoundtripFromLEi64(int64 value) public pure {
+        assertEq(
+            Endianness.fromLittleEndiani64(Endianness.toLittleEndiani64(value)),
+            value
+        );
+    }
+
+    function testFuzz_RoundtripFromLEi128(int128 value) public pure {
+        assertEq(
+            Endianness.fromLittleEndiani128(
+                Endianness.toLittleEndiani128(value)
+            ),
+            value
+        );
+    }
+
+    function testFuzz_RoundtripFromLEi256(int256 value) public pure {
+        assertEq(
+            Endianness.fromLittleEndiani256(
+                Endianness.toLittleEndiani256(value)
+            ),
+            value
+        );
+    }
 }
