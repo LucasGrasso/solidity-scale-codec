@@ -188,4 +188,142 @@ contract EndiannessTest is Test {
         bytes32 back = Endianness.toLittleEndian256(uint256(le));
         assertEq(uint256(back), value);
     }
+
+    // ============ Signed int8 ============
+
+    function test_ConvertSigned8_Positive() public pure {
+        assertEq(Endianness.toLittleEndiani8(int8(1)), bytes1(0x01));
+    }
+
+    function test_ConvertSigned8_Negative() public pure {
+        assertEq(Endianness.toLittleEndiani8(int8(-1)), bytes1(0xff));
+    }
+
+    function test_ConvertSigned8_Min() public pure {
+        assertEq(Endianness.toLittleEndiani8(type(int8).min), bytes1(0x80));
+    }
+
+    function test_ConvertSigned8_Max() public pure {
+        assertEq(Endianness.toLittleEndiani8(type(int8).max), bytes1(0x7f));
+    }
+
+    // ============ Signed int16 ============
+
+    function test_ConvertSigned16_Positive() public pure {
+        assertEq(Endianness.toLittleEndiani16(int16(1)), bytes2(0x0100));
+    }
+
+    function test_ConvertSigned16_Negative() public pure {
+        assertEq(Endianness.toLittleEndiani16(int16(-1)), bytes2(0xffff));
+    }
+
+    function test_ConvertSigned16_Neg256() public pure {
+        assertEq(Endianness.toLittleEndiani16(int16(-256)), bytes2(0x00ff));
+    }
+
+    function test_ConvertSigned16_Min() public pure {
+        assertEq(Endianness.toLittleEndiani16(type(int16).min), bytes2(0x0080));
+    }
+
+    function test_ConvertSigned16_Max() public pure {
+        assertEq(Endianness.toLittleEndiani16(type(int16).max), bytes2(0xff7f));
+    }
+
+    // ============ Signed int32 ============
+
+    function test_ConvertSigned32_Negative() public pure {
+        assertEq(Endianness.toLittleEndiani32(int32(-1)), bytes4(0xffffffff));
+    }
+
+    function test_ConvertSigned32_Min() public pure {
+        assertEq(
+            Endianness.toLittleEndiani32(type(int32).min),
+            bytes4(0x00000080)
+        );
+    }
+
+    function test_ConvertSigned32_Max() public pure {
+        assertEq(
+            Endianness.toLittleEndiani32(type(int32).max),
+            bytes4(0xffffff7f)
+        );
+    }
+
+    // ============ Signed int64 ============
+
+    function test_ConvertSigned64_Negative() public pure {
+        assertEq(
+            Endianness.toLittleEndiani64(int64(-1)),
+            bytes8(0xffffffffffffffff)
+        );
+    }
+
+    function test_ConvertSigned64_Min() public pure {
+        assertEq(
+            Endianness.toLittleEndiani64(type(int64).min),
+            bytes8(0x0000000000000080)
+        );
+    }
+
+    function test_ConvertSigned64_Max() public pure {
+        assertEq(
+            Endianness.toLittleEndiani64(type(int64).max),
+            bytes8(0xffffffffffffff7f)
+        );
+    }
+
+    // ============ Signed int128 ============
+
+    function test_ConvertSigned128_Negative() public pure {
+        assertEq(
+            Endianness.toLittleEndiani128(int128(-1)),
+            bytes16(0xffffffffffffffffffffffffffffffff)
+        );
+    }
+
+    function test_ConvertSigned128_Min() public pure {
+        assertEq(
+            Endianness.toLittleEndiani128(type(int128).min),
+            bytes16(0x00000000000000000000000000000080)
+        );
+    }
+
+    // ============ Signed int256 ============
+
+    function test_ConvertSigned256_Negative() public pure {
+        assertEq(
+            Endianness.toLittleEndiani256(int256(-1)),
+            bytes32(type(uint256).max)
+        );
+    }
+
+    function test_ConvertSigned256_Min() public pure {
+        assertEq(
+            Endianness.toLittleEndiani256(type(int256).min),
+            bytes32(
+                0x0000000000000000000000000000000000000000000000000000000000000080
+            )
+        );
+    }
+
+    // ============ Fuzz signed ============
+
+    function testFuzz_RoundtripSigned16(int16 value) public pure {
+        bytes2 le = Endianness.toLittleEndiani16(value);
+        int16 reconstructed = int16(
+            uint16(uint8(le[0])) | (uint16(uint8(le[1])) << 8)
+        );
+        assertEq(reconstructed, value);
+    }
+
+    function testFuzz_RoundtripSigned32(int32 value) public pure {
+        bytes4 le = Endianness.toLittleEndiani32(value);
+        int32 reconstructed = int32(
+            uint32(uint8(le[0])) |
+                (uint32(uint8(le[1])) << 8) |
+                (uint32(uint8(le[2])) << 16) |
+                (uint32(uint8(le[3])) << 24)
+        );
+        assertEq(reconstructed, value);
+    }
 }

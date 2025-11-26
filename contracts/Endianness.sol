@@ -6,25 +6,26 @@ pragma solidity ^0.8.20;
 /// @author Lucas Grasso
 library Endianness {
     /// @notice Converts a uint8 to little-endian bytes1
-    /// @dev Identity operation - single byte has no endianness
-    /// @param value The big-endian uint8 value
-    /// @return The little-endian bytes1 representation
     function toLittleEndian8(uint8 value) internal pure returns (bytes1) {
         return bytes1(value);
     }
 
+    /// @notice Converts an int8 to little-endian bytes1 (two's complement)
+    function toLittleEndiani8(int8 value) internal pure returns (bytes1) {
+        return bytes1(uint8(value));
+    }
+
     /// @notice Converts a uint16 to little-endian bytes2
-    /// @dev Swaps the two bytes: 0xAABB → 0xBBAA
-    /// @param value The big-endian uint16 value
-    /// @return The little-endian bytes2 representation
     function toLittleEndian16(uint16 value) internal pure returns (bytes2) {
         return bytes2(uint16((value >> 8) | (value << 8)));
     }
 
+    /// @notice Converts an int16 to little-endian bytes2 (two's complement)
+    function toLittleEndiani16(int16 value) internal pure returns (bytes2) {
+        return toLittleEndian16(uint16(value));
+    }
+
     /// @notice Converts a uint32 to little-endian bytes4
-    /// @dev Reverses 4 bytes using bitwise operations
-    /// @param value The big-endian uint32 value
-    /// @return result The little-endian bytes4 representation
     function toLittleEndian32(
         uint32 value
     ) internal pure returns (bytes4 result) {
@@ -40,41 +41,41 @@ library Endianness {
         }
     }
 
+    /// @notice Converts an int32 to little-endian bytes4 (two's complement)
+    function toLittleEndiani32(int32 value) internal pure returns (bytes4) {
+        return toLittleEndian32(uint32(value));
+    }
+
     /// @notice Converts a uint64 to little-endian bytes8
-    /// @dev Uses parallel swap algorithm: swap bytes, then 2-byte pairs, then 4-byte halves
-    /// @param value The big-endian uint64 value
-    /// @return result The little-endian bytes8 representation
     function toLittleEndian64(
         uint64 value
     ) internal pure returns (bytes8 result) {
         assembly {
             let v := value
-            // Swap bytes pairwise
             v := or(
                 shl(8, and(v, 0x00FF00FF00FF00FF)),
                 shr(8, and(v, 0xFF00FF00FF00FF00))
             )
-            // Swap 2-byte pairs
             v := or(
                 shl(16, and(v, 0x0000FFFF0000FFFF)),
                 shr(16, and(v, 0xFFFF0000FFFF0000))
             )
-            // Swap 4-byte halves
             v := or(shl(32, v), shr(32, v))
-            result := shl(192, v) // Shift to bytes8 position
+            result := shl(192, v)
         }
     }
 
+    /// @notice Converts an int64 to little-endian bytes8 (two's complement)
+    function toLittleEndiani64(int64 value) internal pure returns (bytes8) {
+        return toLittleEndian64(uint64(value));
+    }
+
     /// @notice Converts a uint128 to little-endian bytes16
-    /// @dev Extends parallel swap to 128 bits with 4 swap stages
-    /// @param value The big-endian uint128 value
-    /// @return result The little-endian bytes16 representation
     function toLittleEndian128(
         uint128 value
     ) internal pure returns (bytes16 result) {
         assembly {
             let v := value
-            // Byte swap using parallel operations
             v := or(
                 shl(8, and(v, 0x00FF00FF00FF00FF00FF00FF00FF00FF)),
                 shr(8, and(v, 0xFF00FF00FF00FF00FF00FF00FF00FF00))
@@ -92,16 +93,17 @@ library Endianness {
         }
     }
 
+    /// @notice Converts an int128 to little-endian bytes16 (two's complement)
+    function toLittleEndiani128(int128 value) internal pure returns (bytes16) {
+        return toLittleEndian128(uint128(value));
+    }
+
     /// @notice Converts a uint256 to little-endian bytes32
-    /// @dev Full 256-bit parallel swap with 5 stages
-    /// @param value The big-endian uint256 value
-    /// @return result The little-endian bytes32 representation
     function toLittleEndian256(
         uint256 value
     ) internal pure returns (bytes32 result) {
         assembly {
             let v := value
-            // Parallel byte swap for 256 bits
             v := or(
                 shl(
                     8,
@@ -169,5 +171,10 @@ library Endianness {
             v := or(shl(128, v), shr(128, v))
             result := v
         }
+    }
+
+    /// @notice Converts an int256 to little-endian bytes32 (two's complement)
+    function toLittleEndiani256(int256 value) internal pure returns (bytes32) {
+        return toLittleEndian256(uint256(value));
     }
 }
