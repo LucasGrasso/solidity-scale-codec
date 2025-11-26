@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.20;
 
-import {LittleEndian} from "./LittleEndian.sol";
+import {LittleEndian} from "../LittleEndian/LittleEndian.sol";
 
 /// @title Scale Codec
 /// @notice SCALE-compliant encoder.
