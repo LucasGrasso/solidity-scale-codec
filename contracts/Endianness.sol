@@ -6,27 +6,27 @@ pragma solidity ^0.8.20;
 /// @author Lucas Grasso
 library Endianness {
     /// @notice Converts a uint8 to little-endian bytes1
-    function toLittleEndian8(uint8 value) internal pure returns (bytes1) {
+    function toLittleEndianU8(uint8 value) internal pure returns (bytes1) {
         return bytes1(value);
     }
 
     /// @notice Converts an int8 to little-endian bytes1 (two's complement)
-    function toLittleEndiani8(int8 value) internal pure returns (bytes1) {
+    function toLittleEndianI8(int8 value) internal pure returns (bytes1) {
         return bytes1(uint8(value));
     }
 
     /// @notice Converts a uint16 to little-endian bytes2
-    function toLittleEndian16(uint16 value) internal pure returns (bytes2) {
+    function toLittleEndianU16(uint16 value) internal pure returns (bytes2) {
         return bytes2(uint16((value >> 8) | (value << 8)));
     }
 
     /// @notice Converts an int16 to little-endian bytes2 (two's complement)
-    function toLittleEndiani16(int16 value) internal pure returns (bytes2) {
-        return toLittleEndian16(uint16(value));
+    function toLittleEndianI16(int16 value) internal pure returns (bytes2) {
+        return toLittleEndianU16(uint16(value));
     }
 
     /// @notice Converts a uint32 to little-endian bytes4
-    function toLittleEndian32(
+    function toLittleEndianU32(
         uint32 value
     ) internal pure returns (bytes4 result) {
         assembly {
@@ -42,12 +42,12 @@ library Endianness {
     }
 
     /// @notice Converts an int32 to little-endian bytes4 (two's complement)
-    function toLittleEndiani32(int32 value) internal pure returns (bytes4) {
-        return toLittleEndian32(uint32(value));
+    function toLittleEndianI32(int32 value) internal pure returns (bytes4) {
+        return toLittleEndianU32(uint32(value));
     }
 
     /// @notice Converts a uint64 to little-endian bytes8
-    function toLittleEndian64(
+    function toLittleEndianU64(
         uint64 value
     ) internal pure returns (bytes8 result) {
         assembly {
@@ -66,12 +66,12 @@ library Endianness {
     }
 
     /// @notice Converts an int64 to little-endian bytes8 (two's complement)
-    function toLittleEndiani64(int64 value) internal pure returns (bytes8) {
-        return toLittleEndian64(uint64(value));
+    function toLittleEndianI64(int64 value) internal pure returns (bytes8) {
+        return toLittleEndianU64(uint64(value));
     }
 
     /// @notice Converts a uint128 to little-endian bytes16
-    function toLittleEndian128(
+    function toLittleEndianU128(
         uint128 value
     ) internal pure returns (bytes16 result) {
         assembly {
@@ -94,12 +94,12 @@ library Endianness {
     }
 
     /// @notice Converts an int128 to little-endian bytes16 (two's complement)
-    function toLittleEndiani128(int128 value) internal pure returns (bytes16) {
-        return toLittleEndian128(uint128(value));
+    function toLittleEndianI128(int128 value) internal pure returns (bytes16) {
+        return toLittleEndianU128(uint128(value));
     }
 
     /// @notice Converts a uint256 to little-endian bytes32
-    function toLittleEndian256(
+    function toLittleEndianU256(
         uint256 value
     ) internal pure returns (bytes32 result) {
         assembly {
@@ -174,32 +174,32 @@ library Endianness {
     }
 
     /// @notice Converts an int256 to little-endian bytes32 (two's complement)
-    function toLittleEndiani256(int256 value) internal pure returns (bytes32) {
-        return toLittleEndian256(uint256(value));
+    function toLittleEndianI256(int256 value) internal pure returns (bytes32) {
+        return toLittleEndianU256(uint256(value));
     }
 
     /// @notice Converts little-endian bytes1 to uint8
-    function fromLittleEndian8(bytes1 value) internal pure returns (uint8) {
+    function fromLittleEndianU8(bytes1 value) internal pure returns (uint8) {
         return uint8(value);
     }
 
     /// @notice Converts little-endian bytes1 to int8
-    function fromLittleEndiani8(bytes1 value) internal pure returns (int8) {
+    function fromLittleEndianI8(bytes1 value) internal pure returns (int8) {
         return int8(uint8(value));
     }
 
     /// @notice Converts little-endian bytes2 to uint16
-    function fromLittleEndian16(bytes2 value) internal pure returns (uint16) {
+    function fromLittleEndianU16(bytes2 value) internal pure returns (uint16) {
         return uint16(uint8(value[0])) | (uint16(uint8(value[1])) << 8);
     }
 
     /// @notice Converts little-endian bytes2 to int16
-    function fromLittleEndiani16(bytes2 value) internal pure returns (int16) {
-        return int16(fromLittleEndian16(value));
+    function fromLittleEndianI16(bytes2 value) internal pure returns (int16) {
+        return int16(fromLittleEndianU16(value));
     }
 
     /// @notice Converts little-endian bytes4 to uint32
-    function fromLittleEndian32(
+    function fromLittleEndianU32(
         bytes4 value
     ) internal pure returns (uint32 result) {
         assembly {
@@ -213,12 +213,12 @@ library Endianness {
     }
 
     /// @notice Converts little-endian bytes4 to int32
-    function fromLittleEndiani32(bytes4 value) internal pure returns (int32) {
-        return int32(fromLittleEndian32(value));
+    function fromLittleEndianI32(bytes4 value) internal pure returns (int32) {
+        return int32(fromLittleEndianU32(value));
     }
 
     /// @notice Converts little-endian bytes8 to uint64
-    function fromLittleEndian64(
+    function fromLittleEndianU64(
         bytes8 value
     ) internal pure returns (uint64 result) {
         assembly {
@@ -237,12 +237,12 @@ library Endianness {
     }
 
     /// @notice Converts little-endian bytes8 to int64
-    function fromLittleEndiani64(bytes8 value) internal pure returns (int64) {
-        return int64(fromLittleEndian64(value));
+    function fromLittleEndianI64(bytes8 value) internal pure returns (int64) {
+        return int64(fromLittleEndianU64(value));
     }
 
     /// @notice Converts little-endian bytes16 to uint128
-    function fromLittleEndian128(
+    function fromLittleEndianU128(
         bytes16 value
     ) internal pure returns (uint128 result) {
         assembly {
@@ -265,14 +265,14 @@ library Endianness {
     }
 
     /// @notice Converts little-endian bytes16 to int128
-    function fromLittleEndiani128(
+    function fromLittleEndianI128(
         bytes16 value
     ) internal pure returns (int128) {
-        return int128(fromLittleEndian128(value));
+        return int128(fromLittleEndianU128(value));
     }
 
     /// @notice Converts little-endian bytes32 to uint256
-    function fromLittleEndian256(
+    function fromLittleEndianU256(
         bytes32 value
     ) internal pure returns (uint256 result) {
         assembly {
@@ -347,9 +347,9 @@ library Endianness {
     }
 
     /// @notice Converts little-endian bytes32 to int256
-    function fromLittleEndiani256(
+    function fromLittleEndianI256(
         bytes32 value
     ) internal pure returns (int256) {
-        return int256(fromLittleEndian256(value));
+        return int256(fromLittleEndianU256(value));
     }
 }
