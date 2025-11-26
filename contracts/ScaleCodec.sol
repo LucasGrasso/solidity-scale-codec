@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.20;
 
-import {Endianness} from "./Endianness.sol";
+import {LittleEndian} from "./LittleEndian.sol";
 
 /// @title Scale Codec
 /// @notice SCALE-compliant encoder.
@@ -14,7 +14,7 @@ library ScaleCodec {
     /// @return SCALE-encoded byte sequence.
     function encode(bool self) internal pure returns (bytes memory) {
         uint8 x = self ? uint8(1) : uint8(0);
-        bytes1 b = Endianness.toLittleEndianU8(x);
+        bytes1 b = LittleEndian.toLittleEndianU8(x);
         return abi.encodePacked(b);
     }
 
@@ -24,7 +24,7 @@ library ScaleCodec {
     /// @param self The unsigned 8-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(uint8 self) internal pure returns (bytes memory) {
-        bytes1 b = Endianness.toLittleEndianU8(self);
+        bytes1 b = LittleEndian.toLittleEndianU8(self);
         return abi.encodePacked(b);
     }
 
@@ -32,7 +32,7 @@ library ScaleCodec {
     /// @param self The unsigned 16-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(uint16 self) internal pure returns (bytes memory) {
-        bytes2 b = Endianness.toLittleEndianU16(self);
+        bytes2 b = LittleEndian.toLittleEndianU16(self);
         return abi.encodePacked(b);
     }
 
@@ -40,7 +40,7 @@ library ScaleCodec {
     /// @param self The unsigned 32-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(uint32 self) internal pure returns (bytes memory) {
-        bytes4 b = Endianness.toLittleEndianU32(self);
+        bytes4 b = LittleEndian.toLittleEndianU32(self);
         return abi.encodePacked(b);
     }
 
@@ -48,7 +48,7 @@ library ScaleCodec {
     /// @param self The unsigned 64-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(uint64 self) internal pure returns (bytes memory) {
-        bytes8 b = Endianness.toLittleEndianU64(self);
+        bytes8 b = LittleEndian.toLittleEndianU64(self);
         return abi.encodePacked(b);
     }
 
@@ -56,7 +56,7 @@ library ScaleCodec {
     /// @param self The unsigned 128-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(uint128 self) internal pure returns (bytes memory) {
-        bytes16 b = Endianness.toLittleEndianU128(self);
+        bytes16 b = LittleEndian.toLittleEndianU128(self);
         return abi.encodePacked(b);
     }
 
@@ -64,7 +64,7 @@ library ScaleCodec {
     /// @param self The unsigned 256-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(uint256 self) internal pure returns (bytes memory) {
-        bytes32 b = Endianness.toLittleEndianU256(self);
+        bytes32 b = LittleEndian.toLittleEndianU256(self);
         return abi.encodePacked(b);
     }
 
@@ -74,7 +74,7 @@ library ScaleCodec {
     /// @param self The signed 8-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(int8 self) internal pure returns (bytes memory) {
-        bytes1 b = Endianness.toLittleEndianI8(self);
+        bytes1 b = LittleEndian.toLittleEndianI8(self);
         return abi.encodePacked(b);
     }
 
@@ -82,7 +82,7 @@ library ScaleCodec {
     /// @param self The signed 16-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(int16 self) internal pure returns (bytes memory) {
-        bytes2 b = Endianness.toLittleEndianI16(self);
+        bytes2 b = LittleEndian.toLittleEndianI16(self);
         return abi.encodePacked(b);
     }
 
@@ -90,7 +90,7 @@ library ScaleCodec {
     /// @param self The signed 32-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(int32 self) internal pure returns (bytes memory) {
-        bytes4 b = Endianness.toLittleEndianI32(self);
+        bytes4 b = LittleEndian.toLittleEndianI32(self);
         return abi.encodePacked(b);
     }
 
@@ -98,7 +98,7 @@ library ScaleCodec {
     /// @param self The signed 64-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(int64 self) internal pure returns (bytes memory) {
-        bytes8 b = Endianness.toLittleEndianI64(self);
+        bytes8 b = LittleEndian.toLittleEndianI64(self);
         return abi.encodePacked(b);
     }
 
@@ -106,7 +106,7 @@ library ScaleCodec {
     /// @param self The signed 128-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(int128 self) internal pure returns (bytes memory) {
-        bytes16 b = Endianness.toLittleEndianI128(self);
+        bytes16 b = LittleEndian.toLittleEndianI128(self);
         return abi.encodePacked(b);
     }
 
@@ -114,7 +114,7 @@ library ScaleCodec {
     /// @param self The signed 256-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(int256 self) internal pure returns (bytes memory) {
-        bytes32 b = Endianness.toLittleEndianI256(self);
+        bytes32 b = LittleEndian.toLittleEndianI256(self);
         return abi.encodePacked(b);
     }
 }

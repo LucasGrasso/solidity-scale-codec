@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.20;
 
-import "./Endianness.sol";
+import "./LittleEndian.sol";
 
 /**
  * @title SCALEReader
@@ -108,7 +108,7 @@ library SCALEReader {
      * @return Boolean value (`false` if zero; `true` otherwise).
      */
     function readBool(Reader memory r) internal pure returns (bool) {
-        return Endianness.fromLittleEndianU8(bytes1(_read(r, 1))) != 0;
+        return LittleEndian.fromLittleEndianU8(bytes1(_read(r, 1))) != 0;
     }
 
     // -------- Unsigned Integers --------
@@ -119,7 +119,7 @@ library SCALEReader {
      * @return uint8 decoded from little-endian format.
      */
     function readU8(Reader memory r) internal pure returns (uint8) {
-        return Endianness.fromLittleEndianU8(bytes1(_read(r, 1)));
+        return LittleEndian.fromLittleEndianU8(bytes1(_read(r, 1)));
     }
 
     /**
@@ -128,7 +128,7 @@ library SCALEReader {
      * @return uint16 decoded value.
      */
     function readU16(Reader memory r) internal pure returns (uint16) {
-        return Endianness.fromLittleEndianU16(bytes2(_read(r, 2)));
+        return LittleEndian.fromLittleEndianU16(bytes2(_read(r, 2)));
     }
 
     /**
@@ -137,7 +137,7 @@ library SCALEReader {
      * @return uint32 decoded value.
      */
     function readU32(Reader memory r) internal pure returns (uint32) {
-        return Endianness.fromLittleEndianU32(bytes4(_read(r, 4)));
+        return LittleEndian.fromLittleEndianU32(bytes4(_read(r, 4)));
     }
 
     /**
@@ -146,7 +146,7 @@ library SCALEReader {
      * @return uint64 decoded value.
      */
     function readU64(Reader memory r) internal pure returns (uint64) {
-        return Endianness.fromLittleEndianU64(bytes8(_read(r, 8)));
+        return LittleEndian.fromLittleEndianU64(bytes8(_read(r, 8)));
     }
 
     /**
@@ -155,7 +155,7 @@ library SCALEReader {
      * @return uint128 decoded value.
      */
     function readU128(Reader memory r) internal pure returns (uint128) {
-        return Endianness.fromLittleEndianU128(bytes16(_read(r, 16)));
+        return LittleEndian.fromLittleEndianU128(bytes16(_read(r, 16)));
     }
 
     /**
@@ -164,7 +164,7 @@ library SCALEReader {
      * @return uint256 decoded value.
      */
     function readU256(Reader memory r) internal pure returns (uint256) {
-        return Endianness.fromLittleEndianU256(bytes32(_read(r, 32)));
+        return LittleEndian.fromLittleEndianU256(bytes32(_read(r, 32)));
     }
 
     // -------- Signed Integers --------
@@ -175,7 +175,7 @@ library SCALEReader {
      * @return uint8 decoded value.
      */
     function readI8(Reader memory r) internal pure returns (int8) {
-        return Endianness.fromLittleEndianI8(bytes1(_read(r, 1)));
+        return LittleEndian.fromLittleEndianI8(bytes1(_read(r, 1)));
     }
 
     /**
@@ -184,7 +184,7 @@ library SCALEReader {
      * @return uint16 decoded value.
      */
     function readI16(Reader memory r) internal pure returns (int16) {
-        return Endianness.fromLittleEndianI16(bytes2(_read(r, 2)));
+        return LittleEndian.fromLittleEndianI16(bytes2(_read(r, 2)));
     }
 
     /**
@@ -193,7 +193,7 @@ library SCALEReader {
      * @return uint32 decoded value.
      */
     function readI32(Reader memory r) internal pure returns (int32) {
-        return Endianness.fromLittleEndianI32(bytes4(_read(r, 4)));
+        return LittleEndian.fromLittleEndianI32(bytes4(_read(r, 4)));
     }
 
     /**
@@ -202,7 +202,7 @@ library SCALEReader {
      * @return uint64 decoded value.
      */
     function readI64(Reader memory r) internal pure returns (int64) {
-        return Endianness.fromLittleEndianI64(bytes8(_read(r, 8)));
+        return LittleEndian.fromLittleEndianI64(bytes8(_read(r, 8)));
     }
 
     /**
@@ -211,7 +211,7 @@ library SCALEReader {
      * @return uint128 decoded value.
      */
     function readI128(Reader memory r) internal pure returns (int128) {
-        return Endianness.fromLittleEndianI128(bytes16(_read(r, 16)));
+        return LittleEndian.fromLittleEndianI128(bytes16(_read(r, 16)));
     }
 
     /**
@@ -220,6 +220,6 @@ library SCALEReader {
      * @return uint256 decoded value.
      */
     function readI256(Reader memory r) internal pure returns (int256) {
-        return Endianness.fromLittleEndianI256(bytes32(_read(r, 32)));
+        return LittleEndian.fromLittleEndianI256(bytes32(_read(r, 32)));
     }
 }
