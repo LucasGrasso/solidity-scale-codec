@@ -18,7 +18,9 @@
   "license": "Apache-2.0",
   "author": "LucasGrasso",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "gas-report": "env ENABLE_GAS_REPORT=true npm run test"
   },
   "type": "module",
   "devDependencies": {
