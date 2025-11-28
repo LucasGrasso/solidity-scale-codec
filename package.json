@@ -15,6 +15,9 @@
     "type": "git",
     "url": "git+https://github.com/LucasGrasso/solidity-scale-codec.git"
   },
+  "files": [
+    "src/**/*.sol"
+  ],
   "license": "Apache-2.0",
   "author": "LucasGrasso",
   "scripts": {
