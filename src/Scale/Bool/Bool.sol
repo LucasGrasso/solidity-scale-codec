@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.20;
 
-/// @title Scale Codec
+/// @title Scale Codec for the `bool` type.
 /// @notice SCALE-compliant encoder/decoder for `bool`.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library Bool {
