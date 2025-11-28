@@ -20,4 +20,14 @@ contract Example {
                 ScaleCodec.encodeBool(f.d)
             );
     }
+
+    function decodeFoo(bytes calldata b) external pure returns (Foo memory) {
+        return
+            Foo({
+                a: ScaleCodec.decodeU8At(b, 0),
+                b: ScaleCodec.decodeU16At(b, 1),
+                c: ScaleCodec.decodeI16At(b, 3),
+                d: ScaleCodec.decodeBoolAt(b, 5)
+            });
+    }
 }
