@@ -1,0 +1,44 @@
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.20;
+
+import {Compact} from "../Compact/Compact.sol";
+import { {{Type}} } from "../{{metaType}}.sol";
+
+/// @title Scale Codec for the `{{type}}[]` type.
+/// @notice SCALE-compliant encoder/decoder for the `{{type}}[]` type.
+/// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
+library {{Type}}Arr {
+	using {{Type}} for {{type}};
+
+	/// @notice Encodes an `{{type}}[]` into SCALE format.
+	function encode({{type}}[] memory arr) internal pure returns (bytes memory) {
+		bytes memory result = Compact.encode(arr.length);
+		for (uint256 i = 0; i < arr.length; i++) {
+			result = bytes.concat(result, arr[i].encode());
+		}
+		return result;
+	}
+
+	/// @notice Decodes an `{{type}}[]` from SCALE format.
+	function decode(bytes memory data) 
+		internal pure returns ({{type}}[] memory arr, uint256 bytesRead) 
+	{
+		return decodeAt(data, 0);
+	}
+
+	/// @notice Decodes an `{{type}}[]` from SCALE format.
+	function decodeAt(bytes memory data, uint256 offset) 
+		internal pure returns ({{type}}[] memory arr, uint256 bytesRead) 
+	{
+		(uint256 length, uint256 compactBytes) = Compact.decodeAt(data, offset);
+		uint256 pos = offset + compactBytes;
+		
+		arr = new {{type}}[](length);
+		for (uint256 i = 0; i < length; i++) {
+			arr[i] = {{Type}}.decodeAt(data, pos);
+			pos += {{size}};
+		}
+		
+		bytesRead = pos - offset;
+	}
+}

@@ -1,0 +1,17 @@
+{
+  "arrays": [
+    { "metaType": "Unsigned", "type": "uint8", "Type": "U8", "size": 1 },
+    { "metaType": "Unsigned","type": "uint16", "Type": "U16", "size": 2 },
+    { "metaType": "Unsigned","type": "uint32", "Type": "U32", "size": 4 },
+    { "metaType": "Unsigned","type": "uint64", "Type": "U64", "size": 8 },
+    { "metaType": "Unsigned","type": "uint128", "Type": "U128", "size": 16 },
+    { "metaType": "Unsigned","type": "uint256", "Type": "U256", "size": 32 },
+    { "metaType": "Signed", "type": "int8", "Type": "I8", "size": 1 },
+    { "metaType": "Signed","type": "int16", "Type": "I16", "size": 2 },
+    { "metaType": "Signed","type": "int32", "Type": "I32", "size": 4 },
+    { "metaType": "Signed","type": "int64", "Type": "I64", "size": 8 },
+    { "metaType": "Signed","type": "int128", "Type": "I128", "size": 16 },
+    { "metaType": "Signed","type": "int256", "Type": "I256", "size": 32 },
+    { "metaType": "Bool", "type": "bool", "Type": "Bool", "size": 1 }
+  ]
+}
