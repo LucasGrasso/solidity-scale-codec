@@ -1,6 +1,6 @@
 {
   "name": "solidity-scale-codec",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Solidity implementation of scale-codec.",
   "keywords": [
     "solidity",
@@ -16,7 +16,8 @@
     "url": "git+https://github.com/LucasGrasso/solidity-scale-codec.git"
   },
   "files": [
-    "src/**/*.sol"
+    "src/**/*.sol",
+    "!src/**/*.t.sol"
   ],
   "license": "Apache-2.0",
   "author": "LucasGrasso",
