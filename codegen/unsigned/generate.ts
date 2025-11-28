@@ -32,3 +32,16 @@ for (const { type, Type, size, asmDecodeAt, LE } of config.unsigned) {
   writeFileSync(path.join(output_dir, filename), output);
   console.log(`• Succesfully Generated ${filename}`);
 }
+
+const barrel_output_dir = "src/Scale/";
+let output = `
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.20; \n
+`;
+for (const { Type } of config.unsigned) {
+  output += `import { ${Type} } from "./Unsigned/${Type}.sol"; \n`;
+}
+
+const filename = `Unsigned.sol`;
+writeFileSync(path.join(barrel_output_dir, filename), output);
+console.log(`• Succesfully Generated ${filename}`);

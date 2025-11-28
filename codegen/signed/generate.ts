@@ -31,3 +31,16 @@ for (const { type, Type, SType, size } of config.signed) {
   writeFileSync(path.join(output_dir, filename), output);
   console.log(`• Succesfully Generated ${filename}`);
 }
+
+const barrel_output_dir = "src/Scale/";
+let output = `
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.20; \n
+`;
+for (const { Type } of config.signed) {
+  output += `import { ${Type} } from "./Signed/${Type}.sol"; \n`;
+}
+
+const filename = `Signed.sol`;
+writeFileSync(path.join(barrel_output_dir, filename), output);
+console.log(`• Succesfully Generated ${filename}`);
