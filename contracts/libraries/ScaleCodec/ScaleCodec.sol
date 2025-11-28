@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.20;
 
-import {Compact} from "../Compact/Compact.sol";
 import {LittleEndian} from "../LittleEndian/LittleEndian.sol";
-import {ScaleCodecArrays} from "./ScaleCodecArrays.sol";
 
-/// @title Scale Codec
+/// @title Scale Codec.
 /// @notice SCALE-compliant encoder/decoder for fixed-width integers.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library ScaleCodec {
