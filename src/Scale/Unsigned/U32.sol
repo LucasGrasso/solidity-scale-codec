@@ -8,7 +8,7 @@ library U32 {
 	error InvalidU32Length();
 
 	/// @notice Encodes an `uint32` into SCALE format (4-byte little-endian).
-    /// @param value The unsigned {{bitsize}} integer to encode.
+    /// @param value The unsigned 32-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(uint32 value) internal pure returns (bytes memory) {
         return abi.encodePacked(toLittleEndian(value));

@@ -8,7 +8,7 @@ library U8 {
 	error InvalidU8Length();
 
 	/// @notice Encodes an `uint8` into SCALE format (1-byte little-endian).
-    /// @param value The unsigned {{bitsize}} integer to encode.
+    /// @param value The unsigned 8-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(uint8 value) internal pure returns (bytes memory) {
         return abi.encodePacked(toLittleEndian(value));

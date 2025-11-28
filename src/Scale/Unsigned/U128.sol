@@ -8,7 +8,7 @@ library U128 {
 	error InvalidU128Length();
 
 	/// @notice Encodes an `uint128` into SCALE format (16-byte little-endian).
-    /// @param value The unsigned {{bitsize}} integer to encode.
+    /// @param value The unsigned 128-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(uint128 value) internal pure returns (bytes memory) {
         return abi.encodePacked(toLittleEndian(value));

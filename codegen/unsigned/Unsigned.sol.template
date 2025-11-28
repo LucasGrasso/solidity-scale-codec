@@ -8,7 +8,7 @@ library {{Type}} {
 	error Invalid{{Type}}Length();
 
 	/// @notice Encodes an `{{type}}` into SCALE format ({{size}}-byte little-endian).
-    /// @param value The unsigned {{bitsize}} integer to encode.
+    /// @param value The unsigned {{bitsize}}-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode({{type}} value) internal pure returns (bytes memory) {
         return abi.encodePacked(toLittleEndian(value));

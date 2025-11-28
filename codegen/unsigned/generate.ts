@@ -24,6 +24,7 @@ for (const { type, Type, size, asmDecodeAt, LE } of config.unsigned) {
     .replaceAll("{{type}}", type)
     .replaceAll("{{Type}}", Type)
     .replaceAll("{{size}}", size.toString())
+    .replaceAll("{{bitsize}}", (size * 8).toString())
     .replaceAll("{{asmDecodeAt}}", asmDecodeAt)
     .replaceAll("{{LE}}", LE);
 

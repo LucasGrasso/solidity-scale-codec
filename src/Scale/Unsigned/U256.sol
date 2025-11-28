@@ -8,7 +8,7 @@ library U256 {
 	error InvalidU256Length();
 
 	/// @notice Encodes an `uint256` into SCALE format (32-byte little-endian).
-    /// @param value The unsigned {{bitsize}} integer to encode.
+    /// @param value The unsigned 256-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(uint256 value) internal pure returns (bytes memory) {
         return abi.encodePacked(toLittleEndian(value));

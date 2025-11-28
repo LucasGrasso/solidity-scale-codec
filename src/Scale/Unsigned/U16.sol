@@ -8,7 +8,7 @@ library U16 {
 	error InvalidU16Length();
 
 	/// @notice Encodes an `uint16` into SCALE format (2-byte little-endian).
-    /// @param value The unsigned {{bitsize}} integer to encode.
+    /// @param value The unsigned 16-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(uint16 value) internal pure returns (bytes memory) {
         return abi.encodePacked(toLittleEndian(value));
