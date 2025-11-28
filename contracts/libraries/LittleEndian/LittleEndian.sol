@@ -3,7 +3,6 @@ pragma solidity ^0.8.20;
 
 /// @title LittleEndian
 /// @notice Gas-optimized library for converting unsigned integers from big-endian to little-endian
-/// @author Lucas Grasso
 library LittleEndian {
     /// @notice Converts a uint8 to little-endian bytes1
     function toLittleEndianU8(uint8 value) internal pure returns (bytes1) {
