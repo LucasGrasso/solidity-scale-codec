@@ -1,0 +1,39 @@
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.20;
+
+import { {{SType}} } from "../Unsigned/{{SType}}.sol";
+
+/// @title Scale Codec for the `{{type}}` type.
+/// @notice SCALE-compliant encoder/decoder for the `{{type}}` type.
+/// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
+library {{Type}} {
+	/// @notice Encodes an `{{type}}` into SCALE format ({{size}}-byte two's-complement little-endian).
+    /// @param value The signed {{bitsize}}-bit integer to encode.
+    /// @return SCALE-encoded byte sequence.
+    function encode({{type}} value) internal pure returns (bytes memory) {
+        return abi.encodePacked(toLittleEndian(value));
+    }
+
+    /// @notice Decodes SCALE-encoded bytes into an `{{type}}`.
+    /// @param data The SCALE-encoded byte sequence.
+    /// @return The decoded `{{type}}`.
+    function decode(bytes memory data) internal pure returns ({{type}}) {
+        return decodeAt(data, 0);
+    }
+
+    /// @notice Decodes an `{{type}}` at the specified offset.
+    /// @param data The SCALE-encoded byte sequence.
+    /// @param offset The byte offset to start decoding from.
+    /// @return value The decoded `{{type}}`.
+    function decodeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns ({{type}} value) {
+        return {{type}}({{SType}}.decodeAt(data, offset));
+    }
+
+	/// @notice Converts an {{type}} to little-endian bytes{{size}} (two's complement)
+    function toLittleEndian({{type}} value) internal pure returns (bytes{{size}} result) {
+        return {{SType}}.toLittleEndian(u{{type}}(value));
+    }
+}
