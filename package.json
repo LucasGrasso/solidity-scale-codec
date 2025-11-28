@@ -20,7 +20,8 @@
   "scripts": {
     "compile": "hardhat compile",
     "test": "hardhat test",
-    "gas-report": "env ENABLE_GAS_REPORT=true npm run test"
+    "gas-report": "env ENABLE_GAS_REPORT=true npm run test",
+    "codegen-arrays": "npx hardhat run codegen/arrays/generate.ts"
   },
   "type": "module",
   "devDependencies": {
