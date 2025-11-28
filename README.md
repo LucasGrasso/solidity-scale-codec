@@ -1,6 +1,6 @@
 # Solidity Scale Codec
 
-<a href="https://www.npmjs.com/~lucasgrasso" target="_blank"><img alt="NPM Version" src="https://img.shields.io/npm/v/solidity-scale-codec">
+<a href="https://www.npmjs.com/package/solidity-scale-codec" target="_blank"><img alt="NPM Version" src="https://img.shields.io/npm/v/solidity-scale-codec">
 </a>
 <a href="https://github.com/LucasGrasso/solidity-scale-codec/blob/main/LICENSE" target="_blank"><img alt="GitHub License" src="https://img.shields.io/github/license/LucasGrasso/solidity-scale-codec"></a>
 
