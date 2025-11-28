@@ -21,6 +21,7 @@
     "compile": "hardhat compile",
     "test": "hardhat test",
     "gas-report": "env ENABLE_GAS_REPORT=true npm run test",
+    "codegen-unsigned": "npx hardhat run codegen/unsigned/generate.ts",
     "codegen-arrays": "npx hardhat run codegen/arrays/generate.ts"
   },
   "type": "module",

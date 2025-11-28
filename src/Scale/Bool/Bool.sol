@@ -7,8 +7,6 @@ pragma solidity ^0.8.20;
 library Bool {
     error InvalidLength();
 
-    // ============ Booleans ============
-
     /// @notice Encodes a `bool` into SCALE format (1-byte).
     /// @param value The boolean to encode.
     /// @return SCALE-encoded byte sequence.
