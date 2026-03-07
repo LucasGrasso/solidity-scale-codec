@@ -11,22 +11,31 @@ library {{Type}}Arr {
 	using {{Type}} for {{type}};
 
 	/// @notice Encodes an `{{type}}[]` into SCALE format.
+	/// @param arr The array of `{{type}}` to encode.
+	/// @return SCALE-encoded byte sequence.
 	function encode({{type}}[] memory arr) internal pure returns (bytes memory) {
 		bytes memory result = Compact.encode(arr.length);
-		for (uint256 i = 0; i < arr.length; i++) {
+		for (uint256 i = 0; i < arr.length; ++i) {
 			result = bytes.concat(result, arr[i].encode());
 		}
 		return result;
 	}
 
 	/// @notice Decodes an `{{type}}[]` from SCALE format.
+	/// @param data The SCALE-encoded byte sequence.
+	/// @return arr The decoded array of `{{type}}`.
+	/// @return bytesRead The total number of bytes read during decoding.
 	function decode(bytes memory data) 
 		internal pure returns ({{type}}[] memory arr, uint256 bytesRead) 
 	{
 		return decodeAt(data, 0);
 	}
 
-	/// @notice Decodes an `{{type}}[]` from SCALE format.
+	/// @notice Decodes an `{{type}}[]` from SCALE format at the specified offset.
+	/// @param data The SCALE-encoded byte sequence.
+	/// @param offset The byte offset to start decoding from.
+	/// @return arr The decoded array of `{{type}}`.
+	/// @return bytesRead The total number of bytes read during decoding.
 	function decodeAt(bytes memory data, uint256 offset) 
 		internal pure returns ({{type}}[] memory arr, uint256 bytesRead) 
 	{
@@ -34,7 +43,7 @@ library {{Type}}Arr {
 		uint256 pos = offset + compactBytes;
 		
 		arr = new {{type}}[](length);
-		for (uint256 i = 0; i < length; i++) {
+		for (uint256 i = 0; i < length; ++i) {
 			arr[i] = {{Type}}.decodeAt(data, pos);
 			pos += {{size}};
 		}

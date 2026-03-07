@@ -33,6 +33,8 @@ library I64 {
     }
 
     /// @notice Converts an int64 to little-endian bytes8 (two's complement)
+    /// @param value The signed 64-bit integer to convert.
+    /// @return result Little-endian byte representation of the input value.
     function toLittleEndian(int64 value) internal pure returns (bytes8 result) {
         return U64.toLittleEndian(uint64(value));
     }

@@ -33,6 +33,8 @@ library I128 {
     }
 
     /// @notice Converts an int128 to little-endian bytes16 (two's complement)
+    /// @param value The signed 128-bit integer to convert.
+    /// @return result Little-endian byte representation of the input value.
     function toLittleEndian(
         int128 value
     ) internal pure returns (bytes16 result) {

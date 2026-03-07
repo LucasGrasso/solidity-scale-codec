@@ -33,6 +33,8 @@ library I8 {
     }
 
     /// @notice Converts an int8 to little-endian bytes1 (two's complement)
+    /// @param value The signed 8-bit integer to convert.
+    /// @return result Little-endian byte representation of the input value.
     function toLittleEndian(int8 value) internal pure returns (bytes1 result) {
         return U8.toLittleEndian(uint8(value));
     }

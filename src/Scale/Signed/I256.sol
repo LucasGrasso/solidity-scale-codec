@@ -33,6 +33,8 @@ library I256 {
     }
 
     /// @notice Converts an int256 to little-endian bytes32 (two's complement)
+    /// @param value The signed 256-bit integer to convert.
+    /// @return result Little-endian byte representation of the input value.
     function toLittleEndian(
         int256 value
     ) internal pure returns (bytes32 result) {

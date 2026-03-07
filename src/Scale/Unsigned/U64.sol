@@ -45,6 +45,8 @@ library U64 {
     }
 
     /// @notice Converts an `uint64` to little-endian bytes8
+    /// @param value The unsigned 64-bit integer to convert.
+    /// @return result Little-endian byte representation of the input value.
     function toLittleEndian(
         uint64 value
     ) internal pure returns (bytes8 result) {

@@ -36,6 +36,8 @@ library U8 {
     }
 
     /// @notice Converts an `uint8` to little-endian bytes1
+    /// @param value The unsigned 8-bit integer to convert.
+    /// @return result Little-endian byte representation of the input value.
     function toLittleEndian(uint8 value) internal pure returns (bytes1 result) {
         return bytes1(value);
     }

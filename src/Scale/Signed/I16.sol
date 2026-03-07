@@ -33,6 +33,8 @@ library I16 {
     }
 
     /// @notice Converts an int16 to little-endian bytes2 (two's complement)
+    /// @param value The signed 16-bit integer to convert.
+    /// @return result Little-endian byte representation of the input value.
     function toLittleEndian(int16 value) internal pure returns (bytes2 result) {
         return U16.toLittleEndian(uint16(value));
     }

@@ -33,6 +33,8 @@ library I32 {
     }
 
     /// @notice Converts an int32 to little-endian bytes4 (two's complement)
+    /// @param value The signed 32-bit integer to convert.
+    /// @return result Little-endian byte representation of the input value.
     function toLittleEndian(int32 value) internal pure returns (bytes4 result) {
         return U32.toLittleEndian(uint32(value));
     }

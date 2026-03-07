@@ -45,6 +45,8 @@ library U256 {
     }
 
     /// @notice Converts an `uint256` to little-endian bytes32
+    /// @param value The unsigned 256-bit integer to convert.
+    /// @return result Little-endian byte representation of the input value.
     function toLittleEndian(
         uint256 value
     ) internal pure returns (bytes32 result) {

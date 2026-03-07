@@ -45,6 +45,8 @@ library U128 {
     }
 
     /// @notice Converts an `uint128` to little-endian bytes16
+    /// @param value The unsigned 128-bit integer to convert.
+    /// @return result Little-endian byte representation of the input value.
     function toLittleEndian(
         uint128 value
     ) internal pure returns (bytes16 result) {

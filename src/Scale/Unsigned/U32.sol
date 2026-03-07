@@ -41,6 +41,8 @@ library U32 {
     }
 
     /// @notice Converts an `uint32` to little-endian bytes4
+    /// @param value The unsigned 32-bit integer to convert.
+    /// @return result Little-endian byte representation of the input value.
     function toLittleEndian(
         uint32 value
     ) internal pure returns (bytes4 result) {

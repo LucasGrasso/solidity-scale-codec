@@ -39,6 +39,8 @@ library U16 {
     }
 
     /// @notice Converts an `uint16` to little-endian bytes2
+    /// @param value The unsigned 16-bit integer to convert.
+    /// @return result Little-endian byte representation of the input value.
     function toLittleEndian(
         uint16 value
     ) internal pure returns (bytes2 result) {

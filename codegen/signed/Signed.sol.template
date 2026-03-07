@@ -33,6 +33,8 @@ library {{Type}} {
     }
 
 	/// @notice Converts an {{type}} to little-endian bytes{{size}} (two's complement)
+    /// @param value The signed {{bitsize}}-bit integer to convert.
+    /// @return result Little-endian byte representation of the input value.
     function toLittleEndian({{type}} value) internal pure returns (bytes{{size}} result) {
         return {{SType}}.toLittleEndian(u{{type}}(value));
     }
