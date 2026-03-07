@@ -35,7 +35,7 @@ for (const { type, Type, SType, size } of config.signed) {
 const barrel_output_dir = "src/Scale/";
 let output = `
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity ^0.8.20; \n
+pragma solidity ^0.8.28; \n
 `;
 for (const { Type } of config.signed) {
   output += `import { ${Type} } from "./Signed/${Type}.sol"; \n`;

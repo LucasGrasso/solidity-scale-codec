@@ -34,7 +34,7 @@ for (const { metaType, type, Type, size } of config.arrays) {
 const barrel_output_dir = "src/Scale/";
 let output = `
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity ^0.8.20; \n
+pragma solidity ^0.8.28; \n
 `;
 for (const { Type } of config.arrays) {
   output += `import { ${Type}Arr } from "./Array/${Type}Arr.sol"; \n`;

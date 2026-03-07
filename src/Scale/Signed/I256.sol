@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
-import { U256 } from "../Unsigned/U256.sol";
+import {U256} from "../Unsigned/U256.sol";
 
 /// @title Scale Codec for the `int256` type.
 /// @notice SCALE-compliant encoder/decoder for the `int256` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library I256 {
-	/// @notice Encodes an `int256` into SCALE format (32-byte two's-complement little-endian).
+    /// @notice Encodes an `int256` into SCALE format (32-byte two's-complement little-endian).
     /// @param value The signed 256-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(int256 value) internal pure returns (bytes memory) {
@@ -32,8 +32,10 @@ library I256 {
         return int256(U256.decodeAt(data, offset));
     }
 
-	/// @notice Converts an int256 to little-endian bytes32 (two's complement)
-    function toLittleEndian(int256 value) internal pure returns (bytes32 result) {
+    /// @notice Converts an int256 to little-endian bytes32 (two's complement)
+    function toLittleEndian(
+        int256 value
+    ) internal pure returns (bytes32 result) {
         return U256.toLittleEndian(uint256(value));
     }
 }

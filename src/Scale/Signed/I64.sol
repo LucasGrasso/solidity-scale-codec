@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
-import { U64 } from "../Unsigned/U64.sol";
+import {U64} from "../Unsigned/U64.sol";
 
 /// @title Scale Codec for the `int64` type.
 /// @notice SCALE-compliant encoder/decoder for the `int64` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library I64 {
-	/// @notice Encodes an `int64` into SCALE format (8-byte two's-complement little-endian).
+    /// @notice Encodes an `int64` into SCALE format (8-byte two's-complement little-endian).
     /// @param value The signed 64-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(int64 value) internal pure returns (bytes memory) {
@@ -32,7 +32,7 @@ library I64 {
         return int64(U64.decodeAt(data, offset));
     }
 
-	/// @notice Converts an int64 to little-endian bytes8 (two's complement)
+    /// @notice Converts an int64 to little-endian bytes8 (two's complement)
     function toLittleEndian(int64 value) internal pure returns (bytes8 result) {
         return U64.toLittleEndian(uint64(value));
     }

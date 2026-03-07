@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
 /// @title LittleEndian
 /// @notice Gas-optimized library for converting unsigned integers from big-endian to little-endian

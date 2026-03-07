@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
-import { U128 } from "../Unsigned/U128.sol";
+import {U128} from "../Unsigned/U128.sol";
 
 /// @title Scale Codec for the `int128` type.
 /// @notice SCALE-compliant encoder/decoder for the `int128` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library I128 {
-	/// @notice Encodes an `int128` into SCALE format (16-byte two's-complement little-endian).
+    /// @notice Encodes an `int128` into SCALE format (16-byte two's-complement little-endian).
     /// @param value The signed 128-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(int128 value) internal pure returns (bytes memory) {
@@ -32,8 +32,10 @@ library I128 {
         return int128(U128.decodeAt(data, offset));
     }
 
-	/// @notice Converts an int128 to little-endian bytes16 (two's complement)
-    function toLittleEndian(int128 value) internal pure returns (bytes16 result) {
+    /// @notice Converts an int128 to little-endian bytes16 (two's complement)
+    function toLittleEndian(
+        int128 value
+    ) internal pure returns (bytes16 result) {
         return U128.toLittleEndian(uint128(value));
     }
 }

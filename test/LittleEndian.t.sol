@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
-import {LittleEndian} from "./LittleEndian.sol";
+import {LittleEndian} from "./src/Utils/LittleEndian/LittleEndian.sol";
 import {Test} from "forge-std/Test.sol";
 
 contract LittleEndianTest is Test {
