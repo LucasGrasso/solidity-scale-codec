@@ -1,0 +1,14 @@
+{
+  "extends": "solhint:recommended",
+  "rules": {
+    "max-line-length": ["warn", 120],
+    "quotes": ["error", "double"],
+    "no-unused-vars": ["error"],
+    "no-inline-assembly": "off",
+    "no-unused-import": "off",
+    "function-max-lines": [
+      "warn",
+      80
+    ]
+  }
+}
