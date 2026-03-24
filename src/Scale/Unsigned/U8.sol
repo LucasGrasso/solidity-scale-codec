@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
+import { LittleEndianU8 } from "../../LittleEndian/LittleEndianU8.sol";
+
 /// @title Scale Codec for the `uint8` type.
 /// @notice SCALE-compliant encoder/decoder for the `uint8` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library U8 {
-    error InvalidU8Length();
+	error InvalidU8Length();
 
-    /// @notice Encodes an `uint8` into SCALE format (1-byte little-endian).
+	/// @notice Encodes an `uint8` into SCALE format (1-byte little-endian).
     /// @param value The unsigned 8-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(uint8 value) internal pure returns (bytes memory) {
@@ -30,15 +32,13 @@ library U8 {
         uint256 offset
     ) internal pure returns (uint8 value) {
         if (data.length < offset + 1) revert InvalidU8Length();
-        assembly {
-            value := and(mload(add(add(data, 32), offset)), 0xFF)
-        }
+        return LittleEndianU8.fromLE(data, offset);
     }
 
-    /// @notice Converts an `uint8` to little-endian bytes1
+	/// @notice Converts an `uint8` to little-endian bytes1
     /// @param value The unsigned 8-bit integer to convert.
     /// @return result Little-endian byte representation of the input value.
-    function toLittleEndian(uint8 value) internal pure returns (bytes1 result) {
-        return bytes1(value);
-    }
+	function toLittleEndian(uint8 value) internal pure returns (bytes1 result) {
+		return LittleEndianU8.toLE(value);
+	}
 }

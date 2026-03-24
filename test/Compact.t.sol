@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {Compact} from "./src/Scale/Compact.sol";
+import {Compact} from "../src/Scale/Compact.sol";
 import {Test} from "forge-std/Test.sol";
 
 /// @dev Wrapper contract to test reverts (vm.expectRevert needs external calls)

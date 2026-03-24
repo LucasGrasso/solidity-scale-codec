@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
+import { LittleEndianU32 } from "../../LittleEndian/LittleEndianU32.sol";
+
 /// @title Scale Codec for the `uint32` type.
 /// @notice SCALE-compliant encoder/decoder for the `uint32` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library U32 {
-    error InvalidU32Length();
+	error InvalidU32Length();
 
-    /// @notice Encodes an `uint32` into SCALE format (4-byte little-endian).
+	/// @notice Encodes an `uint32` into SCALE format (4-byte little-endian).
     /// @param value The unsigned 32-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(uint32 value) internal pure returns (bytes memory) {
@@ -30,31 +32,13 @@ library U32 {
         uint256 offset
     ) internal pure returns (uint32 value) {
         if (data.length < offset + 4) revert InvalidU32Length();
-        assembly {
-            let ptr := add(add(data, 32), offset)
-            let b0 := and(mload(ptr), 0xFF)
-            let b1 := and(mload(add(ptr, 1)), 0xFF)
-            let b2 := and(mload(add(ptr, 2)), 0xFF)
-            let b3 := and(mload(add(ptr, 3)), 0xFF)
-            value := or(or(b0, shl(8, b1)), or(shl(16, b2), shl(24, b3)))
-        }
+        return LittleEndianU32.fromLE(data, offset);
     }
 
-    /// @notice Converts an `uint32` to little-endian bytes4
+	/// @notice Converts an `uint32` to little-endian bytes4
     /// @param value The unsigned 32-bit integer to convert.
     /// @return result Little-endian byte representation of the input value.
-    function toLittleEndian(
-        uint32 value
-    ) internal pure returns (bytes4 result) {
-        assembly {
-            let v := or(
-                or(
-                    shl(24, and(value, 0xff)),
-                    shl(16, and(shr(8, value), 0xff))
-                ),
-                or(shl(8, and(shr(16, value), 0xff)), and(shr(24, value), 0xff))
-            )
-            result := shl(224, v)
-        }
-    }
+	function toLittleEndian(uint32 value) internal pure returns (bytes4 result) {
+		return LittleEndianU32.toLE(value);
+	}
 }
