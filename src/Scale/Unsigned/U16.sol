@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
+
+import { LittleEndianU16 } from "../../LittleEndian/LittleEndianU16.sol";
 
 /// @title Scale Codec for the `uint16` type.
 /// @notice SCALE-compliant encoder/decoder for the `uint16` type.
@@ -30,11 +32,13 @@ library U16 {
         uint256 offset
     ) internal pure returns (uint16 value) {
         if (data.length < offset + 2) revert InvalidU16Length();
-        assembly { let ptr := add(add(data, 32), offset) let b0 := and(mload(ptr), 0xFF) let b1 := and(mload(add(ptr, 1)), 0xFF) value := or(b0, shl(8, b1)) }
+        return LittleEndianU16.fromLE(data, offset);
     }
 
 	/// @notice Converts an `uint16` to little-endian bytes2
+    /// @param value The unsigned 16-bit integer to convert.
+    /// @return result Little-endian byte representation of the input value.
 	function toLittleEndian(uint16 value) internal pure returns (bytes2 result) {
-		return bytes2(uint16((value >> 8) | (value << 8)));
+		return LittleEndianU16.toLE(value);
 	}
 }

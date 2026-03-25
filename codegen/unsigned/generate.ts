@@ -36,7 +36,7 @@ for (const { type, Type, size, asmDecodeAt, LE } of config.unsigned) {
 const barrel_output_dir = "src/Scale/";
 let output = `
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity ^0.8.20; \n
+pragma solidity ^0.8.28; \n
 `;
 for (const { Type } of config.unsigned) {
   output += `import { ${Type} } from "./Unsigned/${Type}.sol"; \n`;

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
 import { U16 } from "../Unsigned/U16.sol";
 
@@ -7,6 +7,8 @@ import { U16 } from "../Unsigned/U16.sol";
 /// @notice SCALE-compliant encoder/decoder for the `int16` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library I16 {
+    error OffsetOutOfBounds();
+
 	/// @notice Encodes an `int16` into SCALE format (2-byte two's-complement little-endian).
     /// @param value The signed 16-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
@@ -29,10 +31,13 @@ library I16 {
         bytes memory data,
         uint256 offset
     ) internal pure returns (int16 value) {
+        // Safety Check is done in the unsigned decoder.
         return int16(U16.decodeAt(data, offset));
     }
 
 	/// @notice Converts an int16 to little-endian bytes2 (two's complement)
+    /// @param value The signed 16-bit integer to convert.
+    /// @return result Little-endian byte representation of the input value.
     function toLittleEndian(int16 value) internal pure returns (bytes2 result) {
         return U16.toLittleEndian(uint16(value));
     }

@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
+
+import { LittleEndianU256 } from "../../LittleEndian/LittleEndianU256.sol";
 
 /// @title Scale Codec for the `uint256` type.
 /// @notice SCALE-compliant encoder/decoder for the `uint256` type.
@@ -30,11 +32,13 @@ library U256 {
         uint256 offset
     ) internal pure returns (uint256 value) {
         if (data.length < offset + 32) revert InvalidU256Length();
-        assembly { let ptr := add(add(data, 32), offset) value := 0 for { let i := 0 } lt(i, 32) { i := add(i, 1) } { let b := and(mload(add(ptr, i)), 0xFF) value := or(value, shl(mul(i, 8), b)) } }
+        return LittleEndianU256.fromLE(data, offset);
     }
 
 	/// @notice Converts an `uint256` to little-endian bytes32
+    /// @param value The unsigned 256-bit integer to convert.
+    /// @return result Little-endian byte representation of the input value.
 	function toLittleEndian(uint256 value) internal pure returns (bytes32 result) {
-		assembly { let v := value v := or(shl(8, and(v, 0x00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF)), shr(8, and(v, 0xFF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00))) v := or(shl(16, and(v, 0x0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF)), shr(16, and(v, 0xFFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000))) v := or(shl(32, and(v, 0x00000000FFFFFFFF00000000FFFFFFFF00000000FFFFFFFF00000000FFFFFFFF)), shr(32, and(v, 0xFFFFFFFF00000000FFFFFFFF00000000FFFFFFFF00000000FFFFFFFF00000000))) v := or(shl(64, and(v, 0x0000000000000000FFFFFFFFFFFFFFFF0000000000000000FFFFFFFFFFFFFFFF)), shr(64, and(v, 0xFFFFFFFFFFFFFFFF0000000000000000FFFFFFFFFFFFFFFF0000000000000000))) v := or(shl(128, v), shr(128, v)) result := v }
+		return LittleEndianU256.toLE(value);
 	}
 }

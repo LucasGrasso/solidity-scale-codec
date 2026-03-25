@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
+
+import { LittleEndianU64 } from "../../LittleEndian/LittleEndianU64.sol";
 
 /// @title Scale Codec for the `uint64` type.
 /// @notice SCALE-compliant encoder/decoder for the `uint64` type.
@@ -30,11 +32,13 @@ library U64 {
         uint256 offset
     ) internal pure returns (uint64 value) {
         if (data.length < offset + 8) revert InvalidU64Length();
-        assembly { let ptr := add(add(data, 32), offset) value := 0 for { let i := 0 } lt(i, 8) { i := add(i, 1) } { let b := and(mload(add(ptr, i)), 0xFF) value := or(value, shl(mul(i, 8), b)) } }
+        return LittleEndianU64.fromLE(data, offset);
     }
 
 	/// @notice Converts an `uint64` to little-endian bytes8
+    /// @param value The unsigned 64-bit integer to convert.
+    /// @return result Little-endian byte representation of the input value.
 	function toLittleEndian(uint64 value) internal pure returns (bytes8 result) {
-		assembly { let v := value v := or(shl(8, and(v, 0x00FF00FF00FF00FF)), shr(8, and(v, 0xFF00FF00FF00FF00))) v := or(shl(16, and(v, 0x0000FFFF0000FFFF)), shr(16, and(v, 0xFFFF0000FFFF0000))) v := or(shl(32, v), shr(32, v)) result := shl(192, v) }
+		return LittleEndianU64.toLE(value);
 	}
 }

@@ -1,6 +1,6 @@
 
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity ^0.8.20; 
+pragma solidity ^0.8.28; 
 
 import { U8 } from "./Unsigned/U8.sol"; 
 import { U16 } from "./Unsigned/U16.sol"; 

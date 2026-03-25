@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
+
+import { LittleEndian{{Type}} } from "../../LittleEndian/LittleEndian{{Type}}.sol";
 
 /// @title Scale Codec for the `{{type}}` type.
 /// @notice SCALE-compliant encoder/decoder for the `{{type}}` type.
@@ -30,11 +32,13 @@ library {{Type}} {
         uint256 offset
     ) internal pure returns ({{type}} value) {
         if (data.length < offset + {{size}}) revert Invalid{{Type}}Length();
-        {{asmDecodeAt}}
+        return LittleEndian{{Type}}.fromLE(data, offset);
     }
 
 	/// @notice Converts an `{{type}}` to little-endian bytes{{size}}
+    /// @param value The unsigned {{bitsize}}-bit integer to convert.
+    /// @return result Little-endian byte representation of the input value.
 	function toLittleEndian({{type}} value) internal pure returns (bytes{{size}} result) {
-		{{LE}}
+		return LittleEndian{{Type}}.toLE(value);
 	}
 }

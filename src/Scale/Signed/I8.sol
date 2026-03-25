@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
 import { U8 } from "../Unsigned/U8.sol";
 
@@ -7,6 +7,8 @@ import { U8 } from "../Unsigned/U8.sol";
 /// @notice SCALE-compliant encoder/decoder for the `int8` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library I8 {
+    error OffsetOutOfBounds();
+
 	/// @notice Encodes an `int8` into SCALE format (1-byte two's-complement little-endian).
     /// @param value The signed 8-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
@@ -29,10 +31,13 @@ library I8 {
         bytes memory data,
         uint256 offset
     ) internal pure returns (int8 value) {
+        // Safety Check is done in the unsigned decoder.
         return int8(U8.decodeAt(data, offset));
     }
 
 	/// @notice Converts an int8 to little-endian bytes1 (two's complement)
+    /// @param value The signed 8-bit integer to convert.
+    /// @return result Little-endian byte representation of the input value.
     function toLittleEndian(int8 value) internal pure returns (bytes1 result) {
         return U8.toLittleEndian(uint8(value));
     }

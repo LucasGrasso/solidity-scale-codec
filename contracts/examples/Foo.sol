@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
 import {Bool} from "../../src/Scale/Bool.sol";
 import {I16} from "../../src/Scale/Signed.sol";
