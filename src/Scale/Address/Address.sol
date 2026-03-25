@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {U8Arr} from "../Unsigned/Arr/U8Arr.sol";
+import {U8Arr} from "../Arr/U8Arr.sol";
 
 /// @title Scale Codec for the `address` type.
 /// @notice SCALE-compliant encoder/decoder for the `address` type.
