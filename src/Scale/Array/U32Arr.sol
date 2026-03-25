@@ -8,6 +8,8 @@ import { U32 } from "../Unsigned.sol";
 /// @notice SCALE-compliant encoder/decoder for the `uint32[]` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library U32Arr {
+	error InvalidU32ArrLenght();
+
 	using U32 for uint32;
 
 	/// @notice Encodes an `uint32[]` into SCALE format.
@@ -41,6 +43,8 @@ library U32Arr {
 	{
 		(uint256 length, uint256 compactBytes) = Compact.decodeAt(data, offset);
 		uint256 pos = offset + compactBytes;
+
+		if (pos + (length * 4) > data.length) revert InvalidU32ArrLenght();
 		
 		arr = new uint32[](length);
 		for (uint256 i = 0; i < length; ++i) {

@@ -8,6 +8,8 @@ import { I256 } from "../Signed.sol";
 /// @notice SCALE-compliant encoder/decoder for the `int256[]` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library I256Arr {
+	error InvalidI256ArrLenght();
+
 	using I256 for int256;
 
 	/// @notice Encodes an `int256[]` into SCALE format.
@@ -41,6 +43,8 @@ library I256Arr {
 	{
 		(uint256 length, uint256 compactBytes) = Compact.decodeAt(data, offset);
 		uint256 pos = offset + compactBytes;
+
+		if (pos + (length * 32) > data.length) revert InvalidI256ArrLenght();
 		
 		arr = new int256[](length);
 		for (uint256 i = 0; i < length; ++i) {

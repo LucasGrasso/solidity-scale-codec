@@ -8,6 +8,8 @@ import { Bool } from "../Bool.sol";
 /// @notice SCALE-compliant encoder/decoder for the `bool[]` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library BoolArr {
+	error InvalidBoolArrLenght();
+
 	using Bool for bool;
 
 	/// @notice Encodes an `bool[]` into SCALE format.
@@ -41,6 +43,8 @@ library BoolArr {
 	{
 		(uint256 length, uint256 compactBytes) = Compact.decodeAt(data, offset);
 		uint256 pos = offset + compactBytes;
+
+		if (pos + (length * 1) > data.length) revert InvalidBoolArrLenght();
 		
 		arr = new bool[](length);
 		for (uint256 i = 0; i < length; ++i) {

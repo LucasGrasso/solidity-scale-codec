@@ -8,6 +8,8 @@ import { I32 } from "../Signed.sol";
 /// @notice SCALE-compliant encoder/decoder for the `int32[]` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library I32Arr {
+	error InvalidI32ArrLenght();
+
 	using I32 for int32;
 
 	/// @notice Encodes an `int32[]` into SCALE format.
@@ -41,6 +43,8 @@ library I32Arr {
 	{
 		(uint256 length, uint256 compactBytes) = Compact.decodeAt(data, offset);
 		uint256 pos = offset + compactBytes;
+
+		if (pos + (length * 4) > data.length) revert InvalidI32ArrLenght();
 		
 		arr = new int32[](length);
 		for (uint256 i = 0; i < length; ++i) {

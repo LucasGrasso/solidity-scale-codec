@@ -8,6 +8,8 @@ import { U128 } from "../Unsigned.sol";
 /// @notice SCALE-compliant encoder/decoder for the `uint128[]` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library U128Arr {
+	error InvalidU128ArrLenght();
+
 	using U128 for uint128;
 
 	/// @notice Encodes an `uint128[]` into SCALE format.
@@ -41,6 +43,8 @@ library U128Arr {
 	{
 		(uint256 length, uint256 compactBytes) = Compact.decodeAt(data, offset);
 		uint256 pos = offset + compactBytes;
+
+		if (pos + (length * 16) > data.length) revert InvalidU128ArrLenght();
 		
 		arr = new uint128[](length);
 		for (uint256 i = 0; i < length; ++i) {

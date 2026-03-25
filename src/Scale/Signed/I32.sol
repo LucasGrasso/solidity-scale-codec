@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {U32} from "../Unsigned/U32.sol";
+import { U32 } from "../Unsigned/U32.sol";
 
 /// @title Scale Codec for the `int32` type.
 /// @notice SCALE-compliant encoder/decoder for the `int32` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library I32 {
-    /// @notice Encodes an `int32` into SCALE format (4-byte two's-complement little-endian).
+    error OffsetOutOfBounds();
+
+	/// @notice Encodes an `int32` into SCALE format (4-byte two's-complement little-endian).
     /// @param value The signed 32-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(int32 value) internal pure returns (bytes memory) {
@@ -29,10 +31,11 @@ library I32 {
         bytes memory data,
         uint256 offset
     ) internal pure returns (int32 value) {
+        // Safety Check is done in the unsigned decoder.
         return int32(U32.decodeAt(data, offset));
     }
 
-    /// @notice Converts an int32 to little-endian bytes4 (two's complement)
+	/// @notice Converts an int32 to little-endian bytes4 (two's complement)
     /// @param value The signed 32-bit integer to convert.
     /// @return result Little-endian byte representation of the input value.
     function toLittleEndian(int32 value) internal pure returns (bytes4 result) {

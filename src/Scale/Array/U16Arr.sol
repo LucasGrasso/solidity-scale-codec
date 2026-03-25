@@ -8,6 +8,8 @@ import { U16 } from "../Unsigned.sol";
 /// @notice SCALE-compliant encoder/decoder for the `uint16[]` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library U16Arr {
+	error InvalidU16ArrLenght();
+
 	using U16 for uint16;
 
 	/// @notice Encodes an `uint16[]` into SCALE format.
@@ -41,6 +43,8 @@ library U16Arr {
 	{
 		(uint256 length, uint256 compactBytes) = Compact.decodeAt(data, offset);
 		uint256 pos = offset + compactBytes;
+
+		if (pos + (length * 2) > data.length) revert InvalidU16ArrLenght();
 		
 		arr = new uint16[](length);
 		for (uint256 i = 0; i < length; ++i) {

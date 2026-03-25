@@ -8,6 +8,8 @@ import { I64 } from "../Signed.sol";
 /// @notice SCALE-compliant encoder/decoder for the `int64[]` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library I64Arr {
+	error InvalidI64ArrLenght();
+
 	using I64 for int64;
 
 	/// @notice Encodes an `int64[]` into SCALE format.
@@ -41,6 +43,8 @@ library I64Arr {
 	{
 		(uint256 length, uint256 compactBytes) = Compact.decodeAt(data, offset);
 		uint256 pos = offset + compactBytes;
+
+		if (pos + (length * 8) > data.length) revert InvalidI64ArrLenght();
 		
 		arr = new int64[](length);
 		for (uint256 i = 0; i < length; ++i) {

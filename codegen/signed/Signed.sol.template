@@ -7,6 +7,8 @@ import { {{SType}} } from "../Unsigned/{{SType}}.sol";
 /// @notice SCALE-compliant encoder/decoder for the `{{type}}` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library {{Type}} {
+    error OffsetOutOfBounds();
+
 	/// @notice Encodes an `{{type}}` into SCALE format ({{size}}-byte two's-complement little-endian).
     /// @param value The signed {{bitsize}}-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
@@ -29,6 +31,7 @@ library {{Type}} {
         bytes memory data,
         uint256 offset
     ) internal pure returns ({{type}} value) {
+        // Safety Check is done in the unsigned decoder.
         return {{type}}({{SType}}.decodeAt(data, offset));
     }
 
