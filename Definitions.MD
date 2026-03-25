@@ -128,3 +128,5 @@ In some cases, the length indicator ${\text{Enc}_{{\text{SC}}}^{{\text{Len}}}}{\
 ### String
 
 The SCALE codec for a **string value** is an [encoded sequence](#sequence) consisting of UTF-8 encoded bytes.
+
+> This can be achieved via encoding the UTF-8 sequence as a `uint8[]` array, which is supported by this library.
