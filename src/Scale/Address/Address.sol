@@ -36,6 +36,6 @@ library Address {
         for (uint256 i = 0; i < 20; i++) {
             addrBytes[i] = data[offset + i];
         }
-        addr = address(bytes20(addrBytes));
+        return address(bytes20(addrBytes));
     }
 }

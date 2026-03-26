@@ -24,11 +24,11 @@ library Bytes32 {
     /// @notice Decodes an `bytes32` from SCALE format at the specified offset.
     /// @param data The SCALE-encoded byte sequence.
     /// @param offset The byte offset to start decoding from.
-    /// @return The decoded `bytes32`.
+    /// @return value The decoded `bytes32`.
     function decodeAt(
         bytes memory data,
         uint256 offset
-    ) internal pure returns (bytes32) {
+    ) internal pure returns (bytes32 value) {
         if (data.length < offset + 32) {
             revert InvalidBytes32Lenght();
         }
