@@ -32,8 +32,8 @@ library Bytes32 {
         if (data.length < offset + 32) {
             revert InvalidBytes32Lenght();
         }
-        for (uint256 i = 0; i < 32; i++) {
-            value[i] = data[offset + i];
+        assembly {
+            value := mload(add(add(data, 32), offset))
         }
     }
 }

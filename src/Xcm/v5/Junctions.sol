@@ -1,20 +1,21 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {Junction} from "./Junction.sol";
+import {JunctionCodec, Junction} from "./Junction.sol";
+
+/// @dev The `Junctions` struct represents a sequence of up to 8 `Junction` items, prefixed by a count.
+struct Junctions {
+    uint8 count; // 0 = Here, 1 = X1, ..., 8 = X8
+    Junction[] items; // The actual junction data
+}
 
 /// @title SCALE Codec for XCM v5 `Junctions`
 /// @notice SCALE-compliant encoder/decoder for the `Junctions` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 /// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
-library Junctions {
+library JunctionsCodec {
     error InvalidJunctionsLength(uint8 count);
     error InvalidJunctionsCount(uint8 count);
-
-    struct Junctions {
-        uint8 count; // 0 = Here, 1 = X1, ..., 8 = X8
-        Junction[] items; // The actual junction data
-    }
 
     /// @notice Creates a `Here` junctions struct.
     function here() internal pure returns (Junctions memory) {
@@ -51,7 +52,7 @@ library Junctions {
         for (uint8 i = 0; i < junctions.count; i++) {
             encoded = abi.encodePacked(
                 encoded,
-                Junction.encode(junctions.items[i])
+                JunctionCodec.encode(junctions.items[i])
             );
         }
         return encoded;
@@ -84,7 +85,7 @@ library Junctions {
         uint256 pos = offset + 1;
 
         for (uint8 i = 0; i < count; i++) {
-            (Junction memory item, uint256 itemBytes) = Junction.decodeAt(
+            (Junction memory item, uint256 itemBytes) = JunctionCodec.decodeAt(
                 data,
                 pos
             );

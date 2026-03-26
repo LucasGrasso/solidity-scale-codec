@@ -1,53 +1,53 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {LittleEndianU64} from "../../Scale/Unsigned/LittleEndianU64.sol";
+import {LittleEndianU64} from "../../LittleEndian/LittleEndianU64.sol";
+
+/// @dev Discriminant for the different types of NetworkIds in XCM v5.
+enum NetworkType {
+    /// @custom:variant Network specified by the first 32 bytes of its genesis block.
+    ByGenesis,
+    /// @custom:variant Network defined by the first 32-bytes of the hash and number of some block it contains.
+    ByFork,
+    /// @custom:variant The Polkadot Relay Chain.
+    Polkadot,
+    /// @custom:variant The Kusama Relay Chain.
+    Kusama,
+    /// @custom:variant An Ethereum-based network, identified by its chain ID.
+    Ethereum,
+    /// @custom:variant The Bitcoin network.
+    BitcoinCore,
+    /// @custom:variant The Bitcoin Cash network.
+    BitcoinCash,
+    /// @custom:variant The Polkadot Bulletin Chain.
+    PolkadotBulletin
+}
+
+struct ByForkParams {
+    uint64 blockNumber;
+    bytes32 blockHash;
+}
+
+struct EthereumParams {
+    uint64 chainId;
+}
+
+// The wrapper struct
+struct NetworkId {
+    NetworkType nType;
+    bytes payload;
+}
 
 /// @title SCALE Codec for XCM v5 `NetworkId`
 /// @notice SCALE-compliant encoder/decoder for the `NetworkId` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 /// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
-library NetworkId {
+library NetworkIdCodec {
     error InvalidNetworkIdLength();
     error InvalidNetworkIdType(uint8 nType);
     error InvalidNetworkIdPayload();
 
     using LittleEndianU64 for uint64;
-
-    /// @dev Discriminant for the different types of NetworkIds in XCM v5.
-    enum NetworkType {
-        /// @custom:variant Network specified by the first 32 bytes of its genesis block.
-        ByGenesis,
-        /// @custom:variant Network defined by the first 32-bytes of the hash and number of some block it contains.
-        ByFork,
-        /// @custom:variant The Polkadot Relay Chain.
-        Polkadot,
-        /// @custom:variant The Kusama Relay Chain.
-        Kusama,
-        /// @custom:variant An Ethereum-based network, identified by its chain ID.
-        Ethereum,
-        /// @custom:variant The Bitcoin network.
-        BitcoinCore,
-        /// @custom:variant The Bitcoin Cash network.
-        BitcoinCash,
-        /// @custom:variant The Polkadot Bulletin Chain.
-        PolkadotBulletin
-    }
-
-    struct ByForkParams {
-        uint64 blockNumber;
-        bytes32 blockHash;
-    }
-
-    struct EthereumParams {
-        uint64 chainId;
-    }
-
-    // The wrapper struct
-    struct NetworkId {
-        NetworkType nType;
-        bytes payload;
-    }
 
     /// @notice Creates a `ByGenesis` network ID.
     function byGenesis(
@@ -160,17 +160,13 @@ library NetworkId {
 
     /// @notice Decodes a `ByFork` network ID, returning the block number and hash.
     /// @param networkId The `NetworkId` struct to decode.
-    /// @return blockNumber The block number extracted from the network ID.
+    /// @return chainId The chain ID extracted from the network ID.
     function decodeEthereum(
         NetworkId memory networkId
     ) internal pure returns (uint64 chainId) {
         if (networkId.nType != NetworkType.Ethereum)
             revert InvalidNetworkIdType(uint8(networkId.nType));
         if (networkId.payload.length != 8) revert InvalidNetworkIdPayload();
-
-        assembly {
-            chainId := mload(add(networkId.payload, 32))
-        }
-        return LittleEndianU64.fromLE(chainId);
+        chainId = LittleEndianU64.fromLE(networkId.payload, 0);
     }
 }
