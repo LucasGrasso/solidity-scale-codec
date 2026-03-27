@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
+import {BodyIdCodec, BodyId} from "../v3/BodyId.sol";
+import {BodyPartCodec, BodyPart} from "../v3/BodyPart.sol";
 import {NetworkIdCodec, NetworkId} from "./NetworkId.sol";
 import {Bytes32} from "../../Scale/Bytes.sol";
 import {Address} from "../../Scale/Address.sol";
@@ -17,21 +19,17 @@ enum JunctionType {
     /// @custom:variant A 20-byte identifier for an account of a specific network that is respected as a sovereign endpoint within the context.
     AccountKey20,
     /// @custom:variant An instanced, indexed pallet that forms a constituent part of the context.
-    PalletInstance
-    /*
-			> The following are left unimplemented.
-			GeneralIndex(u128),
-			GeneralKey {
-				length: u8,
-				data: [u8; 32],
-			},
-			OnlyChild,
-			Plurality {
-				id: BodyId,
-				part: BodyPart,
-			},
-			GlobalConsensus(NetworkId),
-		*/
+    PalletInstance,
+    /// @custom:variant A non-descript index within the context location. NOTE: Try to avoid using this and instead use a more specific item.
+    GeneralIndex,
+    /// @custom:variant A nondescript array datum, 32 bytes, acting as a key within the context location. NOTE: Try to avoid using this and instead use a more specific item.
+    GeneralKey,
+    /// @custom:variant The unambiguous child. Not currently used except as a fallback when deriving context.
+    OnlyChild,
+    /// @custom:variant A pluralistic body existing within consensus.
+    Plurality,
+    /// @custom:variant A global network capable of externalizing its own consensus. This is not generally meaningful outside of the universal level.
+    GlobalConsensus
 }
 
 /// @notice Parameters for an `AccountId32` junction, containing optional network information and a 32-byte account identifier.
@@ -42,6 +40,14 @@ struct AccountId32Params {
     NetworkId network;
     /// @custom:property The 32-byte identifier for the account.
     bytes32 id;
+}
+
+/// @notice Parameters for an `Plurality` junction
+struct PluralityParams {
+    /// @custom:property The identifier for the body of the plurality. See `BodyId` enum for details.
+    BodyId id;
+    /// @custom:property The part of the body that is relevant for this junction. See `BodyPart` struct for details.
+    BodyPart part;
 }
 
 /// @notice Parameters for an `AccountIndex64` junction, containing optional network information and a 64-bit account index.
@@ -62,6 +68,14 @@ struct AccountKey20Params {
     NetworkId network;
     /// @custom:property The 20-byte key identifier for the account, represented as an `address` in Solidity.
     address key;
+}
+
+/// @notice Parameters for an `GeneralKey` junction
+struct GeneralKeyParams {
+    /// @custom:property The length of the byte array acting as a key within the context location. This should be between 1 and 32, inclusive, to ensure valid encoding and decoding.
+    uint8 length;
+    /// @custom:property The byte array acting as a key within the context location.
+    bytes32 key;
 }
 
 /// @notice A single item in a path to describe the relative location of a consensus system. Each item assumes a pre-existing location as its context and is defined in terms of it.
@@ -172,6 +186,66 @@ library JunctionCodec {
                 jType: JunctionType.PalletInstance,
                 payload: abi.encodePacked(instance)
             });
+    }
+
+    /// @notice Creates a `GeneralIndex` junction with the given index.
+    /// @param index The index to be represented in the junction.
+    /// @return A `Junction` struct representing the general index junction.
+    function generalIndex(
+        uint128 index
+    ) internal pure returns (Junction memory) {
+        return
+            Junction({
+                jType: JunctionType.GeneralIndex,
+                payload: Compact.encode(index)
+            });
+    }
+
+    /// @notice Creates a `GeneralKey` junction with the given key.
+    /// @param length The byte array acting as a key within the context location. This should be between 1 and 32 bytes in length.
+    /// @param key The byte array acting as a key within the context location, represented as a `bytes32` in Solidity. Only the first `length` bytes will be used.
+    /// @return A `Junction` struct representing the general key junction with the provided parameters.
+    function generalKey(
+        uint8 length,
+        bytes32 key
+    ) internal pure returns (Junction memory) {
+        if (length == 0 || length > 32 || key.length != length)
+            revert InvalidJunctionPayload();
+        return
+            Junction({
+                jType: JunctionType.GeneralKey,
+                payload: abi.encodePacked(length, key)
+            });
+    }
+
+    /// @notice Creates an `OnlyChild` junction, which represents the unambiguous child in the context.
+    /// @return A `Junction` struct representing the `OnlyChild` junction, with an empty payload.
+    function onlyChild() internal pure returns (Junction memory) {
+        return Junction({jType: JunctionType.OnlyChild, payload: ""});
+    }
+
+    /// @notice Creates a `Plurality` junction with the specified body ID and body part.
+    /// @param id The identifier for the body of the plurality, represented as a `BodyId` struct.
+    /// @param part The part of the body that is relevant for this junction, represented as a `BodyPart` struct.
+    /// @return A `Junction` struct representing the `Plurality` junction with the provided parameters.
+    function plurality(
+        BodyId id,
+        BodyPart part
+    ) internal pure returns (Junction memory) {
+        return
+            Junction({
+                jType: JunctionType.Plurality,
+                payload: abi.encodePacked(
+                    BodyIdCodec.encode(id),
+                    BodyIdPart.encode(part)
+                )
+            });
+    }
+
+    /// @notice Creates a `GlobalConsensus` junction, which represents a global network capable of externalizing its own consensus.
+    /// @return A `Junction` struct representing the `GlobalConsensus` junction, with an empty payload.
+    function globalConsensus() internal pure returns (Junction memory) {
+        return Junction({jType: JunctionType.GlobalConsensus, payload: ""});
     }
 
     /// @notice Encodes a `Junction` struct into a byte array suitable for SCALE encoding.
@@ -340,5 +414,69 @@ library JunctionCodec {
             revert InvalidJunctionType(uint8(junction.jType));
         if (junction.payload.length != 1) revert InvalidJunctionPayload();
         return uint8(junction.payload[0]);
+    }
+
+    /// @notice Decodes a `GeneralIndex` junction from a given `Junction` struct, extracting the general index.
+    /// @param junction The `Junction` struct to decode, which should represent a `GeneralIndex` junction.
+    /// @return index The general index extracted from the junction's payload.
+    function decodeGeneralIndex(
+        Junction memory junction
+    ) internal pure returns (uint128 index) {
+        if (junction.jType != JunctionType.GeneralIndex)
+            revert InvalidJunctionType(uint8(junction.jType));
+        if (junction.payload.length == 0) revert InvalidJunctionPayload();
+        (uint256 decodedIndex, ) = Compact.decode(junction.payload);
+        if (decodedIndex > type(uint128).max) {
+            revert InvalidJunctionPayload();
+        }
+        unchecked {
+            index = uint128(decodedIndex);
+        }
+    }
+
+    /// @notice Decodes a `GeneralKey` junction from a given `Junction` struct, extracting the key.
+    /// @param junction The `Junction` struct to decode, which should represent a `GeneralKey` junction.
+    /// @return params A `GeneralKeyParams` struct containing the length and key extracted from the junction's payload.
+    function decodeGeneralKey(
+        Junction memory junction
+    ) internal pure returns (GeneralKeyParams memory params) {
+        if (junction.jType != JunctionType.GeneralKey)
+            revert InvalidJunctionType(uint8(junction.jType));
+        if (junction.payload.length == 0) revert InvalidJunctionPayload();
+        uint8 length = uint8(junction.payload[0]);
+        if (length == 0 || length > 32 || junction.payload.length != length + 1)
+            revert InvalidJunctionPayload();
+        bytes32 key = Bytes32.decodeAt(junction.payload, 1);
+        return GeneralKeyParams({length: length, key: key});
+    }
+
+    /// @notice Decodes a `Plurality` junction from a given `Junction` struct, extracting the body ID and body part.
+    /// @param junction The `Junction` struct to decode, which should represent a `Plurality` junction.
+    /// @return params A `PluralityParams` struct containing the body ID and body part extracted from the junction's payload.
+    function decodePlurality(
+        Junction memory junction
+    ) internal pure returns (PluralityParams memory params) {
+        if (junction.jType != JunctionType.Plurality)
+            revert InvalidJunctionType(uint8(junction.jType));
+        if (junction.payload.length == 0) revert InvalidJunctionPayload();
+        uint256 offset = 0;
+        BodyId memory id;
+        uint256 bytesRead;
+        (id, bytesRead) = BodyIdCodec.decodeAt(junction.payload, offset);
+        offset += bytesRead;
+        BodyPart memory part;
+        (part, bytesRead) = BodyPartCodec.decodeAt(junction.payload, offset);
+        return PluralityParams({id: id, part: part});
+    }
+
+    /// @notice Decodes an `GlobalConsensus` junction from a given `Junction` struct and extracts the `NetworkId`.
+    /// @param junction The `Junction` struct to decode, which should represent a `GlobalConsensus` junction.
+    /// @return networkId The `NetworkId` extracted from the junction's payload, representing the global network's consensus.
+    function decodeGlobalConsensus(
+        Junction memory junction
+    ) internal pure returns (NetworkId memory networkId) {
+        if (junction.jType != JunctionType.GlobalConsensus)
+            revert InvalidJunctionType(uint8(junction.jType));
+        (networkId, ) = NetworkIdCodec.decode(junction.payload);
     }
 }

@@ -43,6 +43,33 @@ library Compact {
         }
     }
 
+    /// @notice Returns the number of bytes that the Compact-encoded value at the given offset occupies
+    /// @param data The byte sequence containing the Compact-encoded value
+    /// @param offset The byte offset to start reading from
+    /// @return size The total number of bytes occupied by the Compact-encoded value, including the header byte
+    /// @dev Reverts if the offset is out of bounds or if the header byte indicates an invalid encoding mode
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256 size) {
+        if (offset >= data.length) revert OffsetOutOfBounds();
+        uint8 header;
+        assembly {
+            header := shr(248, mload(add(add(data, 32), offset)))
+        }
+        uint8 mode = header & 0x03;
+        if (mode == MODE_SINGLE) {
+            size = 1;
+        } else if (mode == MODE_TWO) {
+            size = 2;
+        } else if (mode == MODE_FOUR) {
+            size = 4;
+        } else {
+            uint8 m = (header >> 2) + 4;
+            size = 1 + m;
+        }
+    }
+
     ///@notice Decodes a uint256 value from SCALE Compact format
     /// @dev Reverts if the encoding is invalid or non-canonical, or if the decoded value exceeds uint256 range
     /// @param data The Compact-encoded byte sequence
