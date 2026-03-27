@@ -23,18 +23,25 @@ enum NetworkType {
     PolkadotBulletin
 }
 
+/// @notice Parameters for a `ByGenesis` network ID, containing the genesis block hash.
 struct ByForkParams {
+    /// @custom:property The block number of the block.
     uint64 blockNumber;
+    /// @custom:property The hash of the block.
     bytes32 blockHash;
 }
 
+/// @notice Parameters for an `Ethereum` network ID, containing the chain ID.
 struct EthereumParams {
+    /// @custom:property The chain ID of an Ethereum network.
     uint64 chainId;
 }
 
-// The wrapper struct
+/// @dev Notice A global identifier of a data structure existing within consensus.
 struct NetworkId {
+    /// @custom:property The type of network ID, determining how to interpret the payload. See `NetworkType` enum for possible values.
     NetworkType nType;
+    /// @custom:property The encoded payload containing the network identifier data, whose structure depends on the `nType`.
     bytes payload;
 }
 
@@ -50,6 +57,8 @@ library NetworkIdCodec {
     using LittleEndianU64 for uint64;
 
     /// @notice Creates a `ByGenesis` network ID.
+    /// @param genesisHash The 32-byte hash of the genesis block of the network.
+    /// @return A `NetworkId` struct with type `ByGenesis` and the provided genesis hash as payload.
     function byGenesis(
         bytes32 genesisHash
     ) internal pure returns (NetworkId memory) {
@@ -61,6 +70,9 @@ library NetworkIdCodec {
     }
 
     /// @notice Creates a `ByFork` network ID.
+    /// @param blockNumber The block number of the fork point.
+    /// @param blockHash The 32-byte hash of the block at the fork point.
+    /// @return A `NetworkId` struct with type `ByFork` and the provided block number and hash encoded in the payload.
     function byFork(
         uint64 blockNumber,
         bytes32 blockHash
@@ -73,16 +85,19 @@ library NetworkIdCodec {
     }
 
     /// @notice Creates a `Polkadot` network ID.
+    /// @return A `NetworkId` struct with type `Polkadot` and an empty payload.
     function polkadot() internal pure returns (NetworkId memory) {
         return NetworkId({nType: NetworkType.Polkadot, payload: ""});
     }
 
     /// @notice Creates a `Kusama` network ID.
+    /// @return A `NetworkId` struct with type `Kusama` and an empty payload.
     function kusama() internal pure returns (NetworkId memory) {
         return NetworkId({nType: NetworkType.Kusama, payload: ""});
     }
 
     /// @notice Creates an `Ethereum` network ID.
+    /// @param chainId The chain ID of the Ethereum network.
     function ethereum(uint64 chainId) internal pure returns (NetworkId memory) {
         return
             NetworkId({

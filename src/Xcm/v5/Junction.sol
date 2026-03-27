@@ -35,27 +35,39 @@ enum JunctionType {
 		*/
 }
 
+/// @notice Parameters for an `AccountId32` junction, containing optional network information and a 32-byte account identifier.
 struct AccountId32Params {
+    /// @custom:property Indicates whether the junction includes network information. If true, the `network` field contains valid data; if false, the `network` field should be ignored.
     bool hasNetwork;
+    /// @custom:property The `NetworkId` associated with the account, See `NetworkId` struct for details. This field is only meaningful if `hasNetwork` is true.
     NetworkId network;
+    /// @custom:property The 32-byte identifier for the account.
     bytes32 id;
 }
 
+/// @notice Parameters for an `AccountIndex64` junction, containing optional network information and a 64-bit account index.
 struct AccountIndex64Params {
+    /// @custom:property Indicates whether the junction includes network information. If true, the `network` field contains valid data; if false, the `network` field should be ignored.
     bool hasNetwork;
+    /// @custom:property Indicates whether the junction includes network information. If true, the `network` field contains valid data; if false, the `network` field should be ignored.
     NetworkId network;
+    /// @custom:property The 8-byte index identifier for the account.
     uint64 index;
 }
 
+/// @notice Parameters for an `AccountKey20` junction, containing optional network information and a 20-byte account key.
 struct AccountKey20Params {
+    /// @custom:property Indicates whether the junction includes network information. If true, the `network` field contains valid data; if false, the `network` field should be ignored.
     bool hasNetwork;
+    /// @custom:property Indicates whether the junction includes network information. If true, the `network` field contains valid data; if false, the `network` field should be ignored.
     NetworkId network;
-    address key; // bytes20 maps to address in Solidity
+    /// @custom:property The 20-byte key identifier for the account, represented as an `address` in Solidity.
+    address key;
 }
 
-// The wrapper struct
+/// @notice A single item in a path to describe the relative location of a consensus system. Each item assumes a pre-existing location as its context and is defined in terms of it.
 struct Junction {
-    /// @custom:property jType The type of the junction, determining how to interpret the payload.
+    /// @custom:property jType The type of the junction, determining how to interpret the payload. See `JunctionType` enum for possible values.
     JunctionType jType;
     /// @custom:property payload The SCALE-encoded data specific to the junction type. The structure of this data varies based on `jType`.
     bytes payload;
