@@ -4,8 +4,7 @@ pragma solidity ^0.8.28;
 import {NetworkIdCodec, NetworkId} from "./NetworkId.sol";
 import {Bytes32} from "../../Scale/Bytes.sol";
 import {Address} from "../../Scale/Address.sol";
-import {LittleEndianU32} from "../../LittleEndian/LittleEndianU32.sol";
-import {LittleEndianU64} from "../../LittleEndian/LittleEndianU64.sol";
+import {Compact} from "../../Scale/Compact.sol";
 
 /// @dev Discriminant for the different types of junctions in XCM v5. Each variant corresponds to a specific structure of the payload.
 enum JunctionType {
@@ -85,8 +84,6 @@ library JunctionCodec {
     using Address for address;
     using Bytes32 for bytes32;
     using NetworkIdCodec for NetworkId;
-    using LittleEndianU32 for uint32;
-    using LittleEndianU64 for uint64;
 
     /// @notice Creates a `Parachain` junction with the given parachain ID.
     /// @param parachainId The ID of the parachain to be represented in the junction.
@@ -97,7 +94,7 @@ library JunctionCodec {
         return
             Junction({
                 jType: JunctionType.Parachain,
-                payload: abi.encodePacked(parachainId.toLE())
+                payload: Compact.encode(parachainId)
             });
     }
 
@@ -138,7 +135,7 @@ library JunctionCodec {
                 payload: abi.encodePacked(
                     hasNetwork,
                     network.encode(),
-                    index.toLE()
+                    Compact.encode(index)
                 )
             });
     }
@@ -227,7 +224,13 @@ library JunctionCodec {
         if (junction.jType != JunctionType.Parachain)
             revert InvalidJunctionType(uint8(junction.jType));
         if (junction.payload.length != 4) revert InvalidJunctionPayload();
-        parachainId = LittleEndianU32.fromLE(junction.payload, 0);
+        (uint256 decodedParachain, ) = Compact.decode(junction.payload);
+        if (decodedParachain > type(uint32).max) {
+            revert InvalidJunctionPayload();
+        }
+        unchecked {
+            parachainId = uint32(decodedParachain);
+        }
     }
 
     /// @notice Decodes an `AccountId32` junction from a given `Junction` struct, extracting the network information and account ID.
@@ -281,7 +284,14 @@ library JunctionCodec {
             );
             offset += bytesRead;
         }
-        uint64 index = LittleEndianU64.fromLE(junction.payload, offset);
+        (uint256 decodedIndex, ) = Compact.decodeAt(junction.payload, offset);
+        if (decodedIndex > type(uint64).max) {
+            revert InvalidJunctionPayload();
+        }
+        uint64 index;
+        unchecked {
+            index = uint64(decodedIndex);
+        }
         return
             AccountIndex64Params({
                 hasNetwork: hasNetwork,

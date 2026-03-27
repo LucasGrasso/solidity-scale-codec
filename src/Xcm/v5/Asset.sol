@@ -1,0 +1,61 @@
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.28;
+
+import {AssetIdCodec, AssetId} from "./AssetId.sol";
+import {FungibilityCodec, Fungibility} from "./Fungibility.sol";
+
+/// @notice Either an amount of a single fungible asset, or a single well-identified non-fungible asset.
+struct Asset {
+    /// @custom:property The overall asset identity (aka class, in the case of a non-fungible).
+    AssetId id;
+    /// @custom:property The fungibility of the asset, which contains either the amount (in the case of a fungible asset) or the instance ID, the secondary asset identifier.
+    Fungibility fungibility;
+}
+
+/// @title SCALE Codec for XCM v5 `Asset`
+/// @notice SCALE-compliant encoder/decoder for the `Asset` type.
+/// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
+/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
+library AssetCodec {
+    /// @notice Encodes an `Asset` struct into bytes.
+    /// @param asset The `Asset` struct to encode.
+    /// @return SCALE-encoded byte sequence representing the `Asset`.
+    function encode(Asset memory asset) internal pure returns (bytes memory) {
+        bytes memory encodedId = AssetIdCodec.encode(asset.id);
+        bytes memory encodedFungibility = FungibilityCodec.encode(
+            asset.fungibility
+        );
+        return abi.encodePacked(encodedId, encodedFungibility);
+    }
+
+    /// @notice Decodes an `Asset` struct from bytes starting at the beginning of the data.
+    /// @param data The byte sequence containing the encoded `Asset`.
+    /// @return asset The decoded `Asset` struct.
+    /// @return bytesRead The total number of bytes read from `data` to decode the `Asset`.
+    function decode(
+        bytes memory data
+    ) internal pure returns (Asset memory asset, uint256 bytesRead) {
+        return decodeAt(data, 0);
+    }
+
+    /// @notice Decodes an `Asset` struct from bytes starting at a given offset.
+    /// @param data The byte sequence containing the encoded `Asset`.
+    /// @param offset The starting index in `data` from which to decode the `Asset`.
+    /// @return asset The decoded `Asset` struct.
+    /// @return bytesRead The total number of bytes read from `data` to decode the `Asset`.
+    function decodeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (Asset memory asset, uint256 bytesRead) {
+        (AssetId memory id, uint256 idBytesRead) = AssetIdCodec.decodeAt(
+            data,
+            offset
+        );
+        (
+            Fungibility memory fungibility,
+            uint256 fungibilityBytesRead
+        ) = FungibilityCodec.decodeAt(data, offset + idBytesRead);
+        asset = Asset({id: id, fungibility: fungibility});
+        bytesRead = idBytesRead + fungibilityBytesRead;
+    }
+}

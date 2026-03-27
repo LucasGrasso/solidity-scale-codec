@@ -4,7 +4,7 @@ pragma solidity ^0.8.28;
 import {LittleEndianU64} from "../../LittleEndian/LittleEndianU64.sol";
 
 /// @dev Discriminant for the different types of NetworkIds in XCM v5.
-enum NetworkType {
+enum NetworkIdType {
     /// @custom:variant Network specified by the first 32 bytes of its genesis block.
     ByGenesis,
     /// @custom:variant Network defined by the first 32-bytes of the hash and number of some block it contains.
@@ -39,8 +39,8 @@ struct EthereumParams {
 
 /// @dev Notice A global identifier of a data structure existing within consensus.
 struct NetworkId {
-    /// @custom:property The type of network ID, determining how to interpret the payload. See `NetworkType` enum for possible values.
-    NetworkType nType;
+    /// @custom:property The type of network ID, determining how to interpret the payload. See `NetworkIdType` enum for possible values.
+    NetworkIdType nType;
     /// @custom:property The encoded payload containing the network identifier data, whose structure depends on the `nType`.
     bytes payload;
 }
@@ -64,7 +64,7 @@ library NetworkIdCodec {
     ) internal pure returns (NetworkId memory) {
         return
             NetworkId({
-                nType: NetworkType.ByGenesis,
+                nType: NetworkIdType.ByGenesis,
                 payload: abi.encodePacked(genesisHash)
             });
     }
@@ -79,7 +79,7 @@ library NetworkIdCodec {
     ) internal pure returns (NetworkId memory) {
         return
             NetworkId({
-                nType: NetworkType.ByFork,
+                nType: NetworkIdType.ByFork,
                 payload: abi.encodePacked(blockNumber.toLE(), blockHash)
             });
     }
@@ -87,13 +87,13 @@ library NetworkIdCodec {
     /// @notice Creates a `Polkadot` network ID.
     /// @return A `NetworkId` struct with type `Polkadot` and an empty payload.
     function polkadot() internal pure returns (NetworkId memory) {
-        return NetworkId({nType: NetworkType.Polkadot, payload: ""});
+        return NetworkId({nType: NetworkIdType.Polkadot, payload: ""});
     }
 
     /// @notice Creates a `Kusama` network ID.
     /// @return A `NetworkId` struct with type `Kusama` and an empty payload.
     function kusama() internal pure returns (NetworkId memory) {
-        return NetworkId({nType: NetworkType.Kusama, payload: ""});
+        return NetworkId({nType: NetworkIdType.Kusama, payload: ""});
     }
 
     /// @notice Creates an `Ethereum` network ID.
@@ -101,7 +101,7 @@ library NetworkIdCodec {
     function ethereum(uint64 chainId) internal pure returns (NetworkId memory) {
         return
             NetworkId({
-                nType: NetworkType.Ethereum,
+                nType: NetworkIdType.Ethereum,
                 payload: abi.encodePacked(chainId.toLE())
             });
     }
@@ -136,11 +136,11 @@ library NetworkIdCodec {
         uint256 payloadLen;
 
         // Determine payload length based on type to ensure we don't over-read
-        if (nType == uint8(NetworkType.ByGenesis)) {
+        if (nType == uint8(NetworkIdType.ByGenesis)) {
             payloadLen = 32;
-        } else if (nType == uint8(NetworkType.ByFork)) {
+        } else if (nType == uint8(NetworkIdType.ByFork)) {
             payloadLen = 40; // 8 (u64) + 32 (bytes32)
-        } else if (nType == uint8(NetworkType.Ethereum)) {
+        } else if (nType == uint8(NetworkIdType.Ethereum)) {
             payloadLen = 8; // 8 (u64)
         } else if (nType <= 7) {
             payloadLen = 0; // Static variants
@@ -156,7 +156,7 @@ library NetworkIdCodec {
             payload[i] = data[offset + 1 + i];
         }
 
-        networkId = NetworkId({nType: NetworkType(nType), payload: payload});
+        networkId = NetworkId({nType: NetworkIdType(nType), payload: payload});
 
         bytesRead = 1 + payloadLen;
     }
@@ -167,7 +167,7 @@ library NetworkIdCodec {
     function decodeByGenesis(
         NetworkId memory networkId
     ) internal pure returns (bytes32 genesisHash) {
-        if (networkId.nType != NetworkType.ByGenesis)
+        if (networkId.nType != NetworkIdType.ByGenesis)
             revert InvalidNetworkIdType(uint8(networkId.nType));
         if (networkId.payload.length != 32) revert InvalidNetworkIdPayload();
         return bytes32(networkId.payload);
@@ -179,7 +179,7 @@ library NetworkIdCodec {
     function decodeEthereum(
         NetworkId memory networkId
     ) internal pure returns (uint64 chainId) {
-        if (networkId.nType != NetworkType.Ethereum)
+        if (networkId.nType != NetworkIdType.Ethereum)
             revert InvalidNetworkIdType(uint8(networkId.nType));
         if (networkId.payload.length != 8) revert InvalidNetworkIdPayload();
         chainId = LittleEndianU64.fromLE(networkId.payload, 0);
