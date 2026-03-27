@@ -7,7 +7,7 @@ pragma solidity ^0.8.28;
 library Bytes32 {
     error InvalidBytes32Lenght();
 
-    /// @notice Encodes an `bytes32` into SCALE format (20-byte little-endian).
+    /// @notice Encodes an `bytes32` into SCALE format.
     /// @param value The `bytes32` to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(bytes32 value) internal pure returns (bytes memory) {
