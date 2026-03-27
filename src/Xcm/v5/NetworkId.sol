@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
+import {Compact} from "../../Scale/Compact.sol";
 import {LittleEndianU64} from "../../LittleEndian/LittleEndianU64.sol";
 
 /// @dev Discriminant for the different types of NetworkIds in XCM v5.
@@ -13,6 +14,12 @@ enum NetworkIdType {
     Polkadot,
     /// @custom:variant The Kusama Relay Chain.
     Kusama,
+    /// @custom:variant Reserved. Do not Use.
+    _Reserved4,
+    /// @custom:variant Reserved. Do not Use.
+    _Reserved5,
+    /// @custom:variant Reserved. Do not Use.
+    _Reserved6,
     /// @custom:variant An Ethereum-based network, identified by its chain ID.
     Ethereum,
     /// @custom:variant The Bitcoin network.
@@ -102,7 +109,7 @@ library NetworkIdCodec {
         return
             NetworkId({
                 nType: NetworkIdType.Ethereum,
-                payload: abi.encodePacked(chainId.toLE())
+                payload: Compact.encode(chainId)
             });
     }
 
@@ -142,9 +149,10 @@ library NetworkIdCodec {
             payloadLen = 40; // 8 (u64) + 32 (bytes32)
         } else if (nType == uint8(NetworkIdType.Ethereum)) {
             payloadLen = 8; // 8 (u64)
-        } else if (nType <= 7) {
+        } else if (nType < 4) {
             payloadLen = 0; // Static variants
         } else {
+            // Reserved or unknown types are invalid
             revert InvalidNetworkIdType(nType);
         }
 
@@ -182,6 +190,10 @@ library NetworkIdCodec {
         if (networkId.nType != NetworkIdType.Ethereum)
             revert InvalidNetworkIdType(uint8(networkId.nType));
         if (networkId.payload.length != 8) revert InvalidNetworkIdPayload();
-        chainId = LittleEndianU64.fromLE(networkId.payload, 0);
+        (uint256 decodedChainId, ) = Compact.decode(networkId.payload);
+        if (decodedChainId > type(uint64).max) revert InvalidNetworkIdPayload();
+        unchecked {
+            chainId = uint64(decodedChainId);
+        }
     }
 }

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {U128} from "../../Scale/Unsigned/U128.sol";
+import {Compact} from "../../Scale/Compact.sol";
 import {AssetInstanceCodec, AssetInstance} from "./AssetInstance.sol";
 
 /// @dev Discriminant for the different types of Fungibility in XCM v5.
@@ -29,8 +29,6 @@ library FungibilityCodec {
     error InvalidFungibilityType(uint8 fType);
     error InvalidFungibilityPayload();
 
-    using U128 for uint128;
-
     /// @notice Creates a `Fungibility` struct representing a fungible asset with the given amount.
     /// @param amount The number of units of the fungible asset.
     function fungible(
@@ -39,7 +37,7 @@ library FungibilityCodec {
         return
             Fungibility({
                 fType: FungibilityType.Fungible,
-                payload: amount.encode()
+                payload: Compact.encode(amount)
             });
     }
 
@@ -117,5 +115,35 @@ library FungibilityCodec {
             Fungibility({fType: FungibilityType(fType), payload: payload}),
             1 + payloadLength
         );
+    }
+
+    /// @notice Decodes a `Fungibility` struct representing a fungible asset and extracts the amount.
+    /// @param fungibility The `Fungibility` struct to decode, which must have `fType` equal to `FungibilityType.Fungible`.
+    /// @return amount The number of units of the fungible asset, as a `uint128`.
+    function decodeFungible(
+        Fungibility memory fungibility
+    ) internal pure returns (uint128 amount) {
+        if (fungibility.fType != FungibilityType.Fungible) {
+            revert InvalidFungibilityType(uint8(fungibility.fType));
+        }
+        (uint256 decodedAmount, ) = Compact.decode(fungibility.payload);
+        if (decodedAmount > type(uint128).max) {
+            revert InvalidFungibilityPayload();
+        }
+        unchecked {
+            amount = uint128(decodedAmount);
+        }
+    }
+
+    /// @notice Decodes a `Fungibility` struct representing a non-fungible asset and extracts the instance identifier.
+    /// @param fungibility The `Fungibility` struct to decode, which must have `fType` equal to `FungibilityType.NonFungible`.
+    /// @return instance The `AssetInstance` struct identifying the specific instance of the non-fungible asset.
+    function decodeNonFungible(
+        Fungibility memory fungibility
+    ) internal pure returns (AssetInstance memory instance) {
+        if (fungibility.fType != FungibilityType.NonFungible) {
+            revert InvalidFungibilityType(uint8(fungibility.fType));
+        }
+        (instance, ) = AssetInstanceCodec.decode(fungibility.payload);
     }
 }
