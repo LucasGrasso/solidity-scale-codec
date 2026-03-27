@@ -28,6 +28,52 @@ See the [Definitions](definitions.md) for more details on the encoding of differ
 
 See this [example](https://github.com/LucasGrasso/solidity-scale-codec/blob/main/contracts/examples/Foo.sol).
 
+## About the libraries
+
+### src/LittleEndian
+
+The `LittleEndian` library provides functions to encode and decode unsigned integers in little-endian format.
+
+All libraries here provide the following functions:
+
+```solidity
+function toLE(uintN value) internal pure returns (bytesM){}
+function fromLE(
+	bytes memory data,
+	uint256 offset
+) internal pure returns (uintN value) {}
+```
+
+### src/Scale
+
+The `Scale` library provides functions to encode and decode various types in the SCALE format, including booleans, unsigned integers, signed integers, compact integers, and arrays of these types.
+
+- Libraries for fixed length types provide the following functions:
+
+  ```solidity
+  function encode(T value) internal pure returns (bytes memory){}
+  function decode(bytes memory data) internal pure returns (T value){}
+  function decodeAt(bytes memory data, uint256 offset) internal pure returns (T value){}
+  ```
+
+  > Note: `decode(data)` = `decodeAt(data, 0)`
+
+  Integer libraries also provide Little-Endian encoding functions, using the `LittleEndian` library:
+
+  ```solidity
+  function toLittleEndian(T value) internal pure returns (bytesM){}
+  ```
+
+- Variable length types libraries provide the same encode function, but the decode functions are also return the number of bytes read from the input data. This is useful for decoding from a larger byte array where the encoded value is not at the beginning.
+
+  ```solidity
+  function encode(T value) internal pure returns (bytes memory){}
+  function decode(bytes memory data) internal pure returns (T value, uint256 bytesRead){}
+  function decodeAt(bytes memory data, uint256 offset) internal pure returns (T value, uint256 bytesRead){}
+  ```
+
+  > Note: `decode(data)` = `decodeAt(data, 0)`
+
 ### Running Tests
 
 To run all the tests in the project, execute the following command:
