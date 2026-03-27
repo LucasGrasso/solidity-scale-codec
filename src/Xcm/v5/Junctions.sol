@@ -5,8 +5,10 @@ import {JunctionCodec, Junction} from "./Junction.sol";
 
 /// @dev The `Junctions` struct represents a sequence of up to 8 `Junction` items, prefixed by a count.
 struct Junctions {
-    uint8 count; // 0 = Here, 1 = X1, ..., 8 = X8
-    Junction[] items; // The actual junction data
+    /// @custom:property Represents the enum discriminant, 0 = Here, 1 = X1, ..., 8 = X8
+    uint8 count;
+    /// @custom:property // The actual junction data
+    Junction[] items;
 }
 
 /// @title SCALE Codec for XCM v5 `Junctions`
