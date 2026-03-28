@@ -25,10 +25,10 @@ struct BodyPart {
     bytes payload;
 }
 
-/// @title SCALE Codec for XCM v3 `BodyPart`
+/// @title SCALE Codec for XCM v5 `BodyPart`
 /// @notice SCALE-compliant encoder/decoder for the `BodyPart` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
-/// @dev XCM v3 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v3/index.html
+/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
 library BodyPartCodec {
     error InvalidBodyPartLength();
     error InvalidBodyPartType(uint8 bodyPartType);

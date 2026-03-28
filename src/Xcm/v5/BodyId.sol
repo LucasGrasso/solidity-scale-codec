@@ -36,12 +36,10 @@ struct BodyIdStruct {
     bytes payload;
 }
 
-/// @title SCALE Codec for XCM v3 `BodyId`
+/// @title SCALE Codec for XCM v5 `BodyId`
 /// @notice SCALE-compliant encoder/decoder for the `BodyId` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
-/// @dev XCM v3 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v3/index.html
-library BodyIdCodec {
-    error InvalidBodyIdLength();
+/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html    error InvalidBodyIdLength();
     error InvalidBodyIdType(uint8 bodyIdType);
 
     /// @notice Creates a `BodyIdStruct` representing a `Unit` body.
