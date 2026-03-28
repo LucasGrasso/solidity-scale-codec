@@ -14,10 +14,10 @@ library Bytes2 {
         return abi.encodePacked(value);
     }
 
-    /// @notice Returns the number of bytes that a `bytes2` struct would occupy when SCALE-encoded.
+    /// @notice Returns the number of bytes that a `bytes2` would occupy when SCALE-encoded.
 	/// @param data The byte sequence containing the encoded `bytes2`.
 	/// @param offset The starting index in `data` from which to calculate the encoded size of the `bytes2`.
-	/// @return The number of bytes that the `bytes2` struct would occupy when SCALE-encoded.
+	/// @return The number of bytes that the `bytes2` would occupy when SCALE-encoded.
     function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
         if (data.length < offset + 2) {
             revert InvalidBytes2Lenght();

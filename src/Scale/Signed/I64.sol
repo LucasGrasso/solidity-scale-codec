@@ -16,10 +16,10 @@ library I64 {
         return abi.encodePacked(toLittleEndian(value));
     }
 
-    /// @notice Returns the number of bytes that a `int64` struct would occupy when SCALE-encoded.
+    /// @notice Returns the number of bytes that a `int64` would occupy when SCALE-encoded.
 	/// @param data The byte sequence containing the encoded `int64`.
 	/// @param offset The starting index in `data` from which to calculate the encoded size of the `int64`.
-	/// @return The number of bytes that the `int64` struct would occupy when SCALE-encoded.
+	/// @return The number of bytes that the `int64` would occupy when SCALE-encoded.
     function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
         return U64.encodedSizeAt(data, offset);
     }

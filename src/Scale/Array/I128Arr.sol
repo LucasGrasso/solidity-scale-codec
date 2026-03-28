@@ -23,10 +23,10 @@ library I128Arr {
 		return result;
 	}
 
-	/// @notice Returns the number of bytes that a `int128[]` struct would occupy when SCALE-encoded.
+	/// @notice Returns the number of bytes that a `int128[]` would occupy when SCALE-encoded.
 	/// @param data The byte sequence containing the encoded `int128[]`.
 	/// @param offset The starting index in `data` from which to calculate the encoded size of the `int128[]`.
-	/// @return The number of bytes that the `int128[]` struct would occupy when SCALE-encoded.
+	/// @return The number of bytes that the `int128[]` would occupy when SCALE-encoded.
 	function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
 		(uint256 count, uint256 prefixSize) = Compact.decodeAt(data, offset);
     	return prefixSize + (count * 16);

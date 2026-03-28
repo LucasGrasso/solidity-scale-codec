@@ -23,10 +23,10 @@ library I16Arr {
 		return result;
 	}
 
-	/// @notice Returns the number of bytes that a `int16[]` struct would occupy when SCALE-encoded.
+	/// @notice Returns the number of bytes that a `int16[]` would occupy when SCALE-encoded.
 	/// @param data The byte sequence containing the encoded `int16[]`.
 	/// @param offset The starting index in `data` from which to calculate the encoded size of the `int16[]`.
-	/// @return The number of bytes that the `int16[]` struct would occupy when SCALE-encoded.
+	/// @return The number of bytes that the `int16[]` would occupy when SCALE-encoded.
 	function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
 		(uint256 count, uint256 prefixSize) = Compact.decodeAt(data, offset);
     	return prefixSize + (count * 2);
