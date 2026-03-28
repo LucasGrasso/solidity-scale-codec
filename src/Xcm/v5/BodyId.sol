@@ -29,7 +29,7 @@ enum BodyIdType {
 }
 
 /// @notice An identifier of a pluralistic body.
-struct BodyIdStruct {
+struct BodyId {
     /// @custom:property The type of BodyId, which determines how to interpret the payload
     BodyIdType bodyIdType;
     /// @custom:property For Moniker and Index types, this will hold the relevant data
@@ -39,108 +39,107 @@ struct BodyIdStruct {
 /// @title SCALE Codec for XCM v5 `BodyId`
 /// @notice SCALE-compliant encoder/decoder for the `BodyId` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
-/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html    error InvalidBodyIdLength();
+/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
+library BodyIdCodec {
+    error InvalidBodyIdLength();
     error InvalidBodyIdType(uint8 bodyIdType);
 
-    /// @notice Creates a `BodyIdStruct` representing a `Unit` body.
-    /// @return A `BodyIdStruct` with `bodyIdType` set to `Unit` and an empty payload.
-    function unit() internal pure returns (BodyIdStruct memory) {
-        return BodyIdStruct({bodyIdType: BodyIdType.Unit, payload: ""});
+    /// @notice Creates a `BodyId` representing a `Unit` body.
+    /// @return A `BodyId` with `bodyIdType` set to `Unit` and an empty payload.
+    function unit() internal pure returns (BodyId memory) {
+        return BodyId({bodyIdType: BodyIdType.Unit, payload: ""});
     }
 
-    /// @notice Creates a `BodyIdStruct` representing a `Moniker` body with the given 4-byte name.
+    /// @notice Creates a `BodyId` representing a `Moniker` body with the given 4-byte name.
     /// @param name The 4-byte name of the moniker body.
-    /// @return A `BodyIdStruct` with `bodyIdType` set to `Moniker` and the provided name encoded in the payload.
-    function moniker(bytes4 name) internal pure returns (BodyIdStruct memory) {
+    /// @return A `BodyId` with `bodyIdType` set to `Moniker` and the provided name encoded in the payload.
+    function moniker(bytes4 name) internal pure returns (BodyId memory) {
         return
-            BodyIdStruct({
+            BodyId({
                 bodyIdType: BodyIdType.Moniker,
                 payload: Bytes4.encode(name)
             });
     }
 
-    /// @notice Creates a `BodyIdStruct` representing an `Index` body with the given index.
+    /// @notice Creates a `BodyId` representing an `Index` body with the given index.
     /// @param idx The index of the body.
-    /// @return A `BodyIdStruct` with `bodyIdType` set to `Index` and the provided index encoded in the payload.
-    function index(uint32 idx) internal pure returns (BodyIdStruct memory) {
+    /// @return A `BodyId` with `bodyIdType` set to `Index` and the provided index encoded in the payload.
+    function index(uint32 idx) internal pure returns (BodyId memory) {
         return
-            BodyIdStruct({
+            BodyId({
                 bodyIdType: BodyIdType.Index,
                 payload: Compact.encode(idx)
             });
     }
 
-    /// @notice Creates a `BodyIdStruct` representing an `Executive` body.
-    /// @return A `BodyIdStruct` with `bodyIdType` set to `Executive` and an empty payload.
-    function executive() internal pure returns (BodyIdStruct memory) {
-        return BodyIdStruct({bodyIdType: BodyIdType.Executive, payload: ""});
+    /// @notice Creates a `BodyId` representing an `Executive` body.
+    /// @return A `BodyId` with `bodyIdType` set to `Executive` and an empty payload.
+    function executive() internal pure returns (BodyId memory) {
+        return BodyId({bodyIdType: BodyIdType.Executive, payload: ""});
     }
 
-    /// @notice Creates a `BodyIdStruct` representing a `Technical` body.
-    /// @return A `BodyIdStruct` with `bodyIdType` set to `Technical` and an empty payload.
-    function technical() internal pure returns (BodyIdStruct memory) {
-        return BodyIdStruct({bodyIdType: BodyIdType.Technical, payload: ""});
+    /// @notice Creates a `BodyId` representing a `Technical` body.
+    /// @return A `BodyId` with `bodyIdType` set to `Technical` and an empty payload.
+    function technical() internal pure returns (BodyId memory) {
+        return BodyId({bodyIdType: BodyIdType.Technical, payload: ""});
     }
 
-    /// @notice Creates a `BodyIdStruct` representing a `Legislative` body.
-    /// @return A `BodyIdStruct` with `bodyIdType` set to `Legislative` and an empty payload.
-    function legislative() internal pure returns (BodyIdStruct memory) {
-        return BodyIdStruct({bodyIdType: BodyIdType.Legislative, payload: ""});
+    /// @notice Creates a `BodyId` representing a `Legislative` body.
+    /// @return A `BodyId` with `bodyIdType` set to `Legislative` and an empty payload.
+    function legislative() internal pure returns (BodyId memory) {
+        return BodyId({bodyIdType: BodyIdType.Legislative, payload: ""});
     }
 
-    /// @notice Creates a `BodyIdStruct` representing a `Judicial` body.
-    /// @return A `BodyIdStruct` with `bodyIdType` set to `Judicial` and an empty payload.
-    function judicial() internal pure returns (BodyIdStruct memory) {
-        return BodyIdStruct({bodyIdType: BodyIdType.Judicial, payload: ""});
+    /// @notice Creates a `BodyId` representing a `Judicial` body.
+    /// @return A `BodyId` with `bodyIdType` set to `Judicial` and an empty payload.
+    function judicial() internal pure returns (BodyId memory) {
+        return BodyId({bodyIdType: BodyIdType.Judicial, payload: ""});
     }
 
-    /// @notice Creates a `BodyIdStruct` representing a `Defense` body.
-    /// @return A `BodyIdStruct` with `bodyIdType` set to `Defense` and an empty payload.
-    function defense() internal pure returns (BodyIdStruct memory) {
-        return BodyIdStruct({bodyIdType: BodyIdType.Defense, payload: ""});
+    /// @notice Creates a `BodyId` representing a `Defense` body.
+    /// @return A `BodyId` with `bodyIdType` set to `Defense` and an empty payload.
+    function defense() internal pure returns (BodyId memory) {
+        return BodyId({bodyIdType: BodyIdType.Defense, payload: ""});
     }
 
-    /// @notice Creates a `BodyIdStruct` representing an `Administration` body.
-    /// @return A `BodyIdStruct` with `bodyIdType` set to `Administration` and an empty payload.
-    function administration() internal pure returns (BodyIdStruct memory) {
-        return
-            BodyIdStruct({bodyIdType: BodyIdType.Administration, payload: ""});
+    /// @notice Creates a `BodyId` representing an `Administration` body.
+    /// @return A `BodyId` with `bodyIdType` set to `Administration` and an empty payload.
+    function administration() internal pure returns (BodyId memory) {
+        return BodyId({bodyIdType: BodyIdType.Administration, payload: ""});
     }
 
-    /// @notice Creates a `BodyIdStruct` representing a `Treasury` body.
-    /// @return A `BodyIdStruct` with `bodyIdType` set to `Treasury` and an empty payload.
-    function treasury() internal pure returns (BodyIdStruct memory) {
-        return BodyIdStruct({bodyIdType: BodyIdType.Treasury, payload: ""});
+    /// @notice Creates a `BodyId` representing a `Treasury` body.
+    /// @return A `BodyId` with `bodyIdType` set to `Treasury` and an empty payload.
+    function treasury() internal pure returns (BodyId memory) {
+        return BodyId({bodyIdType: BodyIdType.Treasury, payload: ""});
     }
 
-    /// @notice Encodes a `BodyIdStruct` into bytes.
-    /// @param bodyId The `BodyIdStruct` to encode.
-    /// @return SCALE-encoded byte sequence representing the `BodyIdStruct`.
-    function encode(
-        BodyIdStruct memory bodyId
-    ) internal pure returns (bytes memory) {
+    /// @notice Encodes a `BodyId` into bytes.
+    /// @param bodyId The `BodyId` to encode.
+    /// @return SCALE-encoded byte sequence representing the `BodyId`.
+    function encode(BodyId memory bodyId) internal pure returns (bytes memory) {
         return abi.encodePacked(uint8(bodyId.bodyIdType), bodyId.payload);
     }
 
-    /// @notice Decodes a `BodyIdStruct` from bytes starting at the beginning of the data.
-    /// @param data The byte sequence containing the encoded `BodyIdStruct`.
-    /// @return bodyId The decoded `BodyIdStruct`.
-    /// @return bytesRead The total number of bytes read from the input data to decode the `BodyIdStruct`.
+    /// @notice Decodes a `BodyId` from bytes starting at the beginning of the data.
+    /// @param data The byte sequence containing the encoded `BodyId`.
+    /// @return bodyId The decoded `BodyId`.
+    /// @return bytesRead The total number of bytes read from the input data to decode the `BodyId`.
     function decode(
         bytes memory data
-    ) internal pure returns (BodyIdStruct memory bodyId, uint256 bytesRead) {
+    ) internal pure returns (BodyId memory bodyId, uint256 bytesRead) {
         return decodeAt(data, 0);
     }
 
-    /// @notice Decodes a `BodyIdStruct` from bytes starting at a given offset.
-    /// @param data The byte sequence containing the encoded `BodyIdStruct`.
-    /// @param offset The starting index in `data` from which to decode the `BodyIdStruct`.
-    /// @return bodyId The decoded `BodyIdStruct`.
-    /// @return bytesRead The total number of bytes read from the input data to decode the `BodyIdStruct`.
+    /// @notice Decodes a `BodyId` from bytes starting at a given offset.
+    /// @param data The byte sequence containing the encoded `BodyId`.
+    /// @param offset The starting index in `data` from which to decode the `BodyId`.
+    /// @return bodyId The decoded `BodyId`.
+    /// @return bytesRead The total number of bytes read from the input data to decode the `BodyId`.
     function decodeAt(
         bytes memory data,
         uint256 offset
-    ) internal pure returns (BodyIdStruct memory bodyId, uint256 bytesRead) {
+    ) internal pure returns (BodyId memory bodyId, uint256 bytesRead) {
         if (data.length < offset + 1) {
             revert InvalidBodyIdLength();
         }
@@ -176,15 +175,15 @@ struct BodyIdStruct {
             payload[i] = data[offset + 1 + i];
         }
 
-        bodyId = BodyIdStruct({bodyIdType: bodyIdType, payload: payload});
+        bodyId = BodyId({bodyIdType: bodyIdType, payload: payload});
         bytesRead = 1 + payloadLength;
     }
 
-    /// @notice Helper function to decode a `BodyIdStruct` and extract the moniker name if the type is `Moniker`.
-    /// @param bodyId The `BodyIdStruct` to extract the moniker name from.
+    /// @notice Helper function to decode a `BodyId` and extract the moniker name if the type is `Moniker`.
+    /// @param bodyId The `BodyId` to extract the moniker name from.
     /// @return name The 4-byte name of the moniker if the `bodyIdType` is `Moniker`.
     function decodeMoniker(
-        BodyIdStruct memory bodyId
+        BodyId memory bodyId
     ) internal pure returns (bytes4 name) {
         if (bodyId.bodyIdType != BodyIdType.Moniker) {
             revert InvalidBodyIdType(uint8(bodyId.bodyIdType));
@@ -192,11 +191,11 @@ struct BodyIdStruct {
         return Bytes4.decode(bodyId.payload);
     }
 
-    /// @notice Helper function to decode a `BodyIdStruct` and extract the index if the type is `Index`.
-    /// @param bodyId The `BodyIdStruct` to extract the index from.
+    /// @notice Helper function to decode a `BodyId` and extract the index if the type is `Index`.
+    /// @param bodyId The `BodyId` to extract the index from.
     /// @return idx The index of the body if the `bodyIdType` is `Index`.
     function decodeIndex(
-        BodyIdStruct memory bodyId
+        BodyId memory bodyId
     ) internal pure returns (uint32 idx) {
         if (bodyId.bodyIdType != BodyIdType.Index) {
             revert InvalidBodyIdType(uint8(bodyId.bodyIdType));
@@ -213,16 +212,16 @@ struct BodyIdStruct {
         }
     }
 
-    /// @notice Decodes a `Members` BodyPart from a `BodyPart` struct, extracting the count.
-    /// @param bodyPart The `BodyPart` struct to decode, which must have `bodyPartId` equal to `BodyPartId.Members`.
+    /// @notice Decodes a `Members` BodyId from a `BodyId` struct, extracting the count.
+    /// @param bodyId The `BodyId` struct to decode, which must have `bodyId` equal to `BodyId.Members`.
     /// @return count The number of members in the body, as a `uint64`.
     function decodeMembersCount(
-        BodyPartStruct memory bodyPart
+        BodyId memory bodyId
     ) internal pure returns (uint64 count) {
-        if (bodyPart.bodyPartId != BodyPartId.Members) {
-            revert InvalidBodyIdType(uint8(bodyPart.bodyPartId));
+        if (bodyId.bodyId != BodyId.Members) {
+            revert InvalidBodyIdType(uint8(bodyId.bodyId));
         }
-        (uint256 decodedCount, ) = Compact.decode(bodyPart.payload);
+        (uint256 decodedCount, ) = Compact.decode(bodyId.payload);
         if (decodedCount > type(uint64).max) {
             revert InvalidBodyIdLength();
         }
@@ -231,28 +230,28 @@ struct BodyIdStruct {
         }
     }
 
-    /// @notice Decodes a `Fraction`, `AtLeastProportion`, or `MoreThanProportion` BodyPart from a `BodyPart` struct, extracting the numerator and denominator.
-    /// @param bodyPart The `BodyPart` struct to decode, which must have `bodyPartId` equal to `Fraction`, `AtLeastProportion`, or `MoreThanProportion`.
+    /// @notice Decodes a `Fraction`, `AtLeastProportion`, or `MoreThanProportion` BodyId from a `BodyId` struct, extracting the numerator and denominator.
+    /// @param bodyId The `BodyId` struct to decode, which must have `bodyId` equal to `Fraction`, `AtLeastProportion`, or `MoreThanProportion`.
     /// @return numerator The numerator of the fraction or proportion, as a `uint64`.
     /// @return denominator The denominator of the fraction or proportion, as a `uint64`.
     function decodeFractionProportion(
-        BodyPartStruct memory bodyPart
+        BodyId memory bodyId
     ) internal pure returns (uint64 numerator, uint64 denominator) {
         if (
-            bodyPart.bodyPartId != BodyPartId.Fraction &&
-            bodyPart.bodyPartId != BodyPartId.AtLeastProportion &&
-            bodyPart.bodyPartId != BodyPartId.MoreThanProportion
+            bodyId.bodyId != BodyId.Fraction &&
+            bodyId.bodyId != BodyId.AtLeastProportion &&
+            bodyId.bodyId != BodyId.MoreThanProportion
         ) {
-            revert InvalidBodyIdType(uint8(bodyPart.bodyPartId));
+            revert InvalidBodyIdType(uint8(bodyId.bodyId));
         }
         uint256 offset = 0;
         (uint256 decodedNumerator, uint256 numeratorBytes) = Compact.decodeAt(
-            bodyPart.payload,
+            bodyId.payload,
             offset
         );
         offset += numeratorBytes;
         (uint256 decodedDenominator, ) = Compact.decodeAt(
-            bodyPart.payload,
+            bodyId.payload,
             offset
         );
         if (

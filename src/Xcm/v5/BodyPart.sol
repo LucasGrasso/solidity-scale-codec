@@ -63,8 +63,8 @@ library BodyPartCodec {
             BodyPart({
                 bodyPartId: BodyPartId.Fraction,
                 payload: abi.encodePacked(
-                    Compact.encode(proportion.nominator),
-                    Compact.encode(proportion.denominator)
+                    Compact.encode(nominator),
+                    Compact.encode(denominator)
                 )
             });
     }
@@ -81,8 +81,8 @@ library BodyPartCodec {
             BodyPart({
                 bodyPartId: BodyPartId.AtLeastProportion,
                 payload: abi.encodePacked(
-                    Compact.encode(proportion.nominator),
-                    Compact.encode(proportion.denominator)
+                    Compact.encode(nominator),
+                    Compact.encode(denominator)
                 )
             });
     }
@@ -99,8 +99,8 @@ library BodyPartCodec {
             BodyPart({
                 bodyPartId: BodyPartId.MoreThanProportion,
                 payload: abi.encodePacked(
-                    Compact.encode(proportion.nominator),
-                    Compact.encode(proportion.denominator)
+                    Compact.encode(nominator),
+                    Compact.encode(denominator)
                 )
             });
     }

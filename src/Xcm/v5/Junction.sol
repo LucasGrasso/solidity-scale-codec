@@ -237,7 +237,7 @@ library JunctionCodec {
                 jType: JunctionType.Plurality,
                 payload: abi.encodePacked(
                     BodyIdCodec.encode(id),
-                    BodyIdPart.encode(part)
+                    BodyPartCodec.encode(part)
                 )
             });
     }
