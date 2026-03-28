@@ -14,6 +14,20 @@ library Address {
         return abi.encodePacked(value);
     }
 
+    /// @notice Returns the number of bytes that an `address` would occupy when SCALE-encoded.
+    /// @param data The byte sequence containing the encoded `address`.
+    /// @param offset The starting index in `data` from which to calculate the encoded size of the `address`.
+    /// @return The number of bytes that the `address` would occupy when SCALE-encoded.
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256) {
+        if (data.length < offset + 20) {
+            revert InvalidAddressLenght();
+        }
+        return 20;
+    }
+
     /// @notice Decodes SCALE-encoded bytes into an `address`.
     /// @param data The SCALE-encoded byte sequence.
     /// @return The decoded `address`.
