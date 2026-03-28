@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {BodyIdCodec, BodyId} from "../v3/BodyId.sol";
-import {BodyPartCodec, BodyPart} from "../v3/BodyPart.sol";
+import {BodyIdCodec, BodyId} from "./BodyId.sol";
+import {BodyPartCodec, BodyPart} from "./BodyPart.sol";
 import {NetworkIdCodec, NetworkId} from "./NetworkId.sol";
 import {Bytes32} from "../../Scale/Bytes.sol";
 import {Address} from "../../Scale/Address.sol";
