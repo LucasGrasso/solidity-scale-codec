@@ -275,38 +275,40 @@ library JunctionCodec {
         if (jType == JunctionType.Parachain) {
             payloadLength = Compact.encodedSizeAt(data, offset);
         }
-        if (jType == JunctionType.AccountId32) {
+        else if (jType == JunctionType.AccountId32) {
             payloadLength = _innerNetworkIdSize(data, offset) + 32// for the account ID;
         }
-        if (jType == JunctionType.AccountIndex64) {
+        else if (jType == JunctionType.AccountIndex64) {
             payloadLength = _innerNetworkIdSize(data, offset);
             payloadLength += Compact.encodedSizeAt(
                 data,
                 offset + payloadLength
             ); // for the account index
         }
-        if (jType == JunctionType.AccountKey20) {
+        else if (jType == JunctionType.AccountKey20) {
             payloadLength = _innerNetworkIdSize(data, offset) + 20 // for the account key;
         }
-        if (jType == JunctionType.PalletInstance) {
+        else if (jType == JunctionType.PalletInstance) {
             payloadLength = 1;
         }
-        if (jType == JunctionType.GeneralIndex) {
+        else if (jType == JunctionType.GeneralIndex) {
             payloadLength = Compact.encodedSizeAt(data, offset);
         }
-        if (jType == JunctionType.GeneralKey) {
+        else if (jType == JunctionType.GeneralKey) {
             if (offset >= data.length) revert InvalidJunctionLength();
             uint8 length = uint8(data[offset]);
             payloadLength = 1 + length; // 1 byte for the length + the key bytes
         }
-        if (jType == JunctionType.OnlyChild || jType == JunctionType.GlobalConsensus) {
+        else if (jType == JunctionType.OnlyChild || jType == JunctionType.GlobalConsensus) {
             payloadLength = 0;
         }
-        if (jType == JunctionType.Plurality) {
+        else if (jType == JunctionType.Plurality) {
             uint256 innerLength = BodyIdCodec.encodedSizeAt(data, offset);
             payloadLength =
                 innerLength +
                 BodyPartCodec.encodedSizeAt(data, offset + innerLength);
+        } else {
+            revert InvalidJunctionType(jType);
         }
 
         return 1 + payloadLength; // 1 byte for the type + payload length
