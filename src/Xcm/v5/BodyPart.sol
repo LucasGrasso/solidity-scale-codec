@@ -114,6 +114,42 @@ library BodyPartCodec {
         return abi.encodePacked(uint8(bodyPart.bodyPartId), bodyPart.payload);
     }
 
+    /// @notice Returns the number of bytes that a `BodyPart` struct would occupy when SCALE-encoded.
+    /// @param data The byte sequence containing the encoded `BodyPart`.
+    /// @param offset The starting index in `data` from which to calculate the encoded size of the `BodyPart`.
+    /// @return The number of bytes that the `BodyPart` struct would occupy when SCALE-encoded.
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256) {
+        if (offset >= data.length) revert InvalidBodyPartLength();
+
+        uint8 bodyPartType = uint8(data[offset]);
+        uint256 payloadLength;
+        if (bodyPartType == uint8(BodyPartId.Voice)) {
+            payloadLength = 0;
+        } else if (bodyPartType == uint8(BodyPartId.Members)) {
+            payloadLength = Compact.encodedSizeAt(data, offset + 1);
+        } else if (
+            bodyPartType == uint8(BodyPartId.Fraction) ||
+            bodyPartType == uint8(BodyPartId.AtLeastProportion) ||
+            bodyPartType == uint8(BodyPartId.MoreThanProportion)
+        ) {
+            uint256 innerLength = Compact.encodedSizeAt(data, offset + 1);
+            payloadLength =
+                innerLength +
+                Compact.encodedSizeAt(data, offset + 1 + innerLength);
+        } else {
+            revert InvalidBodyPartType(bodyPartType);
+        }
+
+        if (data.length < offset + 1 + payloadLength) {
+            revert InvalidBodyPartLength();
+        }
+
+        return 1 + payloadLength;
+    }
+
     /// @notice Decodes a `BodyPart` struct from bytes starting at the beginning of the data.
     /// @param data The byte sequence containing the encoded `BodyPart`.
     /// @return bodyPart The decoded `BodyPart` struct.

@@ -28,6 +28,21 @@ library LocationCodec {
         return abi.encodePacked(location.parents, encodedInterior);
     }
 
+    /// @notice Returns the number of bytes that a `Location` struct would occupy when SCALE-encoded.
+    /// @param data The byte sequence containing the encoded `Location`.
+    /// @param offset The starting index in `data` from which to calculate the encoded size of the `Location`.
+    /// @return The number of bytes that the `Location` struct would occupy when SCALE-encoded.
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256) {
+        if (data.length < offset + 1) {
+            revert InvalidLocationLength();
+        }
+        uint256 interiorSize = JunctionsCodec.encodedSizeAt(data, offset + 1);
+        return 1 + interiorSize;
+    }
+
     /// @notice Decodes a `Location` struct from bytes starting at the beginning of the data.
     /// @param data The byte sequence containing the encoded `Location`.
     /// @return location The decoded `Location` struct.

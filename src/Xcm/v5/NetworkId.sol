@@ -120,6 +120,39 @@ library NetworkIdCodec {
         return abi.encodePacked(uint8(networkId.nType), networkId.payload);
     }
 
+    /// @notice Returns the number of bytes that a `NetworkId` struct would occupy when SCALE-encoded.
+    /// @param data The byte sequence containing the encoded `NetworkId`.
+    /// @param offset The starting index in `data` from which to calculate the encoded size of the `NetworkId`.
+    /// @return The number of bytes that the `NetworkId` struct would occupy when SCALE-encoded.
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256) {
+        if (offset >= data.length) revert InvalidNetworkIdLength();
+
+        uint8 nType = uint8(data[offset]);
+        uint256 payloadLen;
+
+        // Determine payload length based on type to ensure we don't over-read
+        if (nType == uint8(NetworkIdType.ByGenesis)) {
+            payloadLen = 32;
+        } else if (nType == uint8(NetworkIdType.ByFork)) {
+            payloadLen = 40; // 8 (u64) + 32 (bytes32)
+        } else if (nType == uint8(NetworkIdType.Ethereum)) {
+            payloadLen = Compact.encodedSizeAt(data, offset + 1);
+        } else if (nType < 4) {
+            payloadLen = 0; // Static variants
+        } else {
+            // Reserved or unknown types are invalid
+            revert InvalidNetworkIdType(nType);
+        }
+
+        if (offset + 1 + payloadLen > data.length)
+            revert InvalidNetworkIdLength();
+
+        return 1 + payloadLen;
+    }
+
     /// @notice Decodes a byte array into a `NetworkId` struct.
     /// @param data The byte array to decode.
     /// @return networkId The decoded `NetworkId` struct.

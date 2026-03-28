@@ -29,6 +29,26 @@ library WeightCodec {
             );
     }
 
+    /// @notice Returns the number of bytes that a `Weight` struct would occupy when SCALE-encoded.
+    /// @param data The byte sequence containing the encoded `Weight`.
+    /// @param offset The starting index in `data` from which to calculate the encoded size of the `Weight`.
+    /// @return The number of bytes that the `Weight` struct would occupy when SCALE-encoded.
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256) {
+        if (offset >= data.length) {
+            revert InvalidWeightLength();
+        }
+        uint256 refTimeBytes = Compact.encodedSizeAt(data, offset);
+        offset += refTimeBytes;
+        if (offset >= data.length) {
+            revert InvalidWeightLength();
+        }
+        uint256 proofSizeBytes = Compact.encodedSizeAt(data, offset);
+        return refTimeBytes + proofSizeBytes;
+    }
+
     /// @notice Decodes a byte sequence into a `Weight` struct.
     /// @param data The byte sequence to decode, expected to be the SCALE encoding of a `Weight`.
     /// @return weight The decoded `Weight` struct.

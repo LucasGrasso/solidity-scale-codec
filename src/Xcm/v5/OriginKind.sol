@@ -29,6 +29,17 @@ library OriginKindCodec {
         return abi.encodePacked(uint8(originKind));
     }
 
+    /// @notice Returns the number of bytes that an `OriginKind` enum value would occupy when SCALE-encoded.
+    /// @param data The bytes array containing the encoded `OriginKind`.
+    /// @param offset The byte offset in the data array to start calculating from.
+    /// @return The number of bytes that the `OriginKind` enum value would occupy when SCALE-encoded.
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256) {
+        return 1;
+    }
+
     /// @notice Decodes a bytes array into an `OriginKind` enum value using SCALE decoding.
     /// @param data The bytes array containing the SCALE-encoded `OriginKind`.
     /// @return The decoded `OriginKind` value.

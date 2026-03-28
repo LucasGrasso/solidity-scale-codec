@@ -257,6 +257,61 @@ library JunctionCodec {
         return abi.encodePacked(uint8(junction.jType), junction.payload);
     }
 
+    /// @notice Returns the number of bytes that a `Junction` struct would occupy when SCALE-encoded, starting from the specified offset.
+    /// @param data The byte array containing the SCALE-encoded junction data.
+    /// @param offset The byte offset to start calculating from.
+    /// @return The number of bytes that the `Junction` struct would occupy when SCALE-encoded, including the type and payload.
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256) {
+        if (offset >= data.length) revert InvalidJunctionLength();
+        uint8 jType;
+        assembly {
+            jType := shr(248, mload(add(add(data, 32), offset)))
+        }
+        uint256 payloadLength;
+        ++offset; // Move past the type byte
+        if (jType == JunctionType.Parachain) {
+            payloadLength = Compact.encodedSizeAt(data, offset);
+        }
+        if (jType == JunctionType.AccountId32) {
+            payloadLength = _innerNetworkIdSize(data, offset) + 32// for the account ID;
+        }
+        if (jType == JunctionType.AccountIndex64) {
+            payloadLength = _innerNetworkIdSize(data, offset);
+            payloadLength += Compact.encodedSizeAt(
+                data,
+                offset + payloadLength
+            ); // for the account index
+        }
+        if (jType == JunctionType.AccountKey20) {
+            payloadLength = _innerNetworkIdSize(data, offset) + 20 // for the account key;
+        }
+        if (jType == JunctionType.PalletInstance) {
+            payloadLength = 1;
+        }
+        if (jType == JunctionType.GeneralIndex) {
+            payloadLength = Compact.encodedSizeAt(data, offset);
+        }
+        if (jType == JunctionType.GeneralKey) {
+            if (offset >= data.length) revert InvalidJunctionLength();
+            uint8 length = uint8(data[offset]);
+            payloadLength = 1 + length; // 1 byte for the length + the key bytes
+        }
+        if (jType == JunctionType.OnlyChild || jType == JunctionType.GlobalConsensus) {
+            payloadLength = 0;
+        }
+        if (jType == JunctionType.Plurality) {
+            uint256 innerLength = BodyIdCodec.encodedSizeAt(data, offset);
+            payloadLength =
+                innerLength +
+                BodyPartCodec.encodedSizeAt(data, offset + innerLength);
+        }
+
+        return 1 + payloadLength; // 1 byte for the type + payload length
+    }
+
     /// @notice Decodes a byte array into a `Junction` struct, starting from the specified offset.
     /// @param data The byte array containing the SCALE-encoded junction data.
     /// @return junction A `Junction` struct representing the decoded junction, including its type and payload.
@@ -478,5 +533,18 @@ library JunctionCodec {
         if (junction.jType != JunctionType.GlobalConsensus)
             revert InvalidJunctionType(uint8(junction.jType));
         (networkId, ) = NetworkIdCodec.decode(junction.payload);
+    }
+
+    function _innerNetworkIdSize(
+        bytes memory data,
+        uint256 offset
+    ) private pure returns (uint256) {
+        if (offset >= data.length) revert InvalidJunctionLength();
+        bool hasNetwork = data[offset] != 0;
+        uint256 size = 1; // for the hasNetwork byte
+        if (hasNetwork) {
+            size += NetworkIdCodec.encodedSizeAt(data, offset + size);
+        }
+        return size;
     }
 }

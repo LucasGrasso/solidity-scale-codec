@@ -121,6 +121,46 @@ library BodyIdCodec {
         return abi.encodePacked(uint8(bodyId.bodyIdType), bodyId.payload);
     }
 
+    /// @notice Returns the number of bytes that a `BodyId` struct would occupy when SCALE-encoded, starting at a given offset in the data.
+    /// @param data The byte sequence containing the encoded `BodyId`.
+    /// @param offset The starting index in `data` from which to calculate the encoded size of the `BodyId`.
+    /// @return The number of bytes that the `BodyId` struct would occupy when SCALE-encoded.
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256) {
+        if (data.length < offset + 1) {
+            revert InvalidBodyIdLength();
+        }
+        uint8 bodyIdTypeValue = uint8(data[offset]);
+        BodyIdType bodyIdType = BodyIdType(bodyIdTypeValue);
+        uint256 payloadLength;
+        if (
+            bodyIdType == BodyIdType.Unit ||
+            bodyIdType == BodyIdType.Executive ||
+            bodyIdType == BodyIdType.Technical ||
+            bodyIdType == BodyIdType.Legislative ||
+            bodyIdType == BodyIdType.Judicial ||
+            bodyIdType == BodyIdType.Defense ||
+            bodyIdType == BodyIdType.Administration ||
+            bodyIdType == BodyIdType.Treasury
+        ) {
+            payloadLength = 0;
+        } else if (bodyIdType == BodyIdType.Moniker) {
+            payloadLength = 4;
+        } else if (bodyIdType == BodyIdType.Index) {
+            payloadLength = 4;
+        } else {
+            revert InvalidBodyIdType(bodyIdTypeValue);
+        }
+
+        if (data.length < offset + 1 + payloadLength) {
+            revert InvalidBodyIdLength();
+        }
+
+        return 1 + payloadLength;
+    }
+
     /// @notice Decodes a `BodyId` from bytes starting at the beginning of the data.
     /// @param data The byte sequence containing the encoded `BodyId`.
     /// @return bodyId The decoded `BodyId`.

@@ -28,6 +28,22 @@ library AssetCodec {
         return abi.encodePacked(encodedId, encodedFungibility);
     }
 
+    /// @notice Returns the number of bytes that an `Asset` struct would occupy when SCALE-encoded.
+    /// @param data The byte sequence containing the encoded `Asset`.
+    /// @param offset The starting index in `data` from which to calculate the encoded size of the `Asset`.
+    /// @return The number of bytes that the `Asset` struct would occupy when SCALE-encoded.
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256) {
+        uint256 idSize = AssetIdCodec.encodedSizeAt(data, offset);
+        uint256 fungibilitySize = FungibilityCodec.encodedSizeAt(
+            data,
+            offset + idSize
+        );
+        return idSize + fungibilitySize;
+    }
+
     /// @notice Decodes an `Asset` struct from bytes starting at the beginning of the data.
     /// @param data The byte sequence containing the encoded `Asset`.
     /// @return asset The decoded `Asset` struct.

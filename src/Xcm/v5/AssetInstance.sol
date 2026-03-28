@@ -121,6 +121,39 @@ library AssetInstanceCodec {
         return abi.encodePacked(assetInstance.iType, assetInstance.payload);
     }
 
+    /// @notice Returns the total number of bytes that an `AssetInstance` would occupy when encoded, based on the type and payload.
+    /// @param data The byte sequence containing the encoded `AssetInstance`.
+    /// @param offset The starting index in `data` from which to calculate the encoded size.
+    /// @return The total number of bytes that the `AssetInstance` occupies in its encoded form, including the type byte and payload.
+    function encodedSizeAt(bytes memory data, uint256 offset) {
+        if (data.length < offset + 1) {
+            revert InvalidAssetInstanceLength();
+        }
+        uint8 iType = uint8(data[offset]);
+        uint256 payloadLength;
+        if (iType == uint8(AssetInstanceType.Index)) {
+            payloadLength = Compact.encodedSizeAt(data, offset + 1);
+        } else if (iType == uint8(AssetInstanceType.Array4)) {
+            payloadLength = 4;
+        } else if (iType == uint8(AssetInstanceType.Array8)) {
+            payloadLength = 8;
+        } else if (iType == uint8(AssetInstanceType.Array16)) {
+            payloadLength = 16;
+        } else if (iType == uint8(AssetInstanceType.Array32)) {
+            payloadLength = 32;
+        } else if (iType == uint8(AssetInstanceType.Undefined)) {
+            payloadLength = 0;
+        } else {
+            revert InvalidAssetInstanceType(iType);
+        }
+
+        if (data.length < offset + 1 + payloadLength) {
+            revert InvalidAssetInstanceLength();
+        }
+
+        return 1 + payloadLength;
+    }
+
     /// @notice Decodes an `AssetInstance` struct from bytes starting at the beginning of the data.
     /// @param data The byte sequence containing the encoded `AssetInstance`.
     /// @return assetInstance The decoded `AssetInstance` struct.

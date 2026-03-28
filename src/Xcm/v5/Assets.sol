@@ -32,6 +32,25 @@ library AssetsCodec {
         return encoded;
     }
 
+    /// @notice Returns the number of bytes that an `Assets` struct would occupy when SCALE-encoded.
+    /// @param data The byte sequence containing the encoded `Assets`.
+    /// @param offset The starting index in `data` from which to calculate the encoded size of the `Assets`.
+    /// @return The number of bytes that the `Assets` struct would occupy when SCALE-encoded.
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256) {
+        if (data.length < offset + 1) {
+            revert("Invalid Assets length");
+        }
+        uint8 length = uint8(data[offset]);
+        uint256 currentOffset = offset + 1;
+        for (uint256 i = 0; i < length; i++) {
+            currentOffset += AssetCodec.encodedSizeAt(data, currentOffset);
+        }
+        return currentOffset - offset;
+    }
+
     /// @notice Decodes an `Assets` struct from bytes starting at the beginning of the data.
     /// @param data The byte sequence containing the encoded `Assets`.
     /// @return assets The decoded `Assets` struct.

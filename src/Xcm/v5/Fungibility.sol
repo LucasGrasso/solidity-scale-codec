@@ -62,6 +62,35 @@ library FungibilityCodec {
         return abi.encodePacked(uint8(fungibility.fType), fungibility.payload);
     }
 
+    /// @notice Returns the number of bytes that a `Fungibility` struct would occupy when SCALE-encoded, starting at a given offset in the data.
+    /// @param data The byte sequence containing the encoded `Fungibility`.
+    /// @param offset The starting index in `data` from which to calculate the encoded size of the `Fungibility`.
+    /// @return The number of bytes that the `Fungibility` struct would occupy when SCALE-encoded, starting at the given offset.
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256) {
+        if (data.length < offset + 1) {
+            revert InvalidFungibilityLength();
+        }
+        uint8 fType = uint8(data[offset]);
+        uint256 payloadLength;
+        ++offset;
+        if (fType == uint8(FungibilityType.Fungible)) {
+            payloadLength = Compact.encodedSizeAt(data, offset);
+        } else if (fType == uint8(FungibilityType.NonFungible)) {
+            payloadLength = AssetInstanceCodec.encodedSizeAt(data, offset);
+        } else {
+            revert InvalidFungibilityType(fType);
+        }
+
+        if (data.length < offset + payloadLength) {
+            revert InvalidFungibilityLength();
+        }
+
+        return 1 + payloadLength;
+    }
+
     /// @notice Decodes a `Fungibility` instance from bytes starting at the beginning of the data.
     /// @param data The byte sequence containing the encoded `Fungibility`.
     /// @return fungibility The decoded `Fungibility` struct.

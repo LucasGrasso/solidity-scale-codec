@@ -23,6 +23,17 @@ library AssetIdCodec {
         return LocationCodec.encode(assetId.location);
     }
 
+    /// @notice Returns the number of bytes that an `AssetId` struct would occupy when SCALE-encoded.
+    /// @param data The byte sequence containing the encoded `AssetId`.
+    /// @param offset The starting index in `data` from which to calculate the encoded size of the `AssetId`.
+    /// @return The number of bytes that the `AssetId` struct would occupy when SCALE-encoded.
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256) {
+        return LocationCodec.encodedSizeAt(data, offset);
+    }
+
     /// @notice Decodes an `AssetId` struct from bytes starting at the beginning of the data.
     /// @param data The byte sequence containing the encoded `AssetId`.
     /// @return assetId The decoded `AssetId` struct.

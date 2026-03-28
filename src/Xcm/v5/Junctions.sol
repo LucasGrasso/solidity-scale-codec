@@ -60,6 +60,31 @@ library JunctionsCodec {
         return encoded;
     }
 
+    /// @notice Returns the number of bytes that a `Junctions` struct would occupy when SCALE-encoded.
+    /// @param data The byte sequence containing the encoded `Junctions`.
+    /// @param offset The starting index in `data` from which to calculate the encoded size of the `Junctions`.
+    /// @return The number of bytes that the `Junctions` struct would occupy when SCALE-encoded.
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256) {
+        if (offset >= data.length) {
+            revert InvalidJunctionsLength(0);
+        }
+        uint8 count = uint8(data[offset]);
+        if (count > 8) {
+            revert InvalidJunctionsCount(count);
+        }
+        uint256 size = 1; // for the count byte
+        uint256 pos = offset + 1;
+        for (uint8 i = 0; i < count; i++) {
+            uint256 inner = JunctionCodec.encodedSizeAt(data, pos);
+            size += inner;
+            pos += inner;
+        }
+        return size;
+    }
+
     /// @notice Decodes bytes into a Junctions struct.
     /// @param data The byte array to decode.
     /// @return junctions The decoded Junctions struct.
