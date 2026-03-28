@@ -4,7 +4,7 @@ pragma solidity ^0.8.28;
 import {Bytes4} from "../../Scale/Bytes.sol";
 import {Compact} from "../../Scale/Compact.sol";
 
-/// @dev Discriminant for the different types of BodyIds in XCM v3. Each variant corresponds to a specific structure of the payload.
+/// @dev Discriminant for the different types of BodyIds in XCM v5. Each variant corresponds to a specific structure of the payload.
 enum BodyIdType {
     /// @custom:variant The only body in its context.
     Unit,
