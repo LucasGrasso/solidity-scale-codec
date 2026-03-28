@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import { LittleEndianU32 } from "../../LittleEndian/LittleEndianU32.sol";
+import {LittleEndianU32} from "../../LittleEndian/LittleEndianU32.sol";
 
 /// @title Scale Codec for the `uint32` type.
 /// @notice SCALE-compliant encoder/decoder for the `uint32` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library U32 {
-	error InvalidU32Length();
+    error InvalidU32Length();
 
-	/// @notice Encodes an `uint32` into SCALE format (4-byte little-endian).
+    /// @notice Encodes an `uint32` into SCALE format (4-byte little-endian).
     /// @param value The unsigned 32-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(uint32 value) internal pure returns (bytes memory) {
@@ -17,10 +17,13 @@ library U32 {
     }
 
     /// @notice Returns the number of bytes that a `uint32` would occupy when SCALE-encoded.
-	/// @param data The byte sequence containing the encoded `uint32`.
-	/// @param offset The starting index in `data` from which to calculate the encoded size of the `uint32`.
-	/// @return The number of bytes that the `uint32` would occupy when SCALE-encoded.
-    function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
+    /// @param data The byte sequence containing the encoded `uint32`.
+    /// @param offset The starting index in `data` from which to calculate the encoded size of the `uint32`.
+    /// @return The number of bytes that the `uint32` would occupy when SCALE-encoded.
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256) {
         if (data.length < offset + 4) {
             revert InvalidU32Length();
         }
@@ -43,13 +46,15 @@ library U32 {
         uint256 offset
     ) internal pure returns (uint32 value) {
         if (data.length < offset + 4) revert InvalidU32Length();
-        return LittleEndianU32.fromLE(data, offset);
+        return LittleEndianU32.fromLittleEndian(data, offset);
     }
 
-	/// @notice Converts an `uint32` to little-endian bytes4
+    /// @notice Converts an `uint32` to little-endian bytes4
     /// @param value The unsigned 32-bit integer to convert.
     /// @return result Little-endian byte representation of the input value.
-	function toLittleEndian(uint32 value) internal pure returns (bytes4 result) {
-		return LittleEndianU32.toLE(value);
-	}
+    function toLittleEndian(
+        uint32 value
+    ) internal pure returns (bytes4 result) {
+        return LittleEndianU32.toLittleEndian(value);
+    }
 }

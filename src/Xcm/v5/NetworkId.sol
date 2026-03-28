@@ -87,7 +87,10 @@ library NetworkIdCodec {
         return
             NetworkId({
                 nType: NetworkIdType.ByFork,
-                payload: abi.encodePacked(blockNumber.toLE(), blockHash)
+                payload: abi.encodePacked(
+                    blockNumber.toLittleEndian(),
+                    blockHash
+                )
             });
     }
 

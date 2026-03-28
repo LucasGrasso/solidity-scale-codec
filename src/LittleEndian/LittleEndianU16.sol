@@ -7,7 +7,7 @@ library LittleEndianU16 {
     /// @notice Converts a `uint16` to little-endian `bytes2`
     /// @param value The `uint16` value to convert
     /// @return result The little-endian representation of the input `uint16` as a `bytes2`
-    function toLE(uint16 value) internal pure returns (bytes2) {
+    function toLittleEndian(uint16 value) internal pure returns (bytes2) {
         return bytes2(uint16((value >> 8) | (value << 8)));
     }
 
@@ -15,7 +15,7 @@ library LittleEndianU16 {
     /// @param data   Raw byte buffer.
     /// @param offset Byte offset into `data`.
     /// @return value Decoded uint16.
-    function fromLE(
+    function fromLittleEndian(
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint16 value) {

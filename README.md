@@ -37,8 +37,8 @@ The `LittleEndian` library provides functions to encode and decode unsigned inte
 All libraries here provide the following functions:
 
 ```solidity
-function toLE(uintN value) internal pure returns (bytesM){}
-function fromLE(
+function toLittleEndian(uintN value) internal pure returns (bytesM){}
+function fromLittleEndian(
 	bytes memory data,
 	uint256 offset
 ) internal pure returns (uintN value) {}

@@ -55,8 +55,8 @@ library WeightCodec {
     /// @return bytesRead The total number of bytes read from the input data to decode the `Weight`.
     function decode(
         bytes memory data
-    ) internal pure returns (Weight memory, uint256) {
-        decodeAt(data, 0);
+    ) internal pure returns (Weight memory weight, uint256 bytesRead) {
+        return decodeAt(data, 0);
     }
 
     /// @notice Decodes a byte sequence into a `Weight` struct starting at a specific offset.

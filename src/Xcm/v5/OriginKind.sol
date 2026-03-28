@@ -18,6 +18,7 @@ enum OriginKind {
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 /// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
 library OriginKindCodec {
+    error InvalidOriginKindLength();
     error InvalidOriginKind(uint8 originKind);
 
     /// @notice Encodes an `OriginKind` enum value into a bytes array using SCALE encoding.
@@ -37,14 +38,20 @@ library OriginKindCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint256) {
+        if (offset >= data.length) {
+            revert InvalidOriginKindLength();
+        }
         return 1;
     }
 
     /// @notice Decodes a bytes array into an `OriginKind` enum value using SCALE decoding.
     /// @param data The bytes array containing the SCALE-encoded `OriginKind`.
-    /// @return The decoded `OriginKind` value.
-    function decode(bytes memory data) internal pure returns (OriginKind) {
-        decodeAt(data, 0);
+    /// @return originKind The decoded `OriginKind` value.
+    /// @return bytesRead The number of bytes read from the data array during decoding.
+    function decode(
+        bytes memory data
+    ) internal pure returns (OriginKind originKind, uint256 bytesRead) {
+        return decodeAt(data, 0);
     }
 
     /// @notice Decodes a bytes array into an `OriginKind` enum value starting at a specific offset.

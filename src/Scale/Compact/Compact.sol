@@ -101,15 +101,19 @@ library Compact {
             value = uint256(header) >> 2;
             bytesRead = 1;
         } else if (mode == MODE_TWO) {
-            value = uint256(LittleEndianU16.fromLE(data, offset)) >> 2;
+            value =
+                uint256(LittleEndianU16.fromLittleEndian(data, offset)) >>
+                2;
             bytesRead = 2;
         } else if (mode == MODE_FOUR) {
-            value = uint256(LittleEndianU32.fromLE(data, offset)) >> 2;
+            value =
+                uint256(LittleEndianU32.fromLittleEndian(data, offset)) >>
+                2;
             bytesRead = 4;
         } else {
             uint8 m = (header >> 2) + 4;
             if (m > 32) revert ValueOutOfRange();
-            value = LittleEndianU256.fromLE(data, offset + 1);
+            value = LittleEndianU256.fromLittleEndian(data, offset + 1);
             if (m < 32) {
                 value &= (uint256(1) << (uint256(m) * 8)) - 1; // zero out bytes beyond m
             }

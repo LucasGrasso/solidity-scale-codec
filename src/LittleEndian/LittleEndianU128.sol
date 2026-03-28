@@ -7,7 +7,9 @@ library LittleEndianU128 {
     /// @notice Converts a `uint128` to little-endian `bytes16`
     /// @param value The `uint128` value to convert.
     /// @return result The little-endian representation of the input `uint128` as a `bytes16`.
-    function toLE(uint128 value) internal pure returns (bytes16 result) {
+    function toLittleEndian(
+        uint128 value
+    ) internal pure returns (bytes16 result) {
         assembly {
             let v := value
             v := or(
@@ -31,7 +33,7 @@ library LittleEndianU128 {
     /// @param data   Raw byte buffer.
     /// @param offset Byte offset into `data`.
     /// @return value Decoded uint128.
-    function fromLE(
+    function fromLittleEndian(
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint128 value) {

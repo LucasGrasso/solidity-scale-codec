@@ -43,13 +43,13 @@ library {{Type}} {
         uint256 offset
     ) internal pure returns ({{type}} value) {
         if (data.length < offset + {{size}}) revert Invalid{{Type}}Length();
-        return LittleEndian{{Type}}.fromLE(data, offset);
+        return LittleEndian{{Type}}.fromLittleEndian(data, offset);
     }
 
 	/// @notice Converts an `{{type}}` to little-endian bytes{{size}}
     /// @param value The unsigned {{bitsize}}-bit integer to convert.
     /// @return result Little-endian byte representation of the input value.
 	function toLittleEndian({{type}} value) internal pure returns (bytes{{size}} result) {
-		return LittleEndian{{Type}}.toLE(value);
+		return LittleEndian{{Type}}.toLittleEndian(value);
 	}
 }
