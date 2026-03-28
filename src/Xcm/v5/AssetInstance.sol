@@ -185,27 +185,7 @@ library AssetInstanceCodec {
             revert InvalidAssetInstanceLength();
         }
         uint8 iType = uint8(data[offset]);
-        uint256 payloadLength;
-        if (iType == uint8(AssetInstanceType.Index)) {
-            payloadLength = 16; // u128 is 16 bytes
-        } else if (iType == uint8(AssetInstanceType.Array4)) {
-            payloadLength = 4;
-        } else if (iType == uint8(AssetInstanceType.Array8)) {
-            payloadLength = 8;
-        } else if (iType == uint8(AssetInstanceType.Array16)) {
-            payloadLength = 16;
-        } else if (iType == uint8(AssetInstanceType.Array32)) {
-            payloadLength = 32;
-        } else if (iType == uint8(AssetInstanceType.Undefined)) {
-            payloadLength = 0;
-        } else {
-            revert InvalidAssetInstanceType(iType);
-        }
-
-        if (data.length < offset + 1 + payloadLength) {
-            revert InvalidAssetInstanceLength();
-        }
-
+        uint256 payloadLength = encodedSizeAt(data, offset) - 1; // subtract 1 byte for the iType
         bytes memory payload = new bytes(payloadLength);
         for (uint256 i = 0; i < payloadLength; i++) {
             payload[i] = data[offset + 1 + i];

@@ -172,29 +172,7 @@ library BodyPartCodec {
         if (offset >= data.length) revert InvalidBodyPartLength();
 
         uint8 bodyPartType = uint8(data[offset]);
-        uint256 payloadLength;
-        if (bodyPartType == uint8(BodyPartId.Voice)) {
-            payloadLength = 0;
-        } else if (bodyPartType == uint8(BodyPartId.Members)) {
-            payloadLength = Compact.encodedSizeAt(data, offset + 1);
-        } else if (
-            bodyPartType == uint8(BodyPartId.Fraction) ||
-            bodyPartType == uint8(BodyPartId.AtLeastProportion) ||
-            bodyPartType == uint8(BodyPartId.MoreThanProportion)
-        ) {
-            payloadLength =
-                Compact.encodedSizeAt(data, offset + 1) +
-                Compact.encodedSizeAt(
-                    data,
-                    offset + 1 + Compact.encodedSizeAt(data, offset + 1)
-                );
-        } else {
-            revert InvalidBodyPartType(bodyPartType);
-        }
-
-        if (data.length < offset + 1 + payloadLength) {
-            revert InvalidBodyPartLength();
-        }
+        uint256 payloadLength = encodedSizeAt(data, offset) - 1; // total size minus 1 byte for the bodyPartType
 
         bytes memory payload = bytes(payloadLength);
         for (uint256 i = 0; i < payloadLength; i++) {

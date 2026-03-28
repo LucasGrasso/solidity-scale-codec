@@ -173,25 +173,7 @@ library NetworkIdCodec {
         if (offset >= data.length) revert InvalidNetworkIdLength();
 
         uint8 nType = uint8(data[offset]);
-        uint256 payloadLen;
-
-        // Determine payload length based on type to ensure we don't over-read
-        if (nType == uint8(NetworkIdType.ByGenesis)) {
-            payloadLen = 32;
-        } else if (nType == uint8(NetworkIdType.ByFork)) {
-            payloadLen = 40; // 8 (u64) + 32 (bytes32)
-        } else if (nType == uint8(NetworkIdType.Ethereum)) {
-            payloadLen = 8; // 8 (u64)
-        } else if (nType < 4) {
-            payloadLen = 0; // Static variants
-        } else {
-            // Reserved or unknown types are invalid
-            revert InvalidNetworkIdType(nType);
-        }
-
-        if (offset + 1 + payloadLen > data.length)
-            revert InvalidNetworkIdLength();
-
+        uint256 payloadLen = encodedSizeAt(data, offset) - 1; // Subtract 1 byte for the nType
         bytes memory payload = new bytes(payloadLen);
         for (uint256 i = 0; i < payloadLen; i++) {
             payload[i] = data[offset + 1 + i];

@@ -18,6 +18,8 @@ struct Assets {
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 /// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
 library AssetsCodec {
+    error InvalidAssetsLength();
+
     /// @notice Encodes an `Assets` struct into bytes.
     /// @param assets The `Assets` struct to encode. Asumes that the `items` array is properly constructed according to the invariants specified in the `Assets` struct definition.
     /// @return SCALE-encoded byte sequence representing the `Assets`.
@@ -41,7 +43,7 @@ library AssetsCodec {
         uint256 offset
     ) internal pure returns (uint256) {
         if (data.length < offset + 1) {
-            revert("Invalid Assets length");
+            revert InvalidAssetsLength();
         }
         uint8 length = uint8(data[offset]);
         uint256 currentOffset = offset + 1;

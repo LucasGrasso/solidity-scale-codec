@@ -338,8 +338,9 @@ library JunctionCodec {
         assembly {
             jType := shr(248, mload(add(add(data, 32), offset)))
         }
-        bytes memory payload = new bytes(data.length - offset - 1);
-        for (uint256 i = 0; i < payload.length; i++) {
+        uint256 payloadLength = encodedSizeAt(data, offset) - 1; // Subtract 1 byte for the type
+        bytes memory payload = new bytes(payloadLength);
+        for (uint256 i = 0; i < payloadLength; i++) {
             payload[i] = data[offset + 1 + i];
         }
         junction = Junction({jType: JunctionType(jType), payload: payload});

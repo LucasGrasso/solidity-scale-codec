@@ -185,30 +185,7 @@ library BodyIdCodec {
         }
         uint8 bodyIdTypeValue = uint8(data[offset]);
         BodyIdType bodyIdType = BodyIdType(bodyIdTypeValue);
-        uint256 payloadLength;
-        if (
-            bodyIdType == BodyIdType.Unit ||
-            bodyIdType == BodyIdType.Executive ||
-            bodyIdType == BodyIdType.Technical ||
-            bodyIdType == BodyIdType.Legislative ||
-            bodyIdType == BodyIdType.Judicial ||
-            bodyIdType == BodyIdType.Defense ||
-            bodyIdType == BodyIdType.Administration ||
-            bodyIdType == BodyIdType.Treasury
-        ) {
-            payloadLength = 0;
-        } else if (bodyIdType == BodyIdType.Moniker) {
-            payloadLength = 4;
-        } else if (bodyIdType == BodyIdType.Index) {
-            payloadLength = 4;
-        } else {
-            revert InvalidBodyIdType(bodyIdTypeValue);
-        }
-
-        if (data.length < offset + 1 + payloadLength) {
-            revert InvalidBodyIdLength();
-        }
-
+        uint256 payloadLength = encodedSizeAt(data, offset) - 1; // subtract 1 byte for the bodyIdType
         bytes memory payload = new bytes(payloadLength);
 
         for (uint256 i = 0; i < payloadLength; i++) {

@@ -122,19 +122,7 @@ library FungibilityCodec {
             revert InvalidFungibilityLength();
         }
         uint8 fType = uint8(data[offset]);
-        uint256 payloadLength;
-        if (fType == uint8(FungibilityType.Fungible)) {
-            payloadLength = 16;
-        } else if (fType == uint8(FungibilityType.NonFungible)) {
-            payloadLength = AssetInstanceCodec.encodedSizeAt(data, offset + 1);
-        } else {
-            revert InvalidFungibilityType(fType);
-        }
-
-        if (data.length < offset + 1 + payloadLength) {
-            revert InvalidFungibilityLength();
-        }
-
+        uint256 payloadLength = encodedSizeAt(data, offset) - 1; // subtract 1 byte for the fType
         bytes memory payload = new bytes(payloadLength);
         for (uint256 i = 0; i < payloadLength; i++) {
             payload[i] = data[offset + 1 + i];
