@@ -23,6 +23,15 @@ library BoolArr {
 		return result;
 	}
 
+	/// @notice Returns the number of bytes that a `bool[]` struct would occupy when SCALE-encoded.
+	/// @param data The byte sequence containing the encoded `bool[]`.
+	/// @param offset The starting index in `data` from which to calculate the encoded size of the `bool[]`.
+	/// @return The number of bytes that the `bool[]` struct would occupy when SCALE-encoded.
+	function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
+		(uint256 count, uint256 prefixSize) = Compact.decodeAt(data, offset);
+    	return prefixSize + (count * 1);
+	}
+
 	/// @notice Decodes an `bool[]` from SCALE format.
 	/// @param data The SCALE-encoded byte sequence.
 	/// @return arr The decoded array of `bool`.

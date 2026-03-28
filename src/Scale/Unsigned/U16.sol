@@ -16,6 +16,17 @@ library U16 {
         return abi.encodePacked(toLittleEndian(value));
     }
 
+    /// @notice Returns the number of bytes that a `uint16` struct would occupy when SCALE-encoded.
+	/// @param data The byte sequence containing the encoded `uint16`.
+	/// @param offset The starting index in `data` from which to calculate the encoded size of the `uint16`.
+	/// @return The number of bytes that the `uint16` struct would occupy when SCALE-encoded.
+    function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
+        if (data.length < offset + 2) {
+            revert InvalidU16Length();
+        }
+        return 2;
+    }
+
     /// @notice Decodes SCALE-encoded bytes into an `uint16`.
     /// @param data The SCALE-encoded byte sequence.
     /// @return The decoded `uint16`.

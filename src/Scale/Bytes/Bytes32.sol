@@ -14,6 +14,18 @@ library Bytes32 {
         return abi.encodePacked(value);
     }
 
+    /// @notice Returns the number of bytes that a `bytes32` struct would occupy when SCALE-encoded.
+	/// @param data The byte sequence containing the encoded `bytes32`.
+	/// @param offset The starting index in `data` from which to calculate the encoded size of the `bytes32`.
+	/// @return The number of bytes that the `bytes32` struct would occupy when SCALE-encoded.
+    function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
+        if (data.length < offset + 32) {
+            revert InvalidBytes32Lenght();
+        }
+        return 32;
+    }
+
+
     /// @notice Decodes SCALE-encoded bytes into an `bytes32`.
     /// @param data The SCALE-encoded byte sequence.
     /// @return The decoded `bytes32`.

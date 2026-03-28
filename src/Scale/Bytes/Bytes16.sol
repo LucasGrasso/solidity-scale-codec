@@ -14,6 +14,18 @@ library Bytes16 {
         return abi.encodePacked(value);
     }
 
+    /// @notice Returns the number of bytes that a `bytes16` struct would occupy when SCALE-encoded.
+	/// @param data The byte sequence containing the encoded `bytes16`.
+	/// @param offset The starting index in `data` from which to calculate the encoded size of the `bytes16`.
+	/// @return The number of bytes that the `bytes16` struct would occupy when SCALE-encoded.
+    function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
+        if (data.length < offset + 16) {
+            revert InvalidBytes16Lenght();
+        }
+        return 16;
+    }
+
+
     /// @notice Decodes SCALE-encoded bytes into an `bytes16`.
     /// @param data The SCALE-encoded byte sequence.
     /// @return The decoded `bytes16`.

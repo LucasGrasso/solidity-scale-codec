@@ -23,6 +23,15 @@ library U256Arr {
 		return result;
 	}
 
+	/// @notice Returns the number of bytes that a `uint256[]` struct would occupy when SCALE-encoded.
+	/// @param data The byte sequence containing the encoded `uint256[]`.
+	/// @param offset The starting index in `data` from which to calculate the encoded size of the `uint256[]`.
+	/// @return The number of bytes that the `uint256[]` struct would occupy when SCALE-encoded.
+	function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
+		(uint256 count, uint256 prefixSize) = Compact.decodeAt(data, offset);
+    	return prefixSize + (count * 32);
+	}
+
 	/// @notice Decodes an `uint256[]` from SCALE format.
 	/// @param data The SCALE-encoded byte sequence.
 	/// @return arr The decoded array of `uint256`.

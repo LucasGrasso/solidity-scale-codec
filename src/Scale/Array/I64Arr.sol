@@ -23,6 +23,15 @@ library I64Arr {
 		return result;
 	}
 
+	/// @notice Returns the number of bytes that a `int64[]` struct would occupy when SCALE-encoded.
+	/// @param data The byte sequence containing the encoded `int64[]`.
+	/// @param offset The starting index in `data` from which to calculate the encoded size of the `int64[]`.
+	/// @return The number of bytes that the `int64[]` struct would occupy when SCALE-encoded.
+	function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
+		(uint256 count, uint256 prefixSize) = Compact.decodeAt(data, offset);
+    	return prefixSize + (count * 8);
+	}
+
 	/// @notice Decodes an `int64[]` from SCALE format.
 	/// @param data The SCALE-encoded byte sequence.
 	/// @return arr The decoded array of `int64`.

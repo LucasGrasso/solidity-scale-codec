@@ -23,6 +23,15 @@ library U8Arr {
 		return result;
 	}
 
+	/// @notice Returns the number of bytes that a `uint8[]` struct would occupy when SCALE-encoded.
+	/// @param data The byte sequence containing the encoded `uint8[]`.
+	/// @param offset The starting index in `data` from which to calculate the encoded size of the `uint8[]`.
+	/// @return The number of bytes that the `uint8[]` struct would occupy when SCALE-encoded.
+	function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
+		(uint256 count, uint256 prefixSize) = Compact.decodeAt(data, offset);
+    	return prefixSize + (count * 1);
+	}
+
 	/// @notice Decodes an `uint8[]` from SCALE format.
 	/// @param data The SCALE-encoded byte sequence.
 	/// @return arr The decoded array of `uint8`.

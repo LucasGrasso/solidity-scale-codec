@@ -16,6 +16,17 @@ library U128 {
         return abi.encodePacked(toLittleEndian(value));
     }
 
+    /// @notice Returns the number of bytes that a `uint128` struct would occupy when SCALE-encoded.
+	/// @param data The byte sequence containing the encoded `uint128`.
+	/// @param offset The starting index in `data` from which to calculate the encoded size of the `uint128`.
+	/// @return The number of bytes that the `uint128` struct would occupy when SCALE-encoded.
+    function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
+        if (data.length < offset + 16) {
+            revert InvalidU128Length();
+        }
+        return 16;
+    }
+
     /// @notice Decodes SCALE-encoded bytes into an `uint128`.
     /// @param data The SCALE-encoded byte sequence.
     /// @return The decoded `uint128`.

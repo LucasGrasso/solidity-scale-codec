@@ -16,6 +16,17 @@ library {{Type}} {
         return abi.encodePacked(toLittleEndian(value));
     }
 
+    /// @notice Returns the number of bytes that a `{{type}}` struct would occupy when SCALE-encoded.
+	/// @param data The byte sequence containing the encoded `{{type}}`.
+	/// @param offset The starting index in `data` from which to calculate the encoded size of the `{{type}}`.
+	/// @return The number of bytes that the `{{type}}` struct would occupy when SCALE-encoded.
+    function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
+        if (data.length < offset + {{size}}) {
+            revert Invalid{{Type}}Length();
+        }
+        return {{size}};
+    }
+
     /// @notice Decodes SCALE-encoded bytes into an `{{type}}`.
     /// @param data The SCALE-encoded byte sequence.
     /// @return The decoded `{{type}}`.

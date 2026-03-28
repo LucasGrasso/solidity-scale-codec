@@ -14,6 +14,18 @@ library Bytes4 {
         return abi.encodePacked(value);
     }
 
+    /// @notice Returns the number of bytes that a `bytes4` struct would occupy when SCALE-encoded.
+	/// @param data The byte sequence containing the encoded `bytes4`.
+	/// @param offset The starting index in `data` from which to calculate the encoded size of the `bytes4`.
+	/// @return The number of bytes that the `bytes4` struct would occupy when SCALE-encoded.
+    function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
+        if (data.length < offset + 4) {
+            revert InvalidBytes4Lenght();
+        }
+        return 4;
+    }
+
+
     /// @notice Decodes SCALE-encoded bytes into an `bytes4`.
     /// @param data The SCALE-encoded byte sequence.
     /// @return The decoded `bytes4`.

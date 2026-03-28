@@ -14,6 +14,18 @@ library Bytes8 {
         return abi.encodePacked(value);
     }
 
+    /// @notice Returns the number of bytes that a `bytes8` struct would occupy when SCALE-encoded.
+	/// @param data The byte sequence containing the encoded `bytes8`.
+	/// @param offset The starting index in `data` from which to calculate the encoded size of the `bytes8`.
+	/// @return The number of bytes that the `bytes8` struct would occupy when SCALE-encoded.
+    function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
+        if (data.length < offset + 8) {
+            revert InvalidBytes8Lenght();
+        }
+        return 8;
+    }
+
+
     /// @notice Decodes SCALE-encoded bytes into an `bytes8`.
     /// @param data The SCALE-encoded byte sequence.
     /// @return The decoded `bytes8`.
