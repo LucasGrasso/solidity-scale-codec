@@ -174,7 +174,7 @@ library BodyPartCodec {
         uint8 bodyPartType = uint8(data[offset]);
         uint256 payloadLength = encodedSizeAt(data, offset) - 1; // total size minus 1 byte for the bodyPartType
 
-        bytes memory payload = bytes(payloadLength);
+        bytes memory payload = new bytes(payloadLength);
         for (uint256 i = 0; i < payloadLength; i++) {
             payload[i] = data[offset + 1 + i];
         }
@@ -195,7 +195,8 @@ library BodyPartCodec {
         if (bodyPart.bodyPartId != BodyPartId.Members) {
             revert InvalidBodyPartType(uint8(bodyPart.bodyPartId));
         }
-        (count, ) = Compact.decode(bodyPart.payload);
+        (uint256 decodedCount, ) = Compact.decode(bodyPart.payload);
+        count = uint32(decodedCount);
     }
 
     /// @notice Decodes a `Fraction`, `AtLeastProportion`, or `MoreThanProportion` body part to extract the nominator and denominator.
@@ -212,8 +213,14 @@ library BodyPartCodec {
         ) {
             revert InvalidBodyPartType(uint8(bodyPart.bodyPartId));
         }
-        uint256 offset = 0;
-        (nominator, offset) = Compact.decodeAt(bodyPart.payload, offset);
-        (denominator, ) = Compact.decodeAt(bodyPart.payload, offset);
+        (uint256 decodedNominator, uint256 offset) = Compact.decode(
+            bodyPart.payload
+        );
+        (uint256 decodedDenominator, ) = Compact.decodeAt(
+            bodyPart.payload,
+            offset
+        );
+        nominator = uint32(decodedNominator);
+        denominator = uint32(decodedDenominator);
     }
 }

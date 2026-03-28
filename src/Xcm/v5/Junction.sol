@@ -229,8 +229,8 @@ library JunctionCodec {
     /// @param part The part of the body that is relevant for this junction, represented as a `BodyPart` struct.
     /// @return A `Junction` struct representing the `Plurality` junction with the provided parameters.
     function plurality(
-        BodyId id,
-        BodyPart part
+        BodyId memory id,
+        BodyPart memory part
     ) internal pure returns (Junction memory) {
         return
             Junction({
@@ -272,37 +272,32 @@ library JunctionCodec {
         }
         uint256 payloadLength;
         ++offset; // Move past the type byte
-        if (jType == JunctionType.Parachain) {
+        if (jType == uint8(JunctionType.Parachain)) {
             payloadLength = Compact.encodedSizeAt(data, offset);
-        }
-        else if (jType == JunctionType.AccountId32) {
-            payloadLength = _innerNetworkIdSize(data, offset) + 32// for the account ID;
-        }
-        else if (jType == JunctionType.AccountIndex64) {
+        } else if (jType == uint8(JunctionType.AccountId32)) {
+            payloadLength = _innerNetworkIdSize(data, offset) + 32; // for the account ID;
+        } else if (jType == uint8(JunctionType.AccountIndex64)) {
             payloadLength = _innerNetworkIdSize(data, offset);
             payloadLength += Compact.encodedSizeAt(
                 data,
                 offset + payloadLength
             ); // for the account index
-        }
-        else if (jType == JunctionType.AccountKey20) {
-            payloadLength = _innerNetworkIdSize(data, offset) + 20 // for the account key;
-        }
-        else if (jType == JunctionType.PalletInstance) {
+        } else if (jType == uint8(JunctionType.AccountKey20)) {
+            payloadLength = _innerNetworkIdSize(data, offset) + 20; // for the account key;
+        } else if (jType == uint8(JunctionType.PalletInstance)) {
             payloadLength = 1;
-        }
-        else if (jType == JunctionType.GeneralIndex) {
+        } else if (jType == uint8(JunctionType.GeneralIndex)) {
             payloadLength = Compact.encodedSizeAt(data, offset);
-        }
-        else if (jType == JunctionType.GeneralKey) {
+        } else if (jType == uint8(JunctionType.GeneralKey)) {
             if (offset >= data.length) revert InvalidJunctionLength();
             uint8 length = uint8(data[offset]);
             payloadLength = 1 + length; // 1 byte for the length + the key bytes
-        }
-        else if (jType == JunctionType.OnlyChild || jType == JunctionType.GlobalConsensus) {
+        } else if (
+            jType == uint8(JunctionType.OnlyChild) ||
+            jType == uint8(JunctionType.GlobalConsensus)
+        ) {
             payloadLength = 0;
-        }
-        else if (jType == JunctionType.Plurality) {
+        } else if (jType == uint8(JunctionType.Plurality)) {
             uint256 innerLength = BodyIdCodec.encodedSizeAt(data, offset);
             payloadLength =
                 innerLength +

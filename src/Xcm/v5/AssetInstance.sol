@@ -125,7 +125,10 @@ library AssetInstanceCodec {
     /// @param data The byte sequence containing the encoded `AssetInstance`.
     /// @param offset The starting index in `data` from which to calculate the encoded size.
     /// @return The total number of bytes that the `AssetInstance` occupies in its encoded form, including the type byte and payload.
-    function encodedSizeAt(bytes memory data, uint256 offset) {
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256) {
         if (data.length < offset + 1) {
             revert InvalidAssetInstanceLength();
         }
@@ -262,37 +265,5 @@ library AssetInstanceCodec {
             revert InvalidAssetInstanceType(uint8(assetInstance.iType));
         }
         return Bytes32.decode(assetInstance.payload);
-    }
-
-    /// @notice Calculates the total number of bytes that an `AssetInstance` would occupy when encoded, based on the type and payload.
-    /// @param data The byte sequence containing the encoded `AssetInstance`.
-    /// @param offset The starting index in `data` from which to calculate the encoded size.
-    /// @return The total number of bytes that the `AssetInstance` occupies in its encoded form, including the type byte and payload.
-    function encodedSizeAt(
-        bytes memory data,
-        uint256 offset
-    ) internal pure returns (uint256) {
-        if (data.length < offset + 1) {
-            revert InvalidAssetInstanceLength();
-        }
-        uint8 iType = uint8(data[offset]);
-        uint256 payloadLength;
-        if (iType == uint8(AssetInstanceType.Index)) {
-            payloadLength = 16; // u128 is 16 bytes
-        } else if (iType == uint8(AssetInstanceType.Array4)) {
-            payloadLength = 4;
-        } else if (iType == uint8(AssetInstanceType.Array8)) {
-            payloadLength = 8;
-        } else if (iType == uint8(AssetInstanceType.Array16)) {
-            payloadLength = 16;
-        } else if (iType == uint8(AssetInstanceType.Array32)) {
-            payloadLength = 32;
-        } else if (iType == uint8(AssetInstanceType.Undefined)) {
-            payloadLength = 0;
-        } else {
-            revert InvalidAssetInstanceType(iType);
-        }
-
-        return 1 + payloadLength;
     }
 }
