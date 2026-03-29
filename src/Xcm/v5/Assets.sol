@@ -2,12 +2,14 @@
 pragma solidity ^0.8.28;
 
 import {AssetCodec, Asset} from "./Asset.sol";
+import {Compact} from "../../Scale/Compact.sol";
+import {MAX_ITEMS_IN_ASSETS} from "./Constants.sol";
 
 /// @notice An array of Assets.
 /// @dev There are a number of invariants which the construction and mutation functions must ensure are maintained:
 /// 	 - It may contain no items of duplicate asset class;
 ///	     - All items must be ordered;
-////     - The number of items should grow no larger than 20 (constant `MAX_ITEMS_IN_ASSETS`).
+////     - The number of items should grow no larger than `MAX_ITEMS_IN_ASSETS`.
 struct Assets {
     /// @custom:property The items of the array.
     Asset[] items;
@@ -19,12 +21,13 @@ struct Assets {
 /// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
 library AssetsCodec {
     error InvalidAssetsLength();
+    error InvalidAssetsPayload();
 
     /// @notice Encodes an `Assets` struct into bytes.
     /// @param assets The `Assets` struct to encode. Asumes that the `items` array is properly constructed according to the invariants specified in the `Assets` struct definition.
     /// @return SCALE-encoded byte sequence representing the `Assets`.
     function encode(Assets memory assets) internal pure returns (bytes memory) {
-        bytes memory encoded = abi.encodePacked(uint8(assets.items.length));
+        bytes memory encoded = Compact.encode(assets.items.length);
         for (uint256 i = 0; i < assets.items.length; i++) {
             encoded = abi.encodePacked(
                 encoded,
@@ -45,10 +48,11 @@ library AssetsCodec {
         if (data.length < offset + 1) {
             revert InvalidAssetsLength();
         }
-        uint8 length = uint8(data[offset]);
-        uint256 currentOffset = offset + 1;
+        (uint256 length, uint256 bytesRead) = Compact.decodeAt(data, offset);
+        uint256 currentOffset = offset + bytesRead;
         for (uint256 i = 0; i < length; i++) {
-            currentOffset += AssetCodec.encodedSizeAt(data, currentOffset);
+            uint256 assetSize = AssetCodec.encodedSizeAt(data, currentOffset);
+            currentOffset += assetSize;
         }
         return currentOffset - offset;
     }
@@ -73,11 +77,17 @@ library AssetsCodec {
         uint256 offset
     ) internal pure returns (Assets memory assets, uint256 bytesRead) {
         if (data.length < offset + 1) {
-            revert("Invalid Assets length");
+            revert InvalidAssetsLength();
         }
-        uint8 length = uint8(data[offset]);
+        (uint256 length, uint256 compactBytesRead) = Compact.decodeAt(
+            data,
+            offset
+        );
+        if (length > MAX_ITEMS_IN_ASSETS) {
+            revert InvalidAssetsPayload();
+        }
         Asset[] memory items = new Asset[](length);
-        uint256 currentOffset = offset + 1;
+        uint256 currentOffset = offset + compactBytesRead;
         for (uint256 i = 0; i < length; i++) {
             (Asset memory asset, uint256 assetBytesRead) = AssetCodec.decodeAt(
                 data,
