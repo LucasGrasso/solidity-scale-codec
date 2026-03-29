@@ -5,3 +5,5 @@ pragma solidity ^0.8.28;
 uint64 constant MAX_ITEMS_IN_ASSETS = 20;
 // Maximum number of PalletsInfo entries we expect in a single `PalletsInfo` value.
 uint32 constant MAX_PALLETS_INFO = 64;
+// Maximum length of a pallet name in bytes.
+uint32 constant MAX_PALLET_NAME_LEN = 48;
