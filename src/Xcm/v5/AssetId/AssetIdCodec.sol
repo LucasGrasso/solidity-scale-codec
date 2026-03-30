@@ -1,13 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {LocationCodec, Location} from "./Location.sol";
-
-/// @notice Location to identify an asset.
-struct AssetId {
-    /// @custom:property The location of the asset.
-    Location location;
-}
+import {LocationCodec, Location} from "../Location.sol";
+import {AssetId} from "./AssetId.sol";
 
 /// @title SCALE Codec for XCM v5 `AssetId`
 /// @notice SCALE-compliant encoder/decoder for the `AssetId` type.

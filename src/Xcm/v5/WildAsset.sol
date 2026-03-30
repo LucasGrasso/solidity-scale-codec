@@ -2,7 +2,8 @@
 pragma solidity ^0.8.28;
 
 import {Compact} from "../../Scale/Compact.sol";
-import {AssetIdCodec, AssetId} from "./AssetId.sol";
+import {AssetId} from "./AssetId/AssetId.sol";
+import {AssetIdCodec} from "./AssetId/AssetIdCodec.sol";
 import {WildFungibilityCodec, WildFungibility} from "./WildFungibility.sol";
 
 /// @notice Discriminant for the type of asset being specified in a `WildAsset`.

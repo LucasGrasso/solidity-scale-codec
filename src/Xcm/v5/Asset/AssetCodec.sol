@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {AssetIdCodec, AssetId} from "../AssetId.sol";
+import {AssetId} from "../AssetId/AssetId.sol";
+import {AssetIdCodec} from "../AssetId/AssetIdCodec.sol";
 import {FungibilityCodec, Fungibility} from "../Fungibility.sol";
 import {Asset} from "./Asset.sol";
 

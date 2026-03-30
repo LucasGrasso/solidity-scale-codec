@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {AssetId} from "../AssetId.sol";
+import {AssetId} from "../AssetId/AssetId.sol";
 import {Fungibility} from "../Fungibility.sol";
 
 /// @notice Either an amount of a single fungible asset, or a single well-identified non-fungible asset.
