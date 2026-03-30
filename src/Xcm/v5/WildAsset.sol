@@ -4,7 +4,8 @@ pragma solidity ^0.8.28;
 import {Compact} from "../../Scale/Compact.sol";
 import {AssetId} from "./AssetId/AssetId.sol";
 import {AssetIdCodec} from "./AssetId/AssetIdCodec.sol";
-import {WildFungibilityCodec, WildFungibility} from "./WildFungibility.sol";
+import {WildFungibility} from "./WildFungibility/WildFungibility.sol";
+import {WildFungibilityCodec} from "./WildFungibility/WildFungibilityCodec.sol";
 
 /// @notice Discriminant for the type of asset being specified in a `WildAsset`.
 enum WildAssetType {
