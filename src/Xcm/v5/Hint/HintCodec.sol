@@ -1,21 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {LocationCodec, Location} from "./Location.sol";
-
-/// @notice Discriminant for the `Hint` enum.
-enum HintType {
-    /// @custom:variant Set asset claimer for all the trapped assets during the execution.
-    AssetClaimer
-}
-
-/// @notice A hint for XCM execution, changing the behaviour of the XCM program.
-struct Hint {
-    /// @custom:property The type of the hint. See `HintType` enum for possible values.
-    HintType hType;
-    /// @custom:property The SCALE-encoded payload of the hint. Structure depends on `hType`.
-    bytes payload;
-}
+import {LocationCodec, Location} from "../Location.sol";
+import {Hint, HintType} from "./Hint.sol";
 
 /// @title SCALE Codec for XCM v5 `Hint`
 /// @notice SCALE-compliant encoder/decoder for the `Hint` type.
@@ -24,19 +11,6 @@ struct Hint {
 library HintCodec {
     error InvalidHintLength();
     error InvalidHintType(uint8 hType);
-
-    /// @notice Creates an `AssetClaimer` hint.
-    /// @param location The claimer of any assets potentially trapped during the execution of the current XCM. It can be an arbitrary location, not necessarily the caller or origin.
-    /// @return A `Hint` struct representing the `AssetClaimer` hint.
-    function assetClaimer(
-        Location memory location
-    ) internal pure returns (Hint memory) {
-        return
-            Hint({
-                hType: HintType.AssetClaimer,
-                payload: LocationCodec.encode(location)
-            });
-    }
 
     /// @notice Encodes a `Hint` struct into SCALE bytes.
     /// @param hint The `Hint` struct to encode.

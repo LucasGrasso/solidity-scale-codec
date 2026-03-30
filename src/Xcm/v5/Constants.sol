@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {HintType} from "./Hint.sol";
+import {HintType} from "./Hint/Hint.sol";
 
 // Maximum number of items we expect in a single Assets value.
 uint64 constant MAX_ITEMS_IN_ASSETS = 20;
