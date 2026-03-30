@@ -118,7 +118,9 @@ using NetworkIdCodec for NetworkId;
 /// @notice Creates a `Parachain` junction with the given parachain ID.
 /// @param params Parameters for the parachain variant.
 /// @return A `Junction` struct representing the parachain junction.
-function parachain(ParachainParams memory params) pure returns (Junction memory) {
+function parachain(
+    ParachainParams memory params
+) pure returns (Junction memory) {
     return
         Junction({
             jType: JunctionType.Parachain,

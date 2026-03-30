@@ -37,7 +37,9 @@ struct NonFungibleParams {
 
 /// @notice Creates a `Fungibility` struct representing a fungible asset with the given amount.
 /// @param params Parameters for the fungible variant.
-function fungible(FungibleParams memory params) pure returns (Fungibility memory) {
+function fungible(
+    FungibleParams memory params
+) pure returns (Fungibility memory) {
     return
         Fungibility({
             fType: FungibilityType.Fungible,

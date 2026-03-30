@@ -37,7 +37,9 @@ function unlimited() pure returns (WeightLimit memory) {
 /// @notice Creates a `Limited` weight limit with the given `Weight`.
 /// @param params Parameters for the limited variant.
 /// @return A `WeightLimit` struct representing the given limit.
-function limited(LimitedParams memory params) pure returns (WeightLimit memory) {
+function limited(
+    LimitedParams memory params
+) pure returns (WeightLimit memory) {
     return
         WeightLimit({
             wlType: WeightLimitType.Limited,

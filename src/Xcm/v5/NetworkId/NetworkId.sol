@@ -65,7 +65,9 @@ using LittleEndianU64 for uint64;
 /// @notice Creates a `ByGenesis` network ID.
 /// @param params Parameters for the by-genesis variant.
 /// @return A `NetworkId` struct with type `ByGenesis` and the provided genesis hash as payload.
-function byGenesis(ByGenesisParams memory params) pure returns (NetworkId memory) {
+function byGenesis(
+    ByGenesisParams memory params
+) pure returns (NetworkId memory) {
     return
         NetworkId({
             nType: NetworkIdType.ByGenesis,
@@ -102,7 +104,9 @@ function kusama() pure returns (NetworkId memory) {
 
 /// @notice Creates an `Ethereum` network ID.
 /// @param params Parameters for the ethereum variant.
-function ethereum(EthereumParams memory params) pure returns (NetworkId memory) {
+function ethereum(
+    EthereumParams memory params
+) pure returns (NetworkId memory) {
     return
         NetworkId({
             nType: NetworkIdType.Ethereum,

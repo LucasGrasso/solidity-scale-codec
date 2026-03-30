@@ -89,7 +89,9 @@ function index(IndexParams memory params) pure returns (AssetInstance memory) {
 /// @notice Creates an `Array4` asset instance with the given 4-byte data.
 /// @param params Parameters for the array4 variant.
 /// @return An `AssetInstance` struct with type `Array4` and the provided data encoded in the payload.
-function array4(Array4Params memory params) pure returns (AssetInstance memory) {
+function array4(
+    Array4Params memory params
+) pure returns (AssetInstance memory) {
     return
         AssetInstance({
             iType: AssetInstanceType.Array4,
@@ -100,7 +102,9 @@ function array4(Array4Params memory params) pure returns (AssetInstance memory) 
 /// @notice Creates an `Array8` asset instance with the given 8-byte data.
 /// @param params Parameters for the array8 variant.
 /// @return An `AssetInstance` struct with type `Array8` and the provided data encoded in the payload.
-function array8(Array8Params memory params) pure returns (AssetInstance memory) {
+function array8(
+    Array8Params memory params
+) pure returns (AssetInstance memory) {
     return
         AssetInstance({
             iType: AssetInstanceType.Array8,
@@ -111,7 +115,9 @@ function array8(Array8Params memory params) pure returns (AssetInstance memory) 
 /// @notice Creates an `Array16` asset instance with the given 16-byte data.
 /// @param params Parameters for the array16 variant.
 /// @return An `AssetInstance` struct with type `Array16` and the provided data encoded in the payload.
-function array16(Array16Params memory params) pure returns (AssetInstance memory) {
+function array16(
+    Array16Params memory params
+) pure returns (AssetInstance memory) {
     return
         AssetInstance({
             iType: AssetInstanceType.Array16,
@@ -122,7 +128,9 @@ function array16(Array16Params memory params) pure returns (AssetInstance memory
 /// @notice Creates an `Array32` asset instance with the given 32-byte data.
 /// @param params Parameters for the array32 variant.
 /// @return An `AssetInstance` struct with type `Array32` and the provided data encoded in the payload.
-function array32(Array32Params memory params) pure returns (AssetInstance memory) {
+function array32(
+    Array32Params memory params
+) pure returns (AssetInstance memory) {
     return
         AssetInstance({
             iType: AssetInstanceType.Array32,

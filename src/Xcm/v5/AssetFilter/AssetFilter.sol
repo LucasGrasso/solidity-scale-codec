@@ -39,7 +39,9 @@ struct WildParams {
 /// @notice Creates an `AssetFilter` struct representing the `Definite` variant, which matches all assets contained by the given `Assets` inner.
 /// @param params Parameters for the definite variant.
 /// @return An `AssetFilter` with the `Assets` variant and the given `Assets` inner as its payload.
-function definite(DefiniteParams memory params) pure returns (AssetFilter memory) {
+function definite(
+    DefiniteParams memory params
+) pure returns (AssetFilter memory) {
     return
         AssetFilter({
             afType: AssetFilterType.Definite,
