@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {Location} from "../Location.sol";
+import {Location} from "../Location/Location.sol";
 import {Weight} from "../Weight/Weight.sol";
 import {QueryId} from "../Types/QueryId.sol";
 

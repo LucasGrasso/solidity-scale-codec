@@ -1,15 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {JunctionsCodec, Junctions} from "./Junctions.sol";
-
-/// @notice A relative path between state-bearing consensus systems.
-struct Location {
-    /// @custom:property The number of parent junctions at the beginning of this Location.
-    uint8 parents;
-    /// @custom:property The interior (i.e. non-parent) junctions that this Location contains. See `Junctions` struct for details.
-    Junctions interior;
-}
+import {JunctionsCodec, Junctions} from "../Junctions.sol";
+import {Location} from "./Location.sol";
 
 /// @title SCALE Codec for XCM v5 `Location`
 /// @notice SCALE-compliant encoder/decoder for the `Location` type.
