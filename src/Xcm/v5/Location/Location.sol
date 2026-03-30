@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {Junctions} from "../Junctions.sol";
+import {Junctions} from "../Junctions/Junctions.sol";
 
 /// @notice A relative path between state-bearing consensus systems.
 struct Location {

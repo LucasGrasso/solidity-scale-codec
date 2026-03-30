@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {JunctionsCodec, Junctions} from "../Junctions.sol";
+import {Junctions} from "../Junctions/Junctions.sol";
+import {JunctionsCodec} from "../Junctions/JunctionsCodec.sol";
 import {Location} from "./Location.sol";
 
 /// @title SCALE Codec for XCM v5 `Location`
