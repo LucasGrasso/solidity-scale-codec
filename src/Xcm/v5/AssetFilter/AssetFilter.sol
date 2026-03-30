@@ -3,7 +3,8 @@ pragma solidity ^0.8.28;
 
 import {Assets} from "../Assets/Assets.sol";
 import {AssetsCodec} from "../Assets/AssetsCodec.sol";
-import {WildAssetCodec, WildAsset} from "../WildAsset.sol";
+import {WildAsset} from "../WildAsset/WildAsset.sol";
+import {WildAssetCodec} from "../WildAsset/WildAssetCodec.sol";
 
 /// @notice Discriminant for the type of asset filter being specified in an `AssetFilter`.
 enum AssetFilterType {
