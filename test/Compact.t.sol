@@ -57,7 +57,7 @@ contract CompactTest is Test {
         assertEq(mode, Compact.MODE_TWO); // Mode should be 0b01 for two-byte
         uint16 expectedValue = (uint16(value) << 2) | uint16(Compact.MODE_TWO);
         bytes memory expected = abi.encodePacked(
-            LittleEndianU16.toLE(expectedValue)
+            LittleEndianU16.toLittleEndian(expectedValue)
         );
         assertEq0(encoded, expected);
         (uint256 decoded, uint256 bytesRead) = Compact.decode(encoded);
@@ -76,7 +76,7 @@ contract CompactTest is Test {
 
         uint32 expectedValue = (uint32(value) << 2) | uint32(Compact.MODE_FOUR);
         bytes memory expected = abi.encodePacked(
-            LittleEndianU32.toLE(expectedValue)
+            LittleEndianU32.toLittleEndian(expectedValue)
         );
         assertEq0(encoded, expected);
 
@@ -106,7 +106,7 @@ contract CompactTest is Test {
         // (m - 4) shifted left by 2 bits, then set the last two bits to 11 (0x03)
         uint8 header = uint8(((m - 4) << 2) | 0x03);
 
-        bytes32 fullLE = LittleEndianU256.toLE(value);
+        bytes32 fullLE = LittleEndianU256.toLittleEndian(value);
 
         // Extract only the 'm' significant bytes
         bytes memory valueBytes = new bytes(m);

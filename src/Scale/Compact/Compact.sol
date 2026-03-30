@@ -43,6 +43,35 @@ library Compact {
         }
     }
 
+    /// @notice Returns the number of bytes that the Compact-encoded value at the given offset occupies
+    /// @param data The byte sequence containing the Compact-encoded value
+    /// @param offset The byte offset to start reading from
+    /// @return size The total number of bytes occupied by the Compact-encoded value, including the header byte
+    /// @dev Reverts if the offset is out of bounds or if the header byte indicates an invalid encoding mode
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256 size) {
+        if (offset >= data.length) revert OffsetOutOfBounds();
+        uint8 header;
+        assembly {
+            header := shr(248, mload(add(add(data, 32), offset)))
+        }
+        uint8 mode = header & 0x03;
+        if (mode == MODE_SINGLE) {
+            size = 1;
+        } else if (mode == MODE_TWO) {
+            size = 2;
+        } else if (mode == MODE_FOUR) {
+            size = 4;
+        } else {
+            uint8 m = (header >> 2) + 4;
+            size = 1 + m;
+        }
+
+        if (data.length < offset + size) revert OffsetOutOfBounds();
+    }
+
     ///@notice Decodes a uint256 value from SCALE Compact format
     /// @dev Reverts if the encoding is invalid or non-canonical, or if the decoded value exceeds uint256 range
     /// @param data The Compact-encoded byte sequence
@@ -74,15 +103,22 @@ library Compact {
             value = uint256(header) >> 2;
             bytesRead = 1;
         } else if (mode == MODE_TWO) {
-            value = uint256(LittleEndianU16.fromLE(data, offset)) >> 2;
+            if (data.length < offset + 2) revert OffsetOutOfBounds();
+            value =
+                uint256(LittleEndianU16.fromLittleEndian(data, offset)) >>
+                2;
             bytesRead = 2;
         } else if (mode == MODE_FOUR) {
-            value = uint256(LittleEndianU32.fromLE(data, offset)) >> 2;
+            if (data.length < offset + 4) revert OffsetOutOfBounds();
+            value =
+                uint256(LittleEndianU32.fromLittleEndian(data, offset)) >>
+                2;
             bytesRead = 4;
         } else {
             uint8 m = (header >> 2) + 4;
             if (m > 32) revert ValueOutOfRange();
-            value = LittleEndianU256.fromLE(data, offset + 1);
+            if (data.length < offset + 1 + m) revert OffsetOutOfBounds();
+            value = LittleEndianU256.fromLittleEndian(data, offset + 1);
             if (m < 32) {
                 value &= (uint256(1) << (uint256(m) * 8)) - 1; // zero out bytes beyond m
             }

@@ -16,6 +16,17 @@ library {{Type}} {
         return abi.encodePacked(toLittleEndian(value));
     }
 
+    /// @notice Returns the number of bytes that a `{{type}}` would occupy when SCALE-encoded.
+	/// @param data The byte sequence containing the encoded `{{type}}`.
+	/// @param offset The starting index in `data` from which to calculate the encoded size of the `{{type}}`.
+	/// @return The number of bytes that the `{{type}}` would occupy when SCALE-encoded.
+    function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
+        if (data.length < offset + {{size}}) {
+            revert Invalid{{Type}}Length();
+        }
+        return {{size}};
+    }
+
     /// @notice Decodes SCALE-encoded bytes into an `{{type}}`.
     /// @param data The SCALE-encoded byte sequence.
     /// @return The decoded `{{type}}`.
@@ -32,13 +43,13 @@ library {{Type}} {
         uint256 offset
     ) internal pure returns ({{type}} value) {
         if (data.length < offset + {{size}}) revert Invalid{{Type}}Length();
-        return LittleEndian{{Type}}.fromLE(data, offset);
+        return LittleEndian{{Type}}.fromLittleEndian(data, offset);
     }
 
 	/// @notice Converts an `{{type}}` to little-endian bytes{{size}}
     /// @param value The unsigned {{bitsize}}-bit integer to convert.
     /// @return result Little-endian byte representation of the input value.
 	function toLittleEndian({{type}} value) internal pure returns (bytes{{size}} result) {
-		return LittleEndian{{Type}}.toLE(value);
+		return LittleEndian{{Type}}.toLittleEndian(value);
 	}
 }

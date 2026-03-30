@@ -7,7 +7,7 @@ library LittleEndianU8 {
     /// @notice Converts a `uint8` to little-endian `bytes1`
     /// @param value The `uint8` value to convert.
     /// @return result The little-endian representation of the input `uint8` as a `bytes1`.
-    function toLE(uint8 value) internal pure returns (bytes1) {
+    function toLittleEndian(uint8 value) internal pure returns (bytes1) {
         return bytes1(value);
     }
 
@@ -15,7 +15,7 @@ library LittleEndianU8 {
     /// @param data   Raw byte buffer.
     /// @param offset Byte offset into `data`.
     /// @return value Decoded uint8.
-    function fromLE(
+    function fromLittleEndian(
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint8 value) {

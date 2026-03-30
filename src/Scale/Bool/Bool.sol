@@ -14,6 +14,18 @@ library Bool {
         return abi.encodePacked(value ? bytes1(0x01) : bytes1(0x00));
     }
 
+    /// @notice Returns the number of bytes that a `bool` would occupy when SCALE-encoded.
+    /// @param data The byte sequence containing the encoded `bool`.
+    /// @param offset The starting index in `data` from which to calculate the encoded size of the `bool`.
+    /// @return The number of bytes that the `bool` would occupy when SCALE-encoded.
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256) {
+        if (data.length < offset + 1) revert InvalidLength();
+        return 1;
+    }
+
     /// @notice Decodes SCALE-encoded bytes into a `bool`.
     /// @param data The SCALE-encoded byte sequence.
     /// @return The decoded boolean.

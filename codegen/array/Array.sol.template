@@ -8,7 +8,7 @@ import { {{Type}} } from "../{{metaType}}.sol";
 /// @notice SCALE-compliant encoder/decoder for the `{{type}}[]` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library {{Type}}Arr {
-	error Invalid{{Type}}ArrLenght();
+	error Invalid{{Type}}ArrLength();
 
 	using {{Type}} for {{type}};
 
@@ -21,6 +21,17 @@ library {{Type}}Arr {
 			result = bytes.concat(result, arr[i].encode());
 		}
 		return result;
+	}
+
+	/// @notice Returns the number of bytes that a `{{type}}[]` would occupy when SCALE-encoded.
+	/// @param data The byte sequence containing the encoded `{{type}}[]`.
+	/// @param offset The starting index in `data` from which to calculate the encoded size of the `{{type}}[]`.
+	/// @return The number of bytes that the `{{type}}[]` would occupy when SCALE-encoded.
+	function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
+		(uint256 count, uint256 prefixSize) = Compact.decodeAt(data, offset);
+		uint256 totalSize = prefixSize + (count * {{size}});
+		if (offset + totalSize > data.length) revert Invalid{{Type}}ArrLength();
+		return totalSize;
 	}
 
 	/// @notice Decodes an `{{type}}[]` from SCALE format.
@@ -44,7 +55,7 @@ library {{Type}}Arr {
 		(uint256 length, uint256 compactBytes) = Compact.decodeAt(data, offset);
 		uint256 pos = offset + compactBytes;
 
-		if (pos + (length * {{size}}) > data.length) revert Invalid{{Type}}ArrLenght();
+		if (pos + (length * {{size}}) > data.length) revert Invalid{{Type}}ArrLength();
 		
 		arr = new {{type}}[](length);
 		for (uint256 i = 0; i < length; ++i) {

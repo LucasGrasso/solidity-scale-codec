@@ -28,6 +28,100 @@ See the [Definitions](definitions.md) for more details on the encoding of differ
 
 See this [example](https://github.com/LucasGrasso/solidity-scale-codec/blob/main/contracts/examples/Foo.sol).
 
+## About the libraries
+
+### src/LittleEndian
+
+The `LittleEndian` library provides functions to encode and decode unsigned integers in little-endian format.
+
+All libraries here provide the following functions:
+
+```solidity
+function toLittleEndian(uintN value) internal pure returns (bytesM){}
+function fromLittleEndian(
+	bytes memory data,
+	uint256 offset
+) internal pure returns (uintN value) {}
+```
+
+### src/Scale
+
+The `Scale` library provides functions to encode and decode various types in the SCALE format, including booleans, unsigned integers, signed integers, compact integers, and arrays of these types.
+
+- All Codec libraries provide the following encoding functions:
+
+  ```solidity
+  function encode(T value) internal pure returns (bytes memory){}
+  function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256 size){}
+  ```
+
+- Libraries for fixed length types provide the following functions for encoding:
+
+  ```solidity
+  function decode(bytes memory data) internal pure returns (T value){}
+  function decodeAt(bytes memory data, uint256 offset) internal pure returns (T value){}
+  ```
+
+  > Note: `decode(data)` = `decodeAt(data, 0)`
+
+  Integer libraries also provide Little-Endian encoding functions, using the `LittleEndian` library:
+
+  ```solidity
+  function toLittleEndian(T value) internal pure returns (bytesM){}
+  ```
+
+- Variable length types libraries provide the same encoding functions, but the decoding functions also return the number of bytes read from the input data. This is useful for decoding from a larger byte array where the encoded value is not at the beginning.
+
+  ```solidity
+  function decode(bytes memory data) internal pure returns (T value, uint256 bytesRead){}
+  function decodeAt(bytes memory data, uint256 offset) internal pure returns (T value, uint256 bytesRead){}
+  ```
+
+  > Note: `decode(data)` = `decodeAt(data, 0)`
+
+### src/Xcm
+
+The `Xcm` library contains SCALE-compatible Solidity representations and codecs for XCM types.
+
+Current support includes:
+
+- XCM v5 domain types in `src/Xcm/v5/*` (instructions, locations, assets, responses, errors, weights, and related codecs).
+- A versioned wrapper in `src/Xcm/VersionedXcm/*`.
+
+Implementation notes:
+
+- Enum-like XCM types are represented as structs with a type discriminator plus `bytes payload`.
+- Each type has a codec library with `encode`, `encodedSizeAt`, `decode`, and `decodeAt`.
+- `VersionedXcm` currently supports v5 payloads.
+
+Minimal usage example:
+
+```solidity
+import {Instruction} from "../src/Xcm/v5/Instruction/Instruction.sol";
+import {Xcm, fromInstructions} from "../src/Xcm/v5/Xcm/Xcm.sol";
+import {v5} from "../src/Xcm/VersionedXcm/VersionedXcm.sol";
+import {VersionedXcmCodec} from "../src/Xcm/VersionedXcm/VersionedXcmCodec.sol";
+import {Weight} from "../src/Xcm/v5/Weight/Weight.sol";
+import {WeightCodec} from "../src/Xcm/v5/Weight/WeightCodec.sol";
+
+address constant XCM_PRECOMPILE_ADDRESS = 0x00000000000000000000000000000000000a0000;
+
+contract XcmWeightEstimator {
+  function weighMessage(
+    Instruction[] memory instructions
+  ) external view returns (Weight memory) {
+    Xcm memory xcm = fromInstructions(instructions);
+    (bool success, bytes memory result) = XCM_PRECOMPILE_ADDRESS.staticcall(
+      VersionedXcmCodec.encode(v5(xcm))
+    );
+    require(success, "XCM precompile call failed");
+    (Weight memory weight, ) = WeightCodec.decode(result);
+    return weight;
+  }
+}
+
+```
+
 ### Running Tests
 
 To run all the tests in the project, execute the following command:

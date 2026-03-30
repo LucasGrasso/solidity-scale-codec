@@ -16,6 +16,14 @@ library I8 {
         return abi.encodePacked(toLittleEndian(value));
     }
 
+    /// @notice Returns the number of bytes that a `int8` would occupy when SCALE-encoded.
+	/// @param data The byte sequence containing the encoded `int8`.
+	/// @param offset The starting index in `data` from which to calculate the encoded size of the `int8`.
+	/// @return The number of bytes that the `int8` would occupy when SCALE-encoded.
+    function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
+        return U8.encodedSizeAt(data, offset);
+    }
+
     /// @notice Decodes SCALE-encoded bytes into an `int8`.
     /// @param data The SCALE-encoded byte sequence.
     /// @return The decoded `int8`.

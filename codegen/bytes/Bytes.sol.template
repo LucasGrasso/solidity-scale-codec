@@ -1,0 +1,51 @@
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.28;
+
+/// @title Scale Codec for the `bytes{{n}}` type.
+/// @notice SCALE-compliant encoder/decoder for the `bytes{{n}}` type.
+/// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
+library Bytes{{n}} {
+    error InvalidBytes{{n}}Length();
+
+    /// @notice Encodes an `bytes{{n}}` into SCALE format.
+    /// @param value The `bytes{{n}}` to encode.
+    /// @return SCALE-encoded byte sequence.
+    function encode(bytes{{n}} value) internal pure returns (bytes memory) {
+        return abi.encodePacked(value);
+    }
+
+    /// @notice Returns the number of bytes that a `bytes{{n}}` would occupy when SCALE-encoded.
+	/// @param data The byte sequence containing the encoded `bytes{{n}}`.
+	/// @param offset The starting index in `data` from which to calculate the encoded size of the `bytes{{n}}`.
+	/// @return The number of bytes that the `bytes{{n}}` would occupy when SCALE-encoded.
+    function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
+        if (data.length < offset + {{n}}) {
+            revert InvalidBytes{{n}}Length();
+        }
+        return {{n}};
+    }
+
+
+    /// @notice Decodes SCALE-encoded bytes into an `bytes{{n}}`.
+    /// @param data The SCALE-encoded byte sequence.
+    /// @return The decoded `bytes{{n}}`.
+    function decode(bytes memory data) internal pure returns (bytes{{n}}) {
+        return decodeAt(data, 0);
+    }
+
+    /// @notice Decodes an `bytes{{n}}` from SCALE format at the specified offset.
+    /// @param data The SCALE-encoded byte sequence.
+    /// @param offset The byte offset to start decoding from.
+    /// @return value The decoded `bytes{{n}}`.
+    function decodeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (bytes{{n}} value) {
+        if (data.length < offset + {{n}}) {
+            revert InvalidBytes{{n}}Length();
+        }
+        assembly {
+            value := mload(add(add(data, 32), offset))
+        }
+    }
+}
