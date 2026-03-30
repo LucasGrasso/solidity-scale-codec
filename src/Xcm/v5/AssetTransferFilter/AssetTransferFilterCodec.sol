@@ -3,10 +3,7 @@ pragma solidity ^0.8.28;
 
 import {AssetFilter} from "../AssetFilter/AssetFilter.sol";
 import {AssetFilterCodec} from "../AssetFilter/AssetFilterCodec.sol";
-import {
-    AssetTransferFilter,
-    AssetTransferFilterType
-} from "./AssetTransferFilter.sol";
+import {AssetTransferFilter, AssetTransferFilterType} from "./AssetTransferFilter.sol";
 
 /// @title SCALE Codec for XCM v5 `AssetTransferFilter`
 /// @notice SCALE-compliant encoder/decoder for the `AssetTransferFilter` type.

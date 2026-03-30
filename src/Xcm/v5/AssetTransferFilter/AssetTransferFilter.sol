@@ -27,7 +27,9 @@ struct AssetTransferFilter {
 /// @notice Creates a `Teleport` asset transfer filter.
 /// @param filter The `AssetFilter` to match assets for teleporting.
 /// @return An `AssetTransferFilter` struct representing the teleport filter.
-function teleport(AssetFilter memory filter) pure returns (AssetTransferFilter memory) {
+function teleport(
+    AssetFilter memory filter
+) pure returns (AssetTransferFilter memory) {
     return
         AssetTransferFilter({
             atfType: AssetTransferFilterType.Teleport,
