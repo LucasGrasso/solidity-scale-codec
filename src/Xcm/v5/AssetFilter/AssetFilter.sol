@@ -22,26 +22,38 @@ struct AssetFilter {
     bytes payload;
 }
 
+/// @notice Parameters for the `Definite` variant.
+struct DefiniteParams {
+    /// @custom:property The concrete assets used by the filter.
+    Assets assets;
+}
+
+/// @notice Parameters for the `Wild` variant.
+struct WildParams {
+    /// @custom:property The wildcard asset selector.
+    WildAsset wA;
+}
+
 // ============ Factory Functions ============
 
 /// @notice Creates an `AssetFilter` struct representing the `Definite` variant, which matches all assets contained by the given `Assets` inner.
-/// @param assets The `Assets` inner to use as the basis for the filter.
+/// @param params Parameters for the definite variant.
 /// @return An `AssetFilter` with the `Assets` variant and the given `Assets` inner as its payload.
-function definite(Assets memory assets) pure returns (AssetFilter memory) {
+function definite(DefiniteParams memory params) pure returns (AssetFilter memory) {
     return
         AssetFilter({
             afType: AssetFilterType.Definite,
-            payload: AssetsCodec.encode(assets)
+            payload: AssetsCodec.encode(params.assets)
         });
 }
 
 /// @notice Creates an `AssetFilter` struct representing the `Wild` variant, which matches all assets contained by the given `WildAsset` wildcard.
-/// @param wA The `WildAsset` wildcard to use as the basis for the filter.
+/// @param params Parameters for the wild variant.
 /// @return An `AssetFilter` with the `Wild` variant and the given `WildAsset` wildcard as its payload.
-function wild(WildAsset memory wA) pure returns (AssetFilter memory) {
+function wild(WildParams memory params) pure returns (AssetFilter memory) {
     return
         AssetFilter({
             afType: AssetFilterType.Wild,
-            payload: WildAssetCodec.encode(wA)
+            payload: WildAssetCodec.encode(params.wA)
         });
 }

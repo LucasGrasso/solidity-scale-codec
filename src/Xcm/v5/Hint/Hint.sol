@@ -18,15 +18,23 @@ struct Hint {
     bytes payload;
 }
 
+/// @notice Parameters for the `AssetClaimer` variant.
+struct AssetClaimerParams {
+    /// @custom:property The claimer location.
+    Location location;
+}
+
 // ============ Factory Functions ============
 
 /// @notice Creates an `AssetClaimer` hint.
-/// @param location The claimer of any assets potentially trapped during the execution of the current XCM. It can be an arbitrary location, not necessarily the caller or origin.
+/// @param params Parameters for the asset-claimer variant.
 /// @return A `Hint` struct representing the `AssetClaimer` hint.
-function assetClaimer(Location memory location) pure returns (Hint memory) {
+function assetClaimer(
+    AssetClaimerParams memory params
+) pure returns (Hint memory) {
     return
         Hint({
             hType: HintType.AssetClaimer,
-            payload: LocationCodec.encode(location)
+            payload: LocationCodec.encode(params.location)
         });
 }

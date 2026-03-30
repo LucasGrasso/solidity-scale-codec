@@ -36,6 +36,36 @@ struct AssetInstance {
     bytes payload;
 }
 
+/// @notice Parameters for the `Index` variant.
+struct IndexParams {
+    /// @custom:property The compact index value.
+    uint128 idx;
+}
+
+/// @notice Parameters for the `Array4` variant.
+struct Array4Params {
+    /// @custom:property The 4-byte fixed data.
+    bytes4 data;
+}
+
+/// @notice Parameters for the `Array8` variant.
+struct Array8Params {
+    /// @custom:property The 8-byte fixed data.
+    bytes8 data;
+}
+
+/// @notice Parameters for the `Array16` variant.
+struct Array16Params {
+    /// @custom:property The 16-byte fixed data.
+    bytes16 data;
+}
+
+/// @notice Parameters for the `Array32` variant.
+struct Array32Params {
+    /// @custom:property The 32-byte fixed data.
+    bytes32 data;
+}
+
 // ============ Factory Functions ============
 
 /// @notice Creates an `Undefined` asset instance.
@@ -49,53 +79,53 @@ function undefined() pure returns (AssetInstance memory) {
 }
 
 /// @notice Creates an `Index` asset instance with the given index value.
-/// @param idx The index value for the asset instance, which must be less than 2^128.
+/// @param params Parameters for the index variant.
 /// @return An `AssetInstance` struct with type `Index` and the provided index value encoded in the payload.
-function index(uint128 idx) pure returns (AssetInstance memory) {
-    bytes memory payload = Compact.encode(idx);
+function index(IndexParams memory params) pure returns (AssetInstance memory) {
+    bytes memory payload = Compact.encode(params.idx);
     return AssetInstance({iType: AssetInstanceType.Index, payload: payload});
 }
 
 /// @notice Creates an `Array4` asset instance with the given 4-byte data.
-/// @param data The 4-byte data for the asset instance.
+/// @param params Parameters for the array4 variant.
 /// @return An `AssetInstance` struct with type `Array4` and the provided data encoded in the payload.
-function array4(bytes4 data) pure returns (AssetInstance memory) {
+function array4(Array4Params memory params) pure returns (AssetInstance memory) {
     return
         AssetInstance({
             iType: AssetInstanceType.Array4,
-            payload: data.encode()
+            payload: params.data.encode()
         });
 }
 
 /// @notice Creates an `Array8` asset instance with the given 8-byte data.
-/// @param data The 8-byte data for the asset instance.
+/// @param params Parameters for the array8 variant.
 /// @return An `AssetInstance` struct with type `Array8` and the provided data encoded in the payload.
-function array8(bytes8 data) pure returns (AssetInstance memory) {
+function array8(Array8Params memory params) pure returns (AssetInstance memory) {
     return
         AssetInstance({
             iType: AssetInstanceType.Array8,
-            payload: data.encode()
+            payload: params.data.encode()
         });
 }
 
 /// @notice Creates an `Array16` asset instance with the given 16-byte data.
-/// @param data The 16-byte data for the asset instance.
+/// @param params Parameters for the array16 variant.
 /// @return An `AssetInstance` struct with type `Array16` and the provided data encoded in the payload.
-function array16(bytes16 data) pure returns (AssetInstance memory) {
+function array16(Array16Params memory params) pure returns (AssetInstance memory) {
     return
         AssetInstance({
             iType: AssetInstanceType.Array16,
-            payload: data.encode()
+            payload: params.data.encode()
         });
 }
 
 /// @notice Creates an `Array32` asset instance with the given 32-byte data.
-/// @param data The 32-byte data for the asset instance.
+/// @param params Parameters for the array32 variant.
 /// @return An `AssetInstance` struct with type `Array32` and the provided data encoded in the payload.
-function array32(bytes32 data) pure returns (AssetInstance memory) {
+function array32(Array32Params memory params) pure returns (AssetInstance memory) {
     return
         AssetInstance({
             iType: AssetInstanceType.Array32,
-            payload: data.encode()
+            payload: params.data.encode()
         });
 }

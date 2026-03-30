@@ -20,6 +20,12 @@ struct WeightLimit {
     bytes payload;
 }
 
+/// @notice Parameters for the `Limited` variant.
+struct LimitedParams {
+    /// @custom:property Weight limit value.
+    Weight weight;
+}
+
 // ============ Factory Functions ============
 
 /// @notice Creates an `Unlimited` weight limit.
@@ -29,12 +35,12 @@ function unlimited() pure returns (WeightLimit memory) {
 }
 
 /// @notice Creates a `Limited` weight limit with the given `Weight`.
-/// @param weight The weight limit.
+/// @param params Parameters for the limited variant.
 /// @return A `WeightLimit` struct representing the given limit.
-function limited(Weight memory weight) pure returns (WeightLimit memory) {
+function limited(LimitedParams memory params) pure returns (WeightLimit memory) {
     return
         WeightLimit({
             wlType: WeightLimitType.Limited,
-            payload: WeightCodec.encode(weight)
+            payload: WeightCodec.encode(params.weight)
         });
 }

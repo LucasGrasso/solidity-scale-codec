@@ -21,26 +21,38 @@ struct Fungibility {
     bytes payload;
 }
 
+/// @notice Parameters for the `Fungible` variant.
+struct FungibleParams {
+    /// @custom:property The number of units of the fungible asset.
+    uint128 amount;
+}
+
+/// @notice Parameters for the `NonFungible` variant.
+struct NonFungibleParams {
+    /// @custom:property The specific non-fungible asset instance.
+    AssetInstance instance;
+}
+
 // ============ Factory Functions ============
 
 /// @notice Creates a `Fungibility` struct representing a fungible asset with the given amount.
-/// @param amount The number of units of the fungible asset.
-function fungible(uint128 amount) pure returns (Fungibility memory) {
+/// @param params Parameters for the fungible variant.
+function fungible(FungibleParams memory params) pure returns (Fungibility memory) {
     return
         Fungibility({
             fType: FungibilityType.Fungible,
-            payload: Compact.encode(amount)
+            payload: Compact.encode(params.amount)
         });
 }
 
 /// @notice Creates a `Fungibility` struct representing a non-fungible asset with the given instance identifier.
-/// @param instance The `AssetInstance` struct identifying the specific instance of the non-fungible asset.
+/// @param params Parameters for the non-fungible variant.
 function nonFungible(
-    AssetInstance memory instance
+    NonFungibleParams memory params
 ) pure returns (Fungibility memory) {
     return
         Fungibility({
             fType: FungibilityType.NonFungible,
-            payload: AssetInstanceCodec.encode(instance)
+            payload: AssetInstanceCodec.encode(params.instance)
         });
 }

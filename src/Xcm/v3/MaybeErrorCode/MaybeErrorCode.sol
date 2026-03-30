@@ -22,6 +22,18 @@ struct MaybeErrorCode {
     bytes payload;
 }
 
+/// @notice Parameters for the `Error` variant.
+struct ErrorParams {
+    /// @custom:property Dispatch error bytes.
+    uint8[] errorBytes;
+}
+
+/// @notice Parameters for the `TruncatedError` variant.
+struct TruncatedErrorParams {
+    /// @custom:property Truncated dispatch error bytes.
+    uint8[] errorBytes;
+}
+
 // ============ Factory Functions ============
 
 /// @notice Creates a `Success` MaybeErrorCode.
@@ -31,30 +43,30 @@ function success() pure returns (MaybeErrorCode memory) {
 }
 
 /// @notice Creates an `Error` MaybeErrorCode with the given dispatch error bytes.
-/// @param errorBytes The dispatch error bytes. Must not exceed MAX_DISPATCH_ERROR_LEN bytes.
+/// @param params Parameters for the error variant.
 /// @return A `MaybeErrorCode` struct representing the error.
-function error(uint8[] memory errorBytes) pure returns (MaybeErrorCode memory) {
-    if (errorBytes.length > MAX_DISPATCH_ERROR_LEN)
-        revert MaybeErrorCodeTooLong(errorBytes.length);
+function error(ErrorParams memory params) pure returns (MaybeErrorCode memory) {
+    if (params.errorBytes.length > MAX_DISPATCH_ERROR_LEN)
+        revert MaybeErrorCodeTooLong(params.errorBytes.length);
     return
         MaybeErrorCode({
             meType: MaybeErrorCodeType.Error,
-            payload: U8Arr.encode(errorBytes)
+            payload: U8Arr.encode(params.errorBytes)
         });
 }
 
 /// @notice Creates a `TruncatedError` MaybeErrorCode with the given dispatch error bytes.
-/// @param errorBytes The truncated dispatch error bytes. Must not exceed MAX_DISPATCH_ERROR_LEN bytes.
+/// @param params Parameters for the truncated-error variant.
 /// @return A `MaybeErrorCode` struct representing the truncated error.
 function truncatedError(
-    uint8[] memory errorBytes
+    TruncatedErrorParams memory params
 ) pure returns (MaybeErrorCode memory) {
-    if (errorBytes.length > MAX_DISPATCH_ERROR_LEN)
-        revert MaybeErrorCodeTooLong(errorBytes.length);
+    if (params.errorBytes.length > MAX_DISPATCH_ERROR_LEN)
+        revert MaybeErrorCodeTooLong(params.errorBytes.length);
     return
         MaybeErrorCode({
             meType: MaybeErrorCodeType.TruncatedError,
-            payload: U8Arr.encode(errorBytes)
+            payload: U8Arr.encode(params.errorBytes)
         });
 }
 

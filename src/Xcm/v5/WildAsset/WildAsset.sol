@@ -37,6 +37,12 @@ struct AllOfCountedParams {
     uint32 count;
 }
 
+/// @notice Parameters for the `AllCounted` variant of `WildAsset`.
+struct AllCountedParams {
+    /// @custom:property The upper bound of matched assets.
+    uint32 count;
+}
+
 /// @notice A wildcard representing a set of assets.
 struct WildAsset {
     /// @custom:property The type of wild asset, determining how to interpret the payload. See `WildAssetType` enum for possible values.
@@ -72,13 +78,15 @@ function allOf(
 }
 
 /// @notice Creates a `WildAsset` struct representing the `AllCounted` variant, which matches all assets in Holding, up to `uint32` individual assets (different instances of non-fungibles are separate assets).
-/// @param count The limit of assets  against.
+/// @param params Parameters for the all-counted variant.
 /// @return A `WildAsset` with the `AllOfCounted` variant and the encoded parameters in the payload.
-function allCounted(uint32 count) pure returns (WildAsset memory) {
+function allCounted(
+    AllCountedParams memory params
+) pure returns (WildAsset memory) {
     return
         WildAsset({
             waType: WildAssetType.AllCounted,
-            payload: abi.encodePacked(Compact.encode(count))
+            payload: abi.encodePacked(Compact.encode(params.count))
         });
 }
 

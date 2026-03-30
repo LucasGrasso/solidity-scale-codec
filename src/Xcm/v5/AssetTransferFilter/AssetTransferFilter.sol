@@ -22,43 +22,61 @@ struct AssetTransferFilter {
     bytes payload;
 }
 
+/// @notice Parameters for the `Teleport` variant.
+struct TeleportParams {
+    /// @custom:property Asset filter used for teleport transfer.
+    AssetFilter filter;
+}
+
+/// @notice Parameters for the `ReserveDeposit` variant.
+struct ReserveDepositParams {
+    /// @custom:property Asset filter used for reserve-deposit transfer.
+    AssetFilter filter;
+}
+
+/// @notice Parameters for the `ReserveWithdraw` variant.
+struct ReserveWithdrawParams {
+    /// @custom:property Asset filter used for reserve-withdraw transfer.
+    AssetFilter filter;
+}
+
 // ============ Factory Functions ============
 
 /// @notice Creates a `Teleport` asset transfer filter.
-/// @param filter The `AssetFilter` to match assets for teleporting.
+/// @param params Parameters for the teleport variant.
 /// @return An `AssetTransferFilter` struct representing the teleport filter.
 function teleport(
-    AssetFilter memory filter
+    TeleportParams memory params
 ) pure returns (AssetTransferFilter memory) {
     return
         AssetTransferFilter({
             atfType: AssetTransferFilterType.Teleport,
-            payload: AssetFilterCodec.encode(filter)
+            payload: AssetFilterCodec.encode(params.filter)
         });
 }
 
 /// @notice Creates a `ReserveDeposit` asset transfer filter.
-/// @param filter The `AssetFilter` to match assets for reserve deposit, using the local chain as reserve.
+/// @param params Parameters for the reserve-deposit variant.
 /// @return An `AssetTransferFilter` struct representing the reserve deposit filter.
 function reserveDeposit(
-    AssetFilter memory filter
+    ReserveDepositParams memory params
 ) pure returns (AssetTransferFilter memory) {
     return
         AssetTransferFilter({
             atfType: AssetTransferFilterType.ReserveDeposit,
-            payload: AssetFilterCodec.encode(filter)
+            payload: AssetFilterCodec.encode(params.filter)
         });
 }
 
 /// @notice Creates a `ReserveWithdraw` asset transfer filter.
-/// @param filter The `AssetFilter` to match assets for reserve withdraw, using the destination as reserve.
+/// @param params Parameters for the reserve-withdraw variant.
 /// @return An `AssetTransferFilter` struct representing the reserve withdraw filter.
 function reserveWithdraw(
-    AssetFilter memory filter
+    ReserveWithdrawParams memory params
 ) pure returns (AssetTransferFilter memory) {
     return
         AssetTransferFilter({
             atfType: AssetTransferFilterType.ReserveWithdraw,
-            payload: AssetFilterCodec.encode(filter)
+            payload: AssetFilterCodec.encode(params.filter)
         });
 }

@@ -44,6 +44,12 @@ struct EthereumParams {
     uint64 chainId;
 }
 
+/// @notice Parameters for a `ByGenesis` network ID.
+struct ByGenesisParams {
+    /// @custom:property The 32-byte genesis block hash.
+    bytes32 genesisHash;
+}
+
 /// @dev Notice A global identifier of a data structure existing within consensus.
 struct NetworkId {
     /// @custom:property The type of network ID, determining how to interpret the payload. See `NetworkIdType` enum for possible values.
@@ -57,13 +63,13 @@ using LittleEndianU64 for uint64;
 // ============ Factory Functions ============
 
 /// @notice Creates a `ByGenesis` network ID.
-/// @param genesisHash The 32-byte hash of the genesis block of the network.
+/// @param params Parameters for the by-genesis variant.
 /// @return A `NetworkId` struct with type `ByGenesis` and the provided genesis hash as payload.
-function byGenesis(bytes32 genesisHash) pure returns (NetworkId memory) {
+function byGenesis(ByGenesisParams memory params) pure returns (NetworkId memory) {
     return
         NetworkId({
             nType: NetworkIdType.ByGenesis,
-            payload: abi.encodePacked(genesisHash)
+            payload: abi.encodePacked(params.genesisHash)
         });
 }
 
@@ -95,11 +101,11 @@ function kusama() pure returns (NetworkId memory) {
 }
 
 /// @notice Creates an `Ethereum` network ID.
-/// @param chainId The chain ID of the Ethereum network.
-function ethereum(uint64 chainId) pure returns (NetworkId memory) {
+/// @param params Parameters for the ethereum variant.
+function ethereum(EthereumParams memory params) pure returns (NetworkId memory) {
     return
         NetworkId({
             nType: NetworkIdType.Ethereum,
-            payload: Compact.encode(chainId)
+            payload: Compact.encode(params.chainId)
         });
 }

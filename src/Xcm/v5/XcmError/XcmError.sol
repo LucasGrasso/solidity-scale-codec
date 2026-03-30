@@ -87,24 +87,36 @@ struct XcmError {
     bytes payload;
 }
 
+/// @notice Parameters for unit (payload-less) XCM errors.
+struct UnitParams {
+    /// @custom:property The non-trap error discriminant.
+    XcmErrorType eType;
+}
+
+/// @notice Parameters for the `Trap` error variant.
+struct TrapParams {
+    /// @custom:property Trap code.
+    uint64 code;
+}
+
 using LittleEndianU64 for uint64;
 
 // ============ Factory Functions ============
 
 /// @notice Creates a unit `XcmError` with no payload.
-/// @param eType The error type. Must not be `Trap`.
+/// @param params Parameters for the unit error.
 /// @return The `XcmError` struct.
-function unit(XcmErrorType eType) pure returns (XcmError memory) {
-    return XcmError({eType: eType, payload: ""});
+function unit(UnitParams memory params) pure returns (XcmError memory) {
+    return XcmError({eType: params.eType, payload: ""});
 }
 
 /// @notice Creates a `Trap` error with the given u64 code.
-/// @param code The trap code.
+/// @param params Parameters for the trap error.
 /// @return The `XcmError` struct representing the trap.
-function trap(uint64 code) pure returns (XcmError memory) {
+function trap(TrapParams memory params) pure returns (XcmError memory) {
     return
         XcmError({
             eType: XcmErrorType.Trap,
-            payload: abi.encodePacked(code.toLittleEndian())
+            payload: abi.encodePacked(params.code.toLittleEndian())
         });
 }

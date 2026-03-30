@@ -25,6 +25,12 @@ struct BodyPart {
     bytes payload;
 }
 
+/// @notice Parameters for the `Members` variant.
+struct MembersParams {
+    /// @custom:property The number of members in the body part.
+    uint32 count;
+}
+
 // ============ Factory Functions ============
 
 /// @notice Creates a `BodyPart` struct representing a `Voice` body part.
@@ -34,13 +40,13 @@ function voice() pure returns (BodyPart memory) {
 }
 
 /// @notice Creates a `BodyPart` struct representing a `Members` body part with the given count.
-/// @param count The number of members in the body part.
+/// @param params Parameters for the members variant.
 /// @return A `BodyPart` with the `Members` variant and the count encoded in the payload.
-function members(uint32 count) pure returns (BodyPart memory) {
+function members(MembersParams memory params) pure returns (BodyPart memory) {
     return
         BodyPart({
             bodyPartType: BodyPartType.Members,
-            payload: Compact.encode(count)
+            payload: Compact.encode(params.count)
         });
 }
 

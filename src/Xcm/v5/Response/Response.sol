@@ -38,6 +38,24 @@ struct Response {
     bytes payload;
 }
 
+/// @notice Parameters for the `Assets` response variant.
+struct AssetsParams {
+    /// @custom:property Assets payload.
+    Assets assets;
+}
+
+/// @notice Parameters for the `Version` response variant.
+struct VersionParams {
+    /// @custom:property XCM version value.
+    uint32 version;
+}
+
+/// @notice Parameters for the `DispatchResult` response variant.
+struct DispatchResultParams {
+    /// @custom:property Dispatch result status.
+    MaybeErrorCode result;
+}
+
 using LittleEndianU32 for uint32;
 
 // ============ Factory Functions ============
@@ -49,13 +67,13 @@ function null_() pure returns (Response memory) {
 }
 
 /// @notice Creates an `Assets` response.
-/// @param assets_ The assets to include in the response.
+/// @param params Parameters for the assets variant.
 /// @return A `Response` struct representing the assets response.
-function assets(Assets memory assets_) pure returns (Response memory) {
+function assets(AssetsParams memory params) pure returns (Response memory) {
     return
         Response({
             rType: ResponseType.Assets,
-            payload: AssetsCodec.encode(assets_)
+            payload: AssetsCodec.encode(params.assets)
         });
 }
 
@@ -90,13 +108,13 @@ function executionResultError(
 }
 
 /// @notice Creates a `Version` response.
-/// @param version_ The XCM version.
+/// @param params Parameters for the version variant.
 /// @return A `Response` struct representing the version response.
-function version(uint32 version_) pure returns (Response memory) {
+function version(VersionParams memory params) pure returns (Response memory) {
     return
         Response({
             rType: ResponseType.Version,
-            payload: abi.encodePacked(version_.toLittleEndian())
+            payload: abi.encodePacked(params.version.toLittleEndian())
         });
 }
 
@@ -114,14 +132,14 @@ function palletsInfo(
 }
 
 /// @notice Creates a `DispatchResult` response.
-/// @param result The `MaybeErrorCode` dispatch result.
+/// @param params Parameters for the dispatch-result variant.
 /// @return A `Response` struct representing the dispatch result response.
 function dispatchResult(
-    MaybeErrorCode memory result
+    DispatchResultParams memory params
 ) pure returns (Response memory) {
     return
         Response({
             rType: ResponseType.DispatchResult,
-            payload: MaybeErrorCodeCodec.encode(result)
+            payload: MaybeErrorCodeCodec.encode(params.result)
         });
 }

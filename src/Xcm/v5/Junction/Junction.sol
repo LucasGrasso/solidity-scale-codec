@@ -81,6 +81,24 @@ struct GeneralKeyParams {
     bytes32 key;
 }
 
+/// @notice Parameters for a `Parachain` junction.
+struct ParachainParams {
+    /// @custom:property The parachain identifier.
+    uint32 parachainId;
+}
+
+/// @notice Parameters for a `PalletInstance` junction.
+struct PalletInstanceParams {
+    /// @custom:property The pallet instance index.
+    uint8 instance;
+}
+
+/// @notice Parameters for a `GeneralIndex` junction.
+struct GeneralIndexParams {
+    /// @custom:property The general compact index within context.
+    uint128 index;
+}
+
 /// @notice A single item in a path to describe the relative location of a consensus system. Each item assumes a pre-existing location as its context and is defined in terms of it.
 struct Junction {
     /// @custom:property jType The type of the junction, determining how to interpret the payload. See `JunctionType` enum for possible values.
@@ -98,13 +116,13 @@ using NetworkIdCodec for NetworkId;
 // ============ Factory Functions ============
 
 /// @notice Creates a `Parachain` junction with the given parachain ID.
-/// @param parachainId The ID of the parachain to be represented in the junction.
+/// @param params Parameters for the parachain variant.
 /// @return A `Junction` struct representing the parachain junction.
-function parachain(uint32 parachainId) pure returns (Junction memory) {
+function parachain(ParachainParams memory params) pure returns (Junction memory) {
     return
         Junction({
             jType: JunctionType.Parachain,
-            payload: Compact.encode(parachainId)
+            payload: Compact.encode(params.parachainId)
         });
 }
 
@@ -168,24 +186,28 @@ function accountKey20(
 }
 
 /// @notice Creates a `PalletInstance` junction with the given instance index.
-/// @param instance The index of the pallet instance to be represented in the junction.
+/// @param params Parameters for the pallet-instance variant.
 /// @return A `Junction` struct representing the pallet instance junction.
-function palletInstance(uint8 instance) pure returns (Junction memory) {
+function palletInstance(
+    PalletInstanceParams memory params
+) pure returns (Junction memory) {
     return
         Junction({
             jType: JunctionType.PalletInstance,
-            payload: abi.encodePacked(instance)
+            payload: abi.encodePacked(params.instance)
         });
 }
 
 /// @notice Creates a `GeneralIndex` junction with the given index.
-/// @param index The index to be represented in the junction.
+/// @param params Parameters for the general-index variant.
 /// @return A `Junction` struct representing the general index junction.
-function generalIndex(uint128 index) pure returns (Junction memory) {
+function generalIndex(
+    GeneralIndexParams memory params
+) pure returns (Junction memory) {
     return
         Junction({
             jType: JunctionType.GeneralIndex,
-            payload: Compact.encode(index)
+            payload: Compact.encode(params.index)
         });
 }
 

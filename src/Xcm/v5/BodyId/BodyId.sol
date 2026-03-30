@@ -36,6 +36,18 @@ struct BodyId {
     bytes payload;
 }
 
+/// @notice Parameters for the `Moniker` variant.
+struct MonikerParams {
+    /// @custom:property The 4-byte name of the moniker body.
+    bytes4 name;
+}
+
+/// @notice Parameters for the `Index` variant.
+struct IndexParams {
+    /// @custom:property The index of the body.
+    uint32 idx;
+}
+
 // ============ Factory Functions ============
 
 /// @notice Creates a `BodyId` representing a `Unit` body.
@@ -45,21 +57,25 @@ function unit() pure returns (BodyId memory) {
 }
 
 /// @notice Creates a `BodyId` representing a `Moniker` body with the given 4-byte name.
-/// @param name The 4-byte name of the moniker body.
+/// @param params Parameters for the moniker variant.
 /// @return A `BodyId` with `bodyIdType` set to `Moniker` and the provided name encoded in the payload.
-function moniker(bytes4 name) pure returns (BodyId memory) {
+function moniker(MonikerParams memory params) pure returns (BodyId memory) {
     return
         BodyId({
             bodyIdType: BodyIdType.Moniker,
-            payload: Bytes4.encode(name)
+            payload: Bytes4.encode(params.name)
         });
 }
 
 /// @notice Creates a `BodyId` representing an `Index` body with the given index.
-/// @param idx The index of the body.
+/// @param params Parameters for the index variant.
 /// @return A `BodyId` with `bodyIdType` set to `Index` and the provided index encoded in the payload.
-function index(uint32 idx) pure returns (BodyId memory) {
-    return BodyId({bodyIdType: BodyIdType.Index, payload: Compact.encode(idx)});
+function index(IndexParams memory params) pure returns (BodyId memory) {
+    return
+        BodyId({
+            bodyIdType: BodyIdType.Index,
+            payload: Compact.encode(params.idx)
+        });
 }
 
 /// @notice Creates a `BodyId` representing an `Executive` body.
