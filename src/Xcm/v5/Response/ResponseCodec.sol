@@ -3,7 +3,8 @@ pragma solidity ^0.8.28;
 
 import {Assets} from "../Assets/Assets.sol";
 import {AssetsCodec} from "../Assets/AssetsCodec.sol";
-import {XcmErrorCodec, XcmError} from "../XcmError.sol";
+import {XcmError} from "../XcmError/XcmError.sol";
+import {XcmErrorCodec} from "../XcmError/XcmErrorCodec.sol";
 import {PalletInfo} from "../PalletInfo/PalletInfo.sol";
 import {PalletInfoCodec} from "../PalletInfo/PalletInfoCodec.sol";
 import {MaybeErrorCodeCodec, MaybeErrorCode} from "../../v3/MaybeErrorCode.sol";
