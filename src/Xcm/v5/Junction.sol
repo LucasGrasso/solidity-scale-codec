@@ -2,7 +2,8 @@
 pragma solidity ^0.8.28;
 
 import {BodyIdCodec, BodyId} from "./BodyId.sol";
-import {BodyPartCodec, BodyPart} from "./BodyPart.sol";
+import {BodyPart} from "./BodyPart/BodyPart.sol";
+import {BodyPartCodec} from "./BodyPart/BodyPartCodec.sol";
 import {NetworkIdCodec, NetworkId} from "./NetworkId.sol";
 import {Bytes32} from "../../Scale/Bytes.sol";
 import {Address} from "../../Scale/Address.sol";
