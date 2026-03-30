@@ -1,24 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {Weight} from "./Weight/Weight.sol";
-import {WeightCodec} from "./Weight/WeightCodec.sol";
-
-/// @notice Discriminant for the `WeightLimit` enum.
-enum WeightLimitType {
-    /// @custom:variant No limit on weight.
-    Unlimited,
-    /// @custom:variant A specific weight limit.
-    Limited
-}
-
-/// @notice An optional weight limit.
-struct WeightLimit {
-    /// @custom:property The type of the weight limit. See `WeightLimitType` enum for possible values.
-    WeightLimitType wlType;
-    /// @custom:property The SCALE-encoded `Weight`. Only meaningful when `wlType` is `Limited`.
-    bytes payload;
-}
+import {Weight} from "../Weight/Weight.sol";
+import {WeightCodec} from "../Weight/WeightCodec.sol";
+import {WeightLimit, WeightLimitType} from "./WeightLimit.sol";
 
 /// @title SCALE Codec for XCM v5 `WeightLimit`
 /// @notice SCALE-compliant encoder/decoder for the `WeightLimit` type.
@@ -27,25 +12,6 @@ struct WeightLimit {
 library WeightLimitCodec {
     error InvalidWeightLimitLength();
     error InvalidWeightLimitType(uint8 wlType);
-
-    /// @notice Creates an `Unlimited` weight limit.
-    /// @return A `WeightLimit` struct representing no limit.
-    function unlimited() internal pure returns (WeightLimit memory) {
-        return WeightLimit({wlType: WeightLimitType.Unlimited, payload: ""});
-    }
-
-    /// @notice Creates a `Limited` weight limit with the given `Weight`.
-    /// @param weight The weight limit.
-    /// @return A `WeightLimit` struct representing the given limit.
-    function limited(
-        Weight memory weight
-    ) internal pure returns (WeightLimit memory) {
-        return
-            WeightLimit({
-                wlType: WeightLimitType.Limited,
-                payload: WeightCodec.encode(weight)
-            });
-    }
 
     /// @notice Encodes a `WeightLimit` struct into SCALE bytes.
     /// @param wl The `WeightLimit` struct to encode.
