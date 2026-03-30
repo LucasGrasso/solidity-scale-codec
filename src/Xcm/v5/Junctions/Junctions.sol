@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {Junction} from "../Junction.sol";
+import {Junction} from "../Junction/Junction.sol";
 
 /// @dev The `Junctions` struct represents a sequence of up to 8 `Junction` items, prefixed by a count.
 struct Junctions {
