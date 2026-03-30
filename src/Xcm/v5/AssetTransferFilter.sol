@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {AssetFilterCodec, AssetFilter} from "./AssetFilter.sol";
+import {AssetFilter} from "./AssetFilter/AssetFilter.sol";
+import {AssetFilterCodec} from "./AssetFilter/AssetFilterCodec.sol";
 
 /// @notice Discriminant for the `AssetTransferFilter` enum.
 enum AssetTransferFilterType {
