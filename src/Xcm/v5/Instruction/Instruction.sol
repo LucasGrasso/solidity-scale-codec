@@ -42,7 +42,7 @@ import {Bool} from "../../../Scale/Bool/Bool.sol";
 import {Bytes32} from "../../../Scale/Bytes/Bytes32.sol";
 import {LittleEndianU32} from "../../../LittleEndian/LittleEndianU32.sol";
 import {LittleEndianU64} from "../../../LittleEndian/LittleEndianU64.sol";
-import {U8Arr} from "../../../Scale/Array/U8Arr.sol";
+import {Bytes} from "../../../Scale/Bytes/Bytes.sol";
 
 /// @notice An error indicating that an instruction was invalid in some way, such as having malformed parameters or parameters that violate expected bounds.
 error InvalidInstruction();
@@ -213,7 +213,7 @@ struct TransactParams {
     bool hasFallbackMaxWeight;
     /// @custom:property Compatibility fallback weight, corresponding to v4 `require_weight_at_most`.
     Weight fallbackMaxWeight;
-    /// @custom:property The encoded transaction to dispatch. SCALE-encoded DoubleEncoded<Call>.
+    /// @custom:property The raw encoded call bytes (`DoubleEncoded<Call>.encoded`, equivalent to Rust `Vec<u8>`). The `Transact` factory SCALE-encodes this as `Vec<u8>` (Compact length + bytes).
     bytes call;
 }
 
@@ -392,7 +392,7 @@ struct ExpectTransactStatusParams {
 /// @notice Params for `QueryPallet`.
 struct QueryPalletParams {
     /// @custom:property Pallet module name to query.
-    uint8[] moduleName;
+    bytes moduleName;
     /// @custom:property Information for constructing and sending the query response.
     QueryResponseInfo responseInfo;
 }
@@ -402,9 +402,9 @@ struct ExpectPalletParams {
     /// @custom:property Expected pallet index.
     uint32 index;
     /// @custom:property Expected pallet name.
-    uint8[] name;
+    bytes name;
     /// @custom:property Expected pallet module name.
-    uint8[] moduleName;
+    bytes moduleName;
     /// @custom:property Expected crate major version.
     uint32 crateMajor;
     /// @custom:property Minimum acceptable crate minor version.
@@ -638,11 +638,7 @@ function transact(
             WeightCodec.encode(params.fallbackMaxWeight)
         );
     }
-    payload = abi.encodePacked(
-        payload,
-        Compact.encode(params.call.length),
-        params.call
-    );
+    payload = abi.encodePacked(payload, Bytes.encode(params.call));
     return Instruction({iType: InstructionType.Transact, payload: payload});
 }
 
@@ -958,7 +954,7 @@ function queryPallet(
         Instruction({
             iType: InstructionType.QueryPallet,
             payload: abi.encodePacked(
-                U8Arr.encode(params.moduleName),
+                Bytes.encode(params.moduleName),
                 QueryResponseInfoCodec.encode(params.responseInfo)
             )
         });
@@ -973,8 +969,8 @@ function expectPallet(
             iType: InstructionType.ExpectPallet,
             payload: abi.encodePacked(
                 Compact.encode(params.index),
-                U8Arr.encode(params.name),
-                U8Arr.encode(params.moduleName),
+                Bytes.encode(params.name),
+                Bytes.encode(params.moduleName),
                 Compact.encode(params.crateMajor),
                 Compact.encode(params.minCrateMinor)
             )
@@ -1219,4 +1215,3 @@ function setHints(
     }
     return Instruction({iType: InstructionType.SetHints, payload: payload});
 }
-
