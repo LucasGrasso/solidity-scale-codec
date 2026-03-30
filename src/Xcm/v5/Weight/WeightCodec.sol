@@ -1,15 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {Compact} from "../../Scale/Compact.sol";
-
-/// @notice Weight v2 used for measurement for an XCM execution
-struct Weight {
-    /// @custom:property The computational time used to execute some logic based on reference hardware.
-    uint64 refTime;
-    /// @custom:property The size of the proof needed to execute some logic.
-    uint64 proofSize;
-}
+import {Compact} from "../../../Scale/Compact.sol";
+import {Weight} from "./Weight.sol";
 
 /// @title SCALE Codec for XCM v5 `Weight`
 /// @notice SCALE-compliant encoder/decoder for the `Weight` type.

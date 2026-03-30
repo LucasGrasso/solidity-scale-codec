@@ -2,7 +2,8 @@
 pragma solidity ^0.8.28;
 
 import {LocationCodec, Location} from "../Location.sol";
-import {WeightCodec, Weight} from "../Weight.sol";
+import {Weight} from "../Weight/Weight.sol";
+import {WeightCodec} from "../Weight/WeightCodec.sol";
 import {QueryId} from "../Types/QueryId.sol";
 import {Compact} from "../../../Scale/Compact.sol";
 import {QueryResponseInfo} from "./QueryResponseInfo.sol";

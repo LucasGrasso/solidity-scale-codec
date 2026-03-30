@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {WeightCodec, Weight} from "./Weight.sol";
+import {Weight} from "./Weight/Weight.sol";
+import {WeightCodec} from "./Weight/WeightCodec.sol";
 
 /// @notice Discriminant for the `WeightLimit` enum.
 enum WeightLimitType {
