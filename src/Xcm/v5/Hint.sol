@@ -96,7 +96,7 @@ library HintCodec {
     /// @notice Decodes the `Location` from an `AssetClaimer` hint.
     /// @param hint The `Hint` struct. Must be of type `AssetClaimer`.
     /// @return The claimer `Location`.
-    function decodeAssetClaimer(
+    function asAssetClaimer(
         Hint memory hint
     ) internal pure returns (Location memory) {
         if (hint.hType != HintType.AssetClaimer)

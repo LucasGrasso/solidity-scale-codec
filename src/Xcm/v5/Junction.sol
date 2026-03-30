@@ -345,7 +345,7 @@ library JunctionCodec {
     /// @notice Decodes a `Parachain` junction from a given `Junction` struct, extracting the parachain ID.
     /// @param junction The `Junction` struct to decode, which should represent a `Parachain` junction.
     /// @return parachainId The ID of the parachain extracted from the junction's payload.
-    function decodeParachain(
+    function asParachain(
         Junction memory junction
     ) internal pure returns (uint32 parachainId) {
         if (junction.jType != JunctionType.Parachain)
@@ -363,7 +363,7 @@ library JunctionCodec {
     /// @notice Decodes an `AccountId32` junction from a given `Junction` struct, extracting the network information and account ID.
     /// @param junction The `Junction` struct to decode, which should represent an `AccountId32` junction.
     /// @return params An `AccountId32Params` struct containing the decoded network information and account ID.
-    function decodeAccountId32(
+    function asAccountId32(
         Junction memory junction
     ) internal pure returns (AccountId32Params memory params) {
         if (junction.jType != JunctionType.AccountId32)
@@ -393,7 +393,7 @@ library JunctionCodec {
     /// @notice Decodes an `AccountIndex64` junction from a given `Junction` struct, extracting the network information and account index.
     /// @param junction The `Junction` struct to decode, which should represent an `AccountIndex64` junction.
     /// @return params An `AccountIndex64Params` struct containing the decoded network information and account index.
-    function decodeAccountIndex64(
+    function asAccountIndex64(
         Junction memory junction
     ) internal pure returns (AccountIndex64Params memory params) {
         if (junction.jType != JunctionType.AccountIndex64)
@@ -430,7 +430,7 @@ library JunctionCodec {
     /// @notice Decodes an `AccountKey20` junction from a given `Junction` struct, extracting the network information and account key.
     /// @param junction The `Junction` struct to decode, which should represent an `AccountKey20` junction.
     /// @return params An `AccountKey20Params` struct containing the decoded network information and account key.
-    function decodeAccountKey20(
+    function asAccountKey20(
         Junction memory junction
     ) internal pure returns (AccountKey20Params memory params) {
         if (junction.jType != JunctionType.AccountKey20)
@@ -460,7 +460,7 @@ library JunctionCodec {
     /// @notice Decodes a `PalletInstance` junction from a given `Junction` struct, extracting the pallet instance index.
     /// @param junction The `Junction` struct to decode, which should represent a `PalletInstance` junction.
     /// @return instance The index of the pallet instance extracted from the junction's payload.
-    function decodePalletInstance(
+    function asPalletInstance(
         Junction memory junction
     ) internal pure returns (uint8 instance) {
         if (junction.jType != JunctionType.PalletInstance)
@@ -472,7 +472,7 @@ library JunctionCodec {
     /// @notice Decodes a `GeneralIndex` junction from a given `Junction` struct, extracting the general index.
     /// @param junction The `Junction` struct to decode, which should represent a `GeneralIndex` junction.
     /// @return index The general index extracted from the junction's payload.
-    function decodeGeneralIndex(
+    function asGeneralIndex(
         Junction memory junction
     ) internal pure returns (uint128 index) {
         if (junction.jType != JunctionType.GeneralIndex)
@@ -490,7 +490,7 @@ library JunctionCodec {
     /// @notice Decodes a `GeneralKey` junction from a given `Junction` struct, extracting the key.
     /// @param junction The `Junction` struct to decode, which should represent a `GeneralKey` junction.
     /// @return params A `GeneralKeyParams` struct containing the length and key extracted from the junction's payload.
-    function decodeGeneralKey(
+    function asGeneralKey(
         Junction memory junction
     ) internal pure returns (GeneralKeyParams memory params) {
         if (junction.jType != JunctionType.GeneralKey)
@@ -506,7 +506,7 @@ library JunctionCodec {
     /// @notice Decodes a `Plurality` junction from a given `Junction` struct, extracting the body ID and body part.
     /// @param junction The `Junction` struct to decode, which should represent a `Plurality` junction.
     /// @return params A `PluralityParams` struct containing the body ID and body part extracted from the junction's payload.
-    function decodePlurality(
+    function asPlurality(
         Junction memory junction
     ) internal pure returns (PluralityParams memory params) {
         if (junction.jType != JunctionType.Plurality)
@@ -525,7 +525,7 @@ library JunctionCodec {
     /// @notice Decodes an `GlobalConsensus` junction from a given `Junction` struct and extracts the `NetworkId`.
     /// @param junction The `Junction` struct to decode, which should represent a `GlobalConsensus` junction.
     /// @return networkId The `NetworkId` extracted from the junction's payload, representing the global network's consensus.
-    function decodeGlobalConsensus(
+    function asGlobalConsensus(
         Junction memory junction
     ) internal pure returns (NetworkId memory networkId) {
         if (junction.jType != JunctionType.GlobalConsensus)

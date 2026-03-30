@@ -201,10 +201,10 @@ library AssetInstanceCodec {
         bytesRead = 1 + payloadLength;
     }
 
-    /// @notice Decodes an `Index` asset instance, returning the index value.
+    /// @notice Extracts the index value from an `Index` asset instance. Reverts if the asset instance is not of type `Index` or if the decoded index exceeds the maximum value for `uint128`.
     /// @param assetInstance The `AssetInstance` struct to decode, which must have type `Index`.
     /// @return idx The index value extracted from the asset instance.
-    function decodeIndex(
+    function asIndex(
         AssetInstance memory assetInstance
     ) internal pure returns (uint128 idx) {
         if (assetInstance.iType != AssetInstanceType.Index) {
@@ -219,10 +219,10 @@ library AssetInstanceCodec {
         }
     }
 
-    /// @notice Decodes an `Array4` asset instance, returning the 4-byte data.
+    /// @notice Extracts the 4-byte data from an `Array4` asset instance. Reverts if the asset instance is not of type `Array4`.
     /// @param assetInstance The `AssetInstance` struct to decode, which must have type `Array4`.
     /// @return data The 4-byte data extracted from the asset instance.
-    function decodeArray4(
+    function asArray4(
         AssetInstance memory assetInstance
     ) internal pure returns (bytes4 data) {
         if (assetInstance.iType != AssetInstanceType.Array4) {
@@ -231,10 +231,10 @@ library AssetInstanceCodec {
         return Bytes4.decode(assetInstance.payload);
     }
 
-    /// @notice Decodes an `Array8` asset instance, returning the 8-byte data.
+    /// @notice Extracts the 8-byte data from an `Array8` asset instance. Reverts if the asset instance is not of type `Array8`.
     /// @param assetInstance The `AssetInstance` struct to decode, which must have type `Array8`.
     /// @return data The 8-byte data extracted from the asset instance.
-    function decodeArray8(
+    function asArray8(
         AssetInstance memory assetInstance
     ) internal pure returns (bytes8 data) {
         if (assetInstance.iType != AssetInstanceType.Array8) {
@@ -243,10 +243,10 @@ library AssetInstanceCodec {
         return Bytes8.decode(assetInstance.payload);
     }
 
-    /// @notice Decodes an `Array16` asset instance, returning the 16-byte data.
+    /// @notice Extracts the 16-byte data from an `Array16` asset instance. Reverts if the asset instance is not of type `Array16`.
     /// @param assetInstance The `AssetInstance` struct to decode, which must have type `Array16`.
     /// @return data The 16-byte data extracted from the asset instance.
-    function decodeArray16(
+    function asArray16(
         AssetInstance memory assetInstance
     ) internal pure returns (bytes16 data) {
         if (assetInstance.iType != AssetInstanceType.Array16) {
@@ -255,10 +255,10 @@ library AssetInstanceCodec {
         return Bytes16.decode(assetInstance.payload);
     }
 
-    /// @notice Decodes an `Array32` asset instance, returning the 32-byte data.
+    /// @notice Extracts the 32-byte data from an `Array32` asset instance. Reverts if the asset instance is not of type `Array32`.
     /// @param assetInstance The `AssetInstance` struct to decode, which must have type `Array32`.
     /// @return data The 32-byte data extracted from the asset instance.
-    function decodeArray32(
+    function asArray32(
         AssetInstance memory assetInstance
     ) internal pure returns (bytes32 data) {
         if (assetInstance.iType != AssetInstanceType.Array32) {

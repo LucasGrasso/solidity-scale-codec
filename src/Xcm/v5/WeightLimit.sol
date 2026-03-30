@@ -110,7 +110,7 @@ library WeightLimitCodec {
     /// @notice Decodes the `Weight` from a `Limited` weight limit.
     /// @param wl The `WeightLimit` struct. Must be of type `Limited`.
     /// @return The decoded `Weight`.
-    function decodeWeight(
+    function asWeight(
         WeightLimit memory wl
     ) internal pure returns (Weight memory) {
         if (wl.wlType != WeightLimitType.Limited)

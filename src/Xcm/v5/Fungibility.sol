@@ -137,7 +137,7 @@ library FungibilityCodec {
     /// @notice Decodes a `Fungibility` struct representing a fungible asset and extracts the amount.
     /// @param fungibility The `Fungibility` struct to decode, which must have `fType` equal to `FungibilityType.Fungible`.
     /// @return amount The number of units of the fungible asset, as a `uint128`.
-    function decodeFungible(
+    function asFungible(
         Fungibility memory fungibility
     ) internal pure returns (uint128 amount) {
         if (fungibility.fType != FungibilityType.Fungible) {
@@ -155,7 +155,7 @@ library FungibilityCodec {
     /// @notice Decodes a `Fungibility` struct representing a non-fungible asset and extracts the instance identifier.
     /// @param fungibility The `Fungibility` struct to decode, which must have `fType` equal to `FungibilityType.NonFungible`.
     /// @return instance The `AssetInstance` struct identifying the specific instance of the non-fungible asset.
-    function decodeNonFungible(
+    function asNonFungible(
         Fungibility memory fungibility
     ) internal pure returns (AssetInstance memory instance) {
         if (fungibility.fType != FungibilityType.NonFungible) {

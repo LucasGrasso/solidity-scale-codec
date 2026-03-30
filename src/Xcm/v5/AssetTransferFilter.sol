@@ -136,10 +136,10 @@ library AssetTransferFilterCodec {
         bytesRead = size;
     }
 
-    /// @notice Decodes the inner `AssetFilter` from an `AssetTransferFilter`.
+    /// @notice Extracts the inner `AssetFilter` from an `AssetTransferFilter`.
     /// @param atf The `AssetTransferFilter` struct to decode.
     /// @return The inner `AssetFilter`.
-    function decodeInner(
+    function asInner(
         AssetTransferFilter memory atf
     ) internal pure returns (AssetFilter memory) {
         return AssetFilterCodec.decode(atf.payload);

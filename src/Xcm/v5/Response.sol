@@ -213,9 +213,7 @@ library ResponseCodec {
     /// @notice Decodes the `Assets` from an `Assets` response.
     /// @param r The `Response` struct. Must be of type `Assets`.
     /// @return The decoded `Assets`.
-    function decodeAssets(
-        Response memory r
-    ) internal pure returns (Assets memory) {
+    function asAssets(Response memory r) internal pure returns (Assets memory) {
         if (r.rType != ResponseType.Assets)
             revert InvalidResponseType(uint8(r.rType));
         (Assets memory a, ) = AssetsCodec.decode(r.payload);
@@ -227,7 +225,7 @@ library ResponseCodec {
     /// @return hasError Whether the execution result contains an error.
     /// @return index The instruction index that caused the error. Only meaningful if `hasError` is true.
     /// @return err The XCM error. Only meaningful if `hasError` is true.
-    function decodeExecutionResult(
+    function asExecutionResult(
         Response memory r
     ) internal pure returns (bool hasError, uint32 index, XcmError memory err) {
         if (r.rType != ResponseType.ExecutionResult)
@@ -242,7 +240,7 @@ library ResponseCodec {
     /// @notice Decodes the version from a `Version` response.
     /// @param r The `Response` struct. Must be of type `Version`.
     /// @return The decoded version.
-    function decodeVersion(Response memory r) internal pure returns (uint32) {
+    function asVersion(Response memory r) internal pure returns (uint32) {
         if (r.rType != ResponseType.Version)
             revert InvalidResponseType(uint8(r.rType));
         return LittleEndianU32.fromLittleEndian(r.payload, 0);
@@ -251,7 +249,7 @@ library ResponseCodec {
     /// @notice Decodes the pallets info from a `PalletsInfo` response.
     /// @param r The `Response` struct. Must be of type `PalletsInfo`.
     /// @return pallets The decoded array of `PalletInfo`.
-    function decodePalletsInfo(
+    function asPalletsInfo(
         Response memory r
     ) internal pure returns (PalletInfo[] memory pallets) {
         if (r.rType != ResponseType.PalletsInfo)
@@ -269,7 +267,7 @@ library ResponseCodec {
     /// @notice Decodes the dispatch result from a `DispatchResult` response.
     /// @param r The `Response` struct. Must be of type `DispatchResult`.
     /// @return The decoded `MaybeErrorCode`.
-    function decodeDispatchResult(
+    function asDispatchResult(
         Response memory r
     ) internal pure returns (MaybeErrorCode memory) {
         if (r.rType != ResponseType.DispatchResult)

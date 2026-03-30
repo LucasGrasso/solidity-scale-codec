@@ -190,7 +190,7 @@ library NetworkIdCodec {
     /// @notice Decodes a `ByGenesis` network ID, returning the genesis hash.
     /// @param networkId The `NetworkId` struct to decode.
     /// @return genesisHash The genesis hash extracted from the network ID.
-    function decodeByGenesis(
+    function asByGenesis(
         NetworkId memory networkId
     ) internal pure returns (bytes32 genesisHash) {
         if (networkId.nType != NetworkIdType.ByGenesis)
@@ -202,7 +202,7 @@ library NetworkIdCodec {
     /// @notice Decodes a `ByFork` network ID, returning the block number and hash.
     /// @param networkId The `NetworkId` struct to decode.
     /// @return chainId The chain ID extracted from the network ID.
-    function decodeEthereum(
+    function asEthereum(
         NetworkId memory networkId
     ) internal pure returns (uint64 chainId) {
         if (networkId.nType != NetworkIdType.Ethereum)

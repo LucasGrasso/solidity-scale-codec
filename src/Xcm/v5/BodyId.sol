@@ -199,7 +199,7 @@ library BodyIdCodec {
     /// @notice Helper function to decode a `BodyId` and extract the moniker name if the type is `Moniker`.
     /// @param bodyId The `BodyId` to extract the moniker name from.
     /// @return name The 4-byte name of the moniker if the `bodyIdType` is `Moniker`.
-    function decodeMoniker(
+    function asMoniker(
         BodyId memory bodyId
     ) internal pure returns (bytes4 name) {
         if (bodyId.bodyIdType != BodyIdType.Moniker) {
@@ -211,9 +211,7 @@ library BodyIdCodec {
     /// @notice Helper function to decode a `BodyId` and extract the index if the type is `Index`.
     /// @param bodyId The `BodyId` to extract the index from.
     /// @return idx The index of the body if the `bodyIdType` is `Index`.
-    function decodeIndex(
-        BodyId memory bodyId
-    ) internal pure returns (uint32 idx) {
+    function asIndex(BodyId memory bodyId) internal pure returns (uint32 idx) {
         if (bodyId.bodyIdType != BodyIdType.Index) {
             revert InvalidBodyIdType(uint8(bodyId.bodyIdType));
         }

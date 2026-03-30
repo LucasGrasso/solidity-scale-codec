@@ -177,7 +177,7 @@ library XcmErrorCodec {
     /// @notice Decodes the trap code from a `Trap` error.
     /// @param e The `XcmError` struct to decode, which must be of type `Trap`.
     /// @return code The decoded u64 trap code.
-    function decodeTrap(XcmError memory e) internal pure returns (uint64 code) {
+    function asTrap(XcmError memory e) internal pure returns (uint64 code) {
         if (e.eType != XcmErrorType.Trap)
             revert InvalidXcmError(uint8(e.eType));
         uint256 decoded = LittleEndianU64.fromLittleEndian(e.payload, 0);

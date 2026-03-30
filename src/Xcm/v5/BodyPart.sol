@@ -189,7 +189,7 @@ library BodyPartCodec {
     /// @notice Decodes a `Members` body part to extract the member count.
     /// @param bodyPart The `BodyPart` struct to decode, which must be of type `Members`.
     /// @return count The number of members encoded in the body part's payload.
-    function decodeMembers(
+    function asMembers(
         BodyPart memory bodyPart
     ) internal pure returns (uint32 count) {
         if (bodyPart.bodyPartId != BodyPartId.Members) {
@@ -203,7 +203,7 @@ library BodyPartCodec {
     /// @param bodyPart The `BodyPart` struct to decode, which must be of type `Fraction`, `AtLeastProportion`, or `MoreThanProportion`.
     /// @return nominator The numerator of the proportion encoded in the body part's payload.
     /// @return denominator The denominator of the proportion encoded in the body part's payload.
-    function decodeProportion(
+    function asProportion(
         BodyPart memory bodyPart
     ) internal pure returns (uint32 nominator, uint32 denominator) {
         if (

@@ -118,10 +118,10 @@ library AssetFilterCodec {
         assetFilter.payload = payload;
     }
 
-    /// @notice Decodes an `AssetFilter` struct with the `Definite` variant, extracting the inner `Assets` collection. Reverts if the `AssetFilter` is not of the `Definite` variant.
+    /// @notice Extracs the inner `Assets` collection. Reverts if the `AssetFilter` is not of the `Definite` variant.
     /// @param assetFilter The `AssetFilter` struct to decode, which must have the `Definite` variant.
     /// @return assets The `Assets` collection contained within the `AssetFilter` if it is of the `Definite` variant.
-    function decodeDefinite(
+    function asDefinite(
         AssetFilter memory assetFilter
     ) internal pure returns (Assets memory assets) {
         if (assetFilter.afType != AssetFilterType.Definite) {
@@ -130,10 +130,10 @@ library AssetFilterCodec {
         (assets, ) = AssetsCodec.decode(assetFilter.payload);
     }
 
-    /// @notice Decodes an `AssetFilter` struct with the `Wild` variant, extracting the inner `WildAsset` wildcard. Reverts if the `AssetFilter` is not of the `Wild` variant.
+    /// @notice Extracts the inner `WildAsset` wildcard. Reverts if the `AssetFilter` is not of the `Wild` variant.
     /// @param assetFilter The `AssetFilter` struct to decode, which must have the `Wild` variant.
     /// @return wA The `WildAsset` wildcard contained within the `AssetFilter` if it is of the `Wild` variant.
-    function decodeWild(
+    function asWild(
         AssetFilter memory assetFilter
     ) internal pure returns (WildAsset memory wA) {
         if (assetFilter.afType != AssetFilterType.Wild) {

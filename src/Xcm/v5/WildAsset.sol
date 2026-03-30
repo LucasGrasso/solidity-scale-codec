@@ -25,8 +25,8 @@ struct AllOfParams {
     WildFungibility fun;
 }
 
-/// @notice Parameters for the `AllCounted` variant of `WildAsset`, specifying a limit of assets to match against.
-struct AllCountedParams {
+/// @notice Parameters for the `AllOfCounted` variant of `WildAsset`, specifying a limit of assets to match against.
+struct AllOfCountedParams {
     /// @custom:property The asset class to match against.
     AssetId id;
     /// @custom:property The fungibility to match against.
@@ -191,5 +191,62 @@ library WildAssetCodec {
             wildAsset.payload[i] = data[offset + 1 + i];
         }
         bytesRead = 1 + payloadLength;
+    }
+
+    /// @notice Decodes the parameters of a `WildAsset` with the `AllOf` variant from its payload.
+    /// @param wildAsset The `WildAsset` struct. Must have the `AllOf` variant.
+    /// @return params An `AllOfParams` struct containing the decoded parameters from the payload.
+    function asAllOf(
+        WildAsset memory wildAsset
+    ) internal pure returns (AllOfParams memory params) {
+        if (wildAsset.waType != WildAssetType.AllOf) {
+            revert InvalidWildAssetType(uint8(wildAsset.waType));
+        }
+        uint256 bytesRead;
+        (params.id, bytesRead) = AssetIdCodec.decode(wildAsset.payload);
+        (params.fun, ) = WildFungibilityCodec.decodeAt(
+            wildAsset.payload,
+            bytesRead
+        );
+    }
+
+    /// @notice Decodes the parameters of a `WildAsset` with the `AllCounted` variant from its payload.
+    /// @param wildAsset The `WildAsset` struct. Must have the `AllCounted` variant.
+    /// @return count The `count` parameter decoded from the payload, representing the limit of assets to match against.
+    function asAllCounted(
+        WildAsset memory wildAsset
+    ) internal pure returns (uint32 count) {
+        if (wildAsset.waType != WildAssetType.AllCounted) {
+            revert InvalidWildAssetType(uint8(wildAsset.waType));
+        }
+        uint256 decodedCount;
+        (decodedCount, ) = Compact.decode(wildAsset.payload);
+        count = uint32(decodedCount);
+    }
+
+    /// @notice Decodes the parameters of a `WildAsset` with the `AllOfCounted` variant from its payload.
+    /// @param wildAsset The `WildAsset` struct. Must have the `AllOfCounted` variant.
+    /// @return params An `AllOfCountedParams` struct containing the decoded parameters from the payload, including the asset class, fungibility, and count limit.
+    function asAllOfCounted(
+        WildAsset memory wildAsset
+    ) internal pure returns (AllOfCountedParams memory params) {
+        if (wildAsset.waType != WildAssetType.AllOfCounted) {
+            revert InvalidWildAssetType(uint8(wildAsset.waType));
+        }
+        uint256 offset = 0;
+        uint256 bytesRead;
+        (params.id, bytesRead) = AssetIdCodec.decodeAt(
+            wildAsset.payload,
+            offset
+        );
+        offset += bytesRead;
+        (params.fun, bytesRead) = WildFungibilityCodec.decodeAt(
+            wildAsset.payload,
+            offset
+        );
+        offset += bytesRead;
+        uint256 decodedCount;
+        (decodedCount, ) = Compact.decodeAt(wildAsset.payload, offset);
+        params.count = uint32(decodedCount);
     }
 }
