@@ -16,7 +16,7 @@ library AssetsCodec {
     error InvalidAssetsPayload();
 
     /// @notice Encodes an `Assets` struct into bytes.
-    /// @param assets The `Assets` struct to encode. Asumes that the `items` array is properly constructed according to the invariants specified in the `Assets` struct definition.
+    /// @param assets The `Assets` struct to encode. Assumes that the `items` array is properly constructed according to the invariants specified in the `Assets` struct definition.
     /// @return SCALE-encoded byte sequence representing the `Assets`.
     function encode(Assets memory assets) internal pure returns (bytes memory) {
         bytes memory encoded = Compact.encode(assets.items.length);
