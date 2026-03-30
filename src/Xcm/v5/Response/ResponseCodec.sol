@@ -50,6 +50,7 @@ library ResponseCodec {
             if (isSome == 0) return 2; // 1 type + 1 None byte
             return 2 + 4 + XcmErrorCodec.encodedSizeAt(data, pos + 1 + 4);
         } else if (rType == uint8(ResponseType.Version)) {
+            if (data.length < pos + 4) revert InvalidResponseLength();
             return 1 + 4; // 1 type + 4 bytes for version
         } else if (rType == uint8(ResponseType.PalletsInfo)) {
             (uint256 count, uint256 prefixSize) = Compact.decodeAt(data, pos);

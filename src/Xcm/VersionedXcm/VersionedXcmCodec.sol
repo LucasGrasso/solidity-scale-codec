@@ -50,6 +50,7 @@ library VersionedXcmCodec {
         pure
         returns (VersionedXcm memory versionedXcm, uint256 bytesRead)
     {
+        if (data.length < offset + 1) revert InvalidVersionedXcmLength();
         XcmVersion version = XcmVersion(uint8(data[offset]));
         uint256 xcmByteLength;
         bytes memory xcmBytes;
