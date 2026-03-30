@@ -32,7 +32,9 @@ library BoolArr {
         uint256 offset
     ) internal pure returns (uint256) {
         (uint256 count, uint256 prefixSize) = Compact.decodeAt(data, offset);
-        return prefixSize + (count * 1);
+        uint256 totalSize = prefixSize + (count * 1);
+        if (offset + totalSize > data.length) revert InvalidBoolArrLength();
+        return totalSize;
     }
 
     /// @notice Decodes an `bool[]` from SCALE format.

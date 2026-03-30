@@ -32,7 +32,9 @@ library U64Arr {
         uint256 offset
     ) internal pure returns (uint256) {
         (uint256 count, uint256 prefixSize) = Compact.decodeAt(data, offset);
-        return prefixSize + (count * 8);
+        uint256 totalSize = prefixSize + (count * 8);
+        if (offset + totalSize > data.length) revert InvalidU64ArrLength();
+        return totalSize;
     }
 
     /// @notice Decodes an `uint64[]` from SCALE format.

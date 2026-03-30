@@ -29,7 +29,9 @@ library {{Type}}Arr {
 	/// @return The number of bytes that the `{{type}}[]` would occupy when SCALE-encoded.
 	function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
 		(uint256 count, uint256 prefixSize) = Compact.decodeAt(data, offset);
-    	return prefixSize + (count * {{size}});
+		uint256 totalSize = prefixSize + (count * {{size}});
+		if (offset + totalSize > data.length) revert Invalid{{Type}}ArrLength();
+		return totalSize;
 	}
 
 	/// @notice Decodes an `{{type}}[]` from SCALE format.

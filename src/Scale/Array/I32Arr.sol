@@ -32,7 +32,9 @@ library I32Arr {
         uint256 offset
     ) internal pure returns (uint256) {
         (uint256 count, uint256 prefixSize) = Compact.decodeAt(data, offset);
-        return prefixSize + (count * 4);
+        uint256 totalSize = prefixSize + (count * 4);
+        if (offset + totalSize > data.length) revert InvalidI32ArrLength();
+        return totalSize;
     }
 
     /// @notice Decodes an `int32[]` from SCALE format.

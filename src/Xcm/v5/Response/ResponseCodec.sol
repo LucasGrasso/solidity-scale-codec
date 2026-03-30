@@ -45,6 +45,7 @@ library ResponseCodec {
         } else if (rType == uint8(ResponseType.Assets)) {
             return 1 + AssetsCodec.encodedSizeAt(data, pos);
         } else if (rType == uint8(ResponseType.ExecutionResult)) {
+            if (data.length < pos + 1) revert InvalidResponseLength();
             uint8 isSome = uint8(data[pos]);
             if (isSome == 0) return 2; // 1 type + 1 None byte
             return 2 + 4 + XcmErrorCodec.encodedSizeAt(data, pos + 1 + 4);

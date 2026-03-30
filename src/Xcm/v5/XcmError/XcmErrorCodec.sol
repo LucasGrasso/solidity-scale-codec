@@ -33,6 +33,7 @@ library XcmErrorCodec {
         if (raw > uint8(XcmErrorType.TooManyAssets))
             revert InvalidXcmError(raw);
         if (raw == uint8(XcmErrorType.Trap)) {
+            if (data.length < offset + 9) revert InvalidXcmErrorLength();
             return 1 + 8; // 1 byte for the error type and 8 bytes for the u64 trap code
         }
         return 1;

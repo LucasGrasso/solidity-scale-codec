@@ -32,7 +32,9 @@ library I256Arr {
         uint256 offset
     ) internal pure returns (uint256) {
         (uint256 count, uint256 prefixSize) = Compact.decodeAt(data, offset);
-        return prefixSize + (count * 32);
+        uint256 totalSize = prefixSize + (count * 32);
+        if (offset + totalSize > data.length) revert InvalidI256ArrLength();
+        return totalSize;
     }
 
     /// @notice Decodes an `int256[]` from SCALE format.

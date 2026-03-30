@@ -32,7 +32,9 @@ library U16Arr {
         uint256 offset
     ) internal pure returns (uint256) {
         (uint256 count, uint256 prefixSize) = Compact.decodeAt(data, offset);
-        return prefixSize + (count * 2);
+        uint256 totalSize = prefixSize + (count * 2);
+        if (offset + totalSize > data.length) revert InvalidU16ArrLength();
+        return totalSize;
     }
 
     /// @notice Decodes an `uint16[]` from SCALE format.
