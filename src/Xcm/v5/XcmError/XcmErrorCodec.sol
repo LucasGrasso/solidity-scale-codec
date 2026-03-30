@@ -78,6 +78,7 @@ library XcmErrorCodec {
     function asTrap(XcmError memory e) internal pure returns (uint64 code) {
         if (e.eType != XcmErrorType.Trap)
             revert InvalidXcmError(uint8(e.eType));
+        if (e.payload.length != 8) revert InvalidXcmErrorPayload();
         uint256 decoded = LittleEndianU64.fromLittleEndian(e.payload, 0);
         code = uint64(decoded);
     }

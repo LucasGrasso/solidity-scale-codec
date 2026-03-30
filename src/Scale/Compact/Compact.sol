@@ -68,6 +68,8 @@ library Compact {
             uint8 m = (header >> 2) + 4;
             size = 1 + m;
         }
+
+        if (data.length < offset + size) revert OffsetOutOfBounds();
     }
 
     ///@notice Decodes a uint256 value from SCALE Compact format
@@ -101,11 +103,13 @@ library Compact {
             value = uint256(header) >> 2;
             bytesRead = 1;
         } else if (mode == MODE_TWO) {
+            if (data.length < offset + 2) revert OffsetOutOfBounds();
             value =
                 uint256(LittleEndianU16.fromLittleEndian(data, offset)) >>
                 2;
             bytesRead = 2;
         } else if (mode == MODE_FOUR) {
+            if (data.length < offset + 4) revert OffsetOutOfBounds();
             value =
                 uint256(LittleEndianU32.fromLittleEndian(data, offset)) >>
                 2;
@@ -113,6 +117,7 @@ library Compact {
         } else {
             uint8 m = (header >> 2) + 4;
             if (m > 32) revert ValueOutOfRange();
+            if (data.length < offset + 1 + m) revert OffsetOutOfBounds();
             value = LittleEndianU256.fromLittleEndian(data, offset + 1);
             if (m < 32) {
                 value &= (uint256(1) << (uint256(m) * 8)) - 1; // zero out bytes beyond m

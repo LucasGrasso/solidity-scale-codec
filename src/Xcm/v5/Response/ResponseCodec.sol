@@ -123,8 +123,10 @@ library ResponseCodec {
     ) internal pure returns (bool hasError, uint32 index, XcmError memory err) {
         if (r.rType != ResponseType.ExecutionResult)
             revert InvalidResponseType(uint8(r.rType));
+        if (r.payload.length < 1) revert InvalidResponseLength();
         hasError = r.payload[0] != 0;
         if (hasError) {
+            if (r.payload.length < 4) revert InvalidResponseLength();
             index = LittleEndianU32.fromLittleEndian(r.payload, 1);
             (err, ) = XcmErrorCodec.decodeAt(r.payload, 1 + 4);
         }
@@ -136,6 +138,7 @@ library ResponseCodec {
     function asVersion(Response memory r) internal pure returns (uint32) {
         if (r.rType != ResponseType.Version)
             revert InvalidResponseType(uint8(r.rType));
+        if (r.payload.length != 4) revert InvalidResponseLength();
         return LittleEndianU32.fromLittleEndian(r.payload, 0);
     }
 
