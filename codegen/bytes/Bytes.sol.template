@@ -5,7 +5,7 @@ pragma solidity ^0.8.28;
 /// @notice SCALE-compliant encoder/decoder for the `bytes{{n}}` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library Bytes{{n}} {
-    error InvalidBytes{{n}}Lenght();
+    error InvalidBytes{{n}}Length();
 
     /// @notice Encodes an `bytes{{n}}` into SCALE format.
     /// @param value The `bytes{{n}}` to encode.
@@ -20,7 +20,7 @@ library Bytes{{n}} {
 	/// @return The number of bytes that the `bytes{{n}}` would occupy when SCALE-encoded.
     function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
         if (data.length < offset + {{n}}) {
-            revert InvalidBytes{{n}}Lenght();
+            revert InvalidBytes{{n}}Length();
         }
         return {{n}};
     }
@@ -42,7 +42,7 @@ library Bytes{{n}} {
         uint256 offset
     ) internal pure returns (bytes{{n}} value) {
         if (data.length < offset + {{n}}) {
-            revert InvalidBytes{{n}}Lenght();
+            revert InvalidBytes{{n}}Length();
         }
         assembly {
             value := mload(add(add(data, 32), offset))

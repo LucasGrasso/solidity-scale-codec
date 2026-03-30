@@ -5,7 +5,7 @@ pragma solidity ^0.8.28;
 /// @notice SCALE-compliant encoder/decoder for the `address` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library Address {
-    error InvalidAddressLenght();
+    error InvalidAddressLength();
 
     /// @notice Encodes an `address` into SCALE format (20-byte little-endian).
     /// @param value The `address` to encode.
@@ -23,7 +23,7 @@ library Address {
         uint256 offset
     ) internal pure returns (uint256) {
         if (data.length < offset + 20) {
-            revert InvalidAddressLenght();
+            revert InvalidAddressLength();
         }
         return 20;
     }
@@ -44,7 +44,7 @@ library Address {
         uint256 offset
     ) internal pure returns (address) {
         if (data.length < offset + 20) {
-            revert InvalidAddressLenght();
+            revert InvalidAddressLength();
         }
         bytes memory addrBytes = new bytes(20);
         for (uint256 i = 0; i < 20; i++) {

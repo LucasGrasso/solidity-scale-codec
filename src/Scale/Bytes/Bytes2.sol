@@ -5,7 +5,7 @@ pragma solidity ^0.8.28;
 /// @notice SCALE-compliant encoder/decoder for the `bytes2` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library Bytes2 {
-    error InvalidBytes2Lenght();
+    error InvalidBytes2Length();
 
     /// @notice Encodes an `bytes2` into SCALE format.
     /// @param value The `bytes2` to encode.
@@ -15,16 +15,18 @@ library Bytes2 {
     }
 
     /// @notice Returns the number of bytes that a `bytes2` would occupy when SCALE-encoded.
-	/// @param data The byte sequence containing the encoded `bytes2`.
-	/// @param offset The starting index in `data` from which to calculate the encoded size of the `bytes2`.
-	/// @return The number of bytes that the `bytes2` would occupy when SCALE-encoded.
-    function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
+    /// @param data The byte sequence containing the encoded `bytes2`.
+    /// @param offset The starting index in `data` from which to calculate the encoded size of the `bytes2`.
+    /// @return The number of bytes that the `bytes2` would occupy when SCALE-encoded.
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256) {
         if (data.length < offset + 2) {
-            revert InvalidBytes2Lenght();
+            revert InvalidBytes2Length();
         }
         return 2;
     }
-
 
     /// @notice Decodes SCALE-encoded bytes into an `bytes2`.
     /// @param data The SCALE-encoded byte sequence.
@@ -42,7 +44,7 @@ library Bytes2 {
         uint256 offset
     ) internal pure returns (bytes2 value) {
         if (data.length < offset + 2) {
-            revert InvalidBytes2Lenght();
+            revert InvalidBytes2Length();
         }
         assembly {
             value := mload(add(add(data, 32), offset))
