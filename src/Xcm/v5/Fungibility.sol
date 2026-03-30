@@ -2,7 +2,8 @@
 pragma solidity ^0.8.28;
 
 import {Compact} from "../../Scale/Compact.sol";
-import {AssetInstanceCodec, AssetInstance} from "./AssetInstance.sol";
+import {AssetInstance} from "./AssetInstance/AssetInstance.sol";
+import {AssetInstanceCodec} from "./AssetInstance/AssetInstanceCodec.sol";
 
 /// @dev Discriminant for the different types of Fungibility in XCM v5.
 enum FungibilityType {
