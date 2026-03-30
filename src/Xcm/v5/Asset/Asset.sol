@@ -2,7 +2,7 @@
 pragma solidity ^0.8.28;
 
 import {AssetId} from "../AssetId/AssetId.sol";
-import {Fungibility} from "../Fungibility.sol";
+import {Fungibility} from "../Fungibility/Fungibility.sol";
 
 /// @notice Either an amount of a single fungible asset, or a single well-identified non-fungible asset.
 struct Asset {

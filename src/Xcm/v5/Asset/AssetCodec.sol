@@ -3,7 +3,8 @@ pragma solidity ^0.8.28;
 
 import {AssetId} from "../AssetId/AssetId.sol";
 import {AssetIdCodec} from "../AssetId/AssetIdCodec.sol";
-import {FungibilityCodec, Fungibility} from "../Fungibility.sol";
+import {Fungibility} from "../Fungibility/Fungibility.sol";
+import {FungibilityCodec} from "../Fungibility/FungibilityCodec.sol";
 import {Asset} from "./Asset.sol";
 
 /// @title SCALE Codec for XCM v5 `Asset`
