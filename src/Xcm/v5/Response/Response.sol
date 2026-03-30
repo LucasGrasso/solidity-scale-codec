@@ -102,7 +102,9 @@ function version(uint32 version_) pure returns (Response memory) {
 /// @notice Creates a `PalletsInfo` response.
 /// @param pallets The pallet info array. Max length is MAX_PALLETS_INFO (64).
 /// @return A `Response` struct representing the pallets info response.
-function palletsInfo(PalletInfo[] memory pallets) pure returns (Response memory) {
+function palletsInfo(
+    PalletInfo[] memory pallets
+) pure returns (Response memory) {
     bytes memory encoded = Compact.encode(pallets.length);
     for (uint256 i = 0; i < pallets.length; ++i) {
         encoded = bytes.concat(encoded, PalletInfoCodec.encode(pallets[i]));

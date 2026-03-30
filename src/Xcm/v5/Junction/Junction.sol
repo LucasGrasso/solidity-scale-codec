@@ -159,7 +159,11 @@ function accountKey20(
     return
         Junction({
             jType: JunctionType.AccountKey20,
-            payload: abi.encodePacked(hasNetwork, network.encode(), key.encode())
+            payload: abi.encodePacked(
+                hasNetwork,
+                network.encode(),
+                key.encode()
+            )
         });
 }
 
@@ -216,7 +220,10 @@ function plurality(
     return
         Junction({
             jType: JunctionType.Plurality,
-            payload: abi.encodePacked(BodyIdCodec.encode(id), BodyPartCodec.encode(part))
+            payload: abi.encodePacked(
+                BodyIdCodec.encode(id),
+                BodyPartCodec.encode(part)
+            )
         });
 }
 

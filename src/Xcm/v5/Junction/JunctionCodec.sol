@@ -10,15 +10,7 @@ import {NetworkIdCodec} from "../NetworkId/NetworkIdCodec.sol";
 import {Bytes32} from "../../../Scale/Bytes.sol";
 import {Address} from "../../../Scale/Address.sol";
 import {Compact} from "../../../Scale/Compact.sol";
-import {
-    Junction,
-    JunctionType,
-    AccountId32Params,
-    PluralityParams,
-    AccountIndex64Params,
-    AccountKey20Params,
-    GeneralKeyParams
-} from "./Junction.sol";
+import {Junction, JunctionType, AccountId32Params, PluralityParams, AccountIndex64Params, AccountKey20Params, GeneralKeyParams} from "./Junction.sol";
 
 /// @title SCALE Codec for XCM v5 `Junction`
 /// @notice SCALE-compliant encoder/decoder for the `Junction` type.
