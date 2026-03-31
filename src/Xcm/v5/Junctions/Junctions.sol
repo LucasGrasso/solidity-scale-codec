@@ -7,6 +7,6 @@ import {Junction} from "../Junction/Junction.sol";
 struct Junctions {
     /// @custom:property Represents the enum discriminant, 0 = Here, 1 = X1, ..., 8 = X8
     uint8 count;
-    /// @custom:property // The actual junction data
+    /// @custom:property The actual junction data
     Junction[] items;
 }
