@@ -2,7 +2,7 @@
 
 ### Added
 
-- Documentation Site - []()
+- Documentation Site - [#eec06ff...1196986](https://github.com/LucasGrasso/solidity-scale-codec/commit/ec06ff0faa1405914893966e91bfe99d1196986)
 
 ### Changed
 
