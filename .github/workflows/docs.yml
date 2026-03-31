@@ -45,7 +45,6 @@ jobs:
           path: 'docs/.vitepress/dist'
 
   deploy:
-    if: startsWith(github.ref, 'refs/tags/v')
     needs: build-and-deploy
     environment:
       name: github-pages
