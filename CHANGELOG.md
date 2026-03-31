@@ -7,21 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]
 
+## Version 0.3.2
+
+## Changed
+
+- Better Changelog - [#288b3e9](https://github.com/LucasGrasso/solidity-scale-codec/commit/288b3e966ff1d030b7e50dcc40d0610cd30b201c)
+
 ## Version 0.3.1
 
 ### Fixed
 
-- Fix Doc Site - [#da72e55..de681ce](https://github.com/LucasGrasso/solidity-scale-codec/commit/dc4c9becb5495187078dee73932a89ffa5c7febf)
+- Fix Doc Site - [#da72e55](https://github.com/LucasGrasso/solidity-scale-codec/commit/dc4c9becb5495187078dee73932a89ffa5c7febf)
 
 ## Version 0.3
 
 ### Added
 
-- Documentation Site - [#eec06ff...1196986](https://github.com/LucasGrasso/solidity-scale-codec/commit/ec06ff0faa1405914893966e91bfe99d1196986)
+- Documentation Site - [#eec06ff](https://github.com/LucasGrasso/solidity-scale-codec/commit/ec06ff0faa1405914893966e91bfe99d1196986)
 
 ### Fixed
 
-- Fix docs in Junctions - [#de668af..e7b8edb](https://github.com/LucasGrasso/solidity-scale-codec/commit/e7b8edbfd6f965c0120cb2572f24e3c8e81c78fe)
+- Fix docs in Junctions - [#de668af](https://github.com/LucasGrasso/solidity-scale-codec/commit/e7b8edbfd6f965c0120cb2572f24e3c8e81c78fe)
 
 ## Version 0.2.0
 
