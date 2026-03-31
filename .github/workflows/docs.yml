@@ -2,6 +2,8 @@ name: Generate Documentation & Publish to GitHub Pages
 
 on:
   push:
+    tags:
+      - 'v*'
 
 permissions:
   contents: read
