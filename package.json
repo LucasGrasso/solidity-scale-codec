@@ -32,7 +32,11 @@
     "codegen-signed": "npx hardhat run codegen/signed/generate.ts",
     "codegen-unsigned": "npx hardhat run codegen/unsigned/generate.ts",
     "codegen-array": "npx hardhat run codegen/array/generate.ts",
-    "codegen-bytes": "npx hardhat run codegen/bytes/generate.ts"
+    "codegen-bytes": "npx hardhat run codegen/bytes/generate.ts",
+    "docs:gen": "solidity-docgen",
+    "docs:dev": "npm run docs:gen && vitepress dev docs",
+    "docs:build": "npm run docs:gen && vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "type": "module",
   "devDependencies": {
@@ -44,6 +48,9 @@
     "prettier": "^3.8.1",
     "prettier-plugin-solidity": "^2.2.1",
     "typescript": "~5.8.0",
-    "viem": "^2.40.3"
+    "viem": "^2.40.3",
+    "vitepress": "^1.6.4",
+    "vue": "^3.4.0",
+    "solidity-doc-generator": "^1.0.4"
   }
 }

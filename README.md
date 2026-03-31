@@ -4,6 +4,8 @@
 </a>
 <a href="https://github.com/LucasGrasso/solidity-scale-codec/blob/main/LICENSE" target="_blank"><img alt="GitHub License" src="https://img.shields.io/github/license/LucasGrasso/solidity-scale-codec"></a>
 
+📖 **[View Documentation](https://lucasgrasso.github.io/solidity-scale-codec/)** — Documentation site with API reference
+
 ## Description
 
 [Substrate](https://github.com/paritytech/substrate) uses a lightweight and efficient [encoding and decoding program](https://docs.polkadot.com/polkadot-protocol/parachain-basics/data-encoding/#data-encoding) to optimize how data is sent and received over the network. The program used to serialize and deserialize data is called the SCALE codec, with SCALE being an acronym for **S**imple **C**oncatenated **A**ggregate **L**ittle-**E**ndian.

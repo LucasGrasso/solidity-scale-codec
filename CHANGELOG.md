@@ -1,3 +1,13 @@
+## Version 0.2.1
+
+### Added
+
+- Documentation Site - []()
+
+### Changed
+
+- Fix docs in Junctions - [#de668af..e7b8edb](https://github.com/LucasGrasso/solidity-scale-codec/commit/e7b8edbfd6f965c0120cb2572f24e3c8e81c78fe)
+
 ## Version 0.2.0
 
 ### Added
