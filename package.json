@@ -47,7 +47,7 @@
     "hardhat": "^3.0.15",
     "prettier": "^3.8.1",
     "prettier-plugin-solidity": "^2.2.1",
-    "solidity-doc-generator": "^1.0.7",
+    "solidity-doc-generator": "^1.1.1",
     "typescript": "~5.8.0",
     "viem": "^2.40.3",
     "vitepress": "^1.6.4",
