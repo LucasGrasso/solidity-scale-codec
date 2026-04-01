@@ -3,7 +3,7 @@
 # Notation
 
 - Let $\mathbb{{B}}$ be the set of all byte sequences.
-- For $x \in \mathbb{{B}}$, $x_i$ denotes the $i$-th byte of $x$, and $x_i^j$ denotes the $j$-th bit of the $i$-th byte of $x$.
+- Let $x \in \mathbb{{B}}$, $x_i$ denotes the $i$-th byte of $x$, and $x_i^j$ denotes the $j$-th bit of the $i$-th byte of $x$.
 
 # Definitions
 

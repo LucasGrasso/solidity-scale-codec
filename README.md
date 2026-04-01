@@ -22,7 +22,7 @@ This library provides a Highly-Modular implementation of SCALE in solidity.
 | `Compact` | A "compact" or general integer encoding is sufficient for encoding large integers (up to 2\*\*536) and is more efficient at encoding most values than the fixed-width version. (Though for single-byte values, the fixed-width integer is never worse.) | `0`     | `0x00`     |
 | `Arrays`  | A collection of same-typed values is encoded, prefixed with a compact encoding of the number of items, followed by each item's encoding concatenated in turn. Currently `[uintN]`,`[intN]`, `[bool]` are supported.                                     | `[1,0]` | `0x080100` |
 
-See the [Definitions](DEFINITIONS.md) for more details on the encoding of different types.
+See the [Definitions](https://lucasgrasso.github.io/solidity-scale-codec/Definitions.html) for more details on the encoding of different types.
 
 ## Usage
 
