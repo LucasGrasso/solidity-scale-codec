@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 
-- Move Definitions to website docs - []()
+- Move Definitions to website docs - [#f57c914](https://github.com/LucasGrasso/solidity-scale-codec/commit/7e88534930cdb8ac47b5f16a02f2203c588a7e7f)
 
 ## Version 0.3.3
 
