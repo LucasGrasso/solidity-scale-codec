@@ -67,4 +67,15 @@ library VersionedXcmCodec {
             revert UnsupportedXcmVersion(version);
         }
     }
+
+    /// @notice Converts a `VersionedXcm` to an `XcmV5` struct, if it is of version `V5`.
+    /// @param versionedXcm The `VersionedXcm` to convert.
+    /// @return xcm The decoded `XcmV5` struct contained in the `VersionedXcm`.
+    function asV5(
+        VersionedXcm memory versionedXcm
+    ) internal pure returns (XcmV5 memory xcm) {
+        if (versionedXcm.version != XcmVersion.V5)
+            revert UnsupportedXcmVersion(versionedXcm.version);
+        (xcm, ) = XcmV5Codec.decode(versionedXcm.xcm);
+    }
 }
