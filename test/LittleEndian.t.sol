@@ -133,7 +133,7 @@ contract LittleEndianTest is Test {
         bytes8 le = LittleEndianU64.toLittleEndian(value);
         uint64 reconstructed;
         for (uint256 i = 0; i < 8; i++) {
-            reconstructed |= uint64(uint8(le[i])) << (i * 8);
+            reconstructed |= uint64(uint8(le[i])) << uint64(i * 8);
         }
         assertEq(reconstructed, value);
     }
@@ -175,7 +175,7 @@ contract LittleEndianTest is Test {
         bytes16 le = LittleEndianU128.toLittleEndian(value);
         uint128 reconstructed;
         for (uint256 i = 0; i < 16; i++) {
-            reconstructed |= uint128(uint8(le[i])) << (i * 8);
+            reconstructed |= uint128(uint8(le[i])) << uint128(i * 8);
         }
         assertEq(reconstructed, value);
     }
