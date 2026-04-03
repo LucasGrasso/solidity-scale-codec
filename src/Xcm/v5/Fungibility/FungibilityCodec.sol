@@ -86,6 +86,9 @@ library FungibilityCodec {
             revert InvalidFungibilityLength();
         }
         uint8 variant = uint8(data[offset]);
+        if (variant > uint8(type(FungibilityVariant).max) + 1) {
+            revert InvalidFungibilityVariant(variant);
+        }
         uint256 payloadLength = encodedSizeAt(data, offset) - 1; // subtract 1 byte for the variant
         bytes memory payload = BytesUtils.copy(data, offset + 1, payloadLength);
 

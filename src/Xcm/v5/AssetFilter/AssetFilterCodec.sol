@@ -78,6 +78,9 @@ library AssetFilterCodec {
             revert InvalidAssetFilterLength();
         }
         uint8 variant = uint8(data[offset]);
+        if (variant > uint8(type(AssetFilterVariant).max) + 1) {
+            revert InvalidAssetFilterVariant(variant);
+        }
         uint256 payloadLength = encodedSizeAt(data, offset) - 1; // Subtract 1 byte for the variant
         if (data.length < offset + 1 + payloadLength) {
             revert InvalidAssetFilterLength();
