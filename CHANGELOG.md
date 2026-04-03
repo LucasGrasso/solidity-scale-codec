@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Inconsistencies in Xcm Codec libraries:
   - `decode`, `decodeAt` functions not returning `bytesRead` in some codecs. - [#3](https://github.com/LucasGrasso/solidity-scale-codec/pull/3)
   - Now returning `{Variant}Params` structs in `as{Variant}` decoding functions for consistency and better ergonomics. - [#3](https://github.com/LucasGrasso/solidity-scale-codec/pull/3)
+- Inconsistencies in Xcm Instruction factory functions:
+  - Some factory functions were taking individual parameters instead of `{Variant}Params` structs, leading to less consistent and ergonomic API. - [#3](https://github.com/LucasGrasso/solidity-scale-codec/pull/3)
 - Now checking Variant bounds when calling `decodeAt` at all enum equivalents. - [#3](https://github.com/LucasGrasso/solidity-scale-codec/pull/3)
 
 ## Version 0.3.4
