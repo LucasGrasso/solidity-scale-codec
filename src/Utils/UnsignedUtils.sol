@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-/// @notice Utility functions for working with byte arrays, such as copying segments of bytes.
+/// @notice Utility functions for safely downcasting `uint256` values to smaller unsigned integer types.
 library UnsignedUtils {
     error NumberTooLarge(uint256 value, uint256 max);
 

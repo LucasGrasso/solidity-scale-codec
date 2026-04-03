@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `ByteUtils.sol`, a new utility library for byte manipulation, including functions for copying byte arrays. - [#3](https://github.com/LucasGrasso/solidity-scale-codec/pull/3)
+- `BytesUtils.sol`, a new utility library for byte manipulation, including functions for copying byte arrays. - [#3](https://github.com/LucasGrasso/solidity-scale-codec/pull/3)
 - `UnsignedUtils.sol`, a new utility library for safely converting `uint256` values to smaller unsigned integer types (`uint8`, `uint16`, `uint32`, `uint64`, `uint128`) with overflow checks. - [#3](https://github.com/LucasGrasso/solidity-scale-codec/pull/3)
 - `XcmBuilder.sol`, a new utility library for constructing XCM messages in a more ergonomic way, with functions for building various XCM instructions. - [#3](https://github.com/LucasGrasso/solidity-scale-codec/pull/3)
 
@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - For every enum equivalent, rename `Type` suffix to `Variant` for better clarity and consistency. - [#3](https://github.com/LucasGrasso/solidity-scale-codec/pull/3)
 - Type Checking with `UnsignedUtils` in all codecs to ensure safe downcasting of `uint256` to smaller unsigned integer types, preventing potential overflow issues and improving robustness. - [#3](https://github.com/LucasGrasso/solidity-scale-codec/pull/3)
 - DRY with `BytesUtils.copy` in all codecs to replace manual byte copying loops, improving code readability, maintainability, and gas efficiency. - [#3](https://github.com/LucasGrasso/solidity-scale-codec/pull/3)
-- Removed unnecesary length checks at the beginning of decoding functions since `encodedSizeAt` and `BytesUtils.copy` will handle those checks and revert if data is insufficient, simplifying the code and centralizing error handling. - [#3](https://github.com/LucasGrasso/solidity-scale-codec/pull/3)
+- Removed unnecessary length checks at the beginning of decoding functions since `encodedSizeAt` and `BytesUtils.copy` will handle those checks and revert if data is insufficient, simplifying the code and centralizing error handling. - [#3](https://github.com/LucasGrasso/solidity-scale-codec/pull/3)
 
 ### Fixed
 
