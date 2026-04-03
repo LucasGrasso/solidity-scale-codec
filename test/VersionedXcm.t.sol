@@ -2,12 +2,14 @@
 pragma solidity ^0.8.28;
 
 import {VersionedXcmCodec} from "../src/Xcm/VersionedXcm/VersionedXcmCodec.sol";
-import {VersionedXcm} from "../src/Xcm/VersionedXcm/VersionedXcm.sol";
+import {VersionedXcm, v5} from "../src/Xcm/VersionedXcm/VersionedXcm.sol";
 import {XcmCodec} from "../src/Xcm/v5/Xcm/XcmCodec.sol";
 import {Xcm} from "../src/Xcm/v5/Xcm/Xcm.sol";
+import {XcmBuilder} from "../src/Xcm/v5/Xcm/XcmBuilder.sol";
 import {Instruction, WithdrawAssetParams, BuyExecutionParams, DepositAssetParams} from "../src/Xcm/v5/Instruction/Instruction.sol";
 import {InstructionCodec} from "../src/Xcm/v5/Instruction/InstructionCodec.sol";
 import {Asset} from "../src/Xcm/v5/Asset/Asset.sol";
+import {fromAsset} from "../src/Xcm/v5/Assets/Assets.sol";
 import {Location, parent} from "../src/Xcm/v5/Location/Location.sol";
 import {AssetId} from "../src/Xcm/v5/AssetId/AssetId.sol";
 import {fungible, FungibleParams} from "../src/Xcm/v5/Fungibility/Fungibility.sol";
@@ -112,5 +114,56 @@ contract VersionedXcmTest is Test {
             keccak256(abi.encode(depositParams.beneficiary)),
             keccak256(abi.encode(expectedBeneficiary))
         );
+    }
+
+    function testEncodeWithBuilderMatchesFixtureHex() public pure {
+        bytes
+            memory expected = hex"050c000401000003008c86471301000003008c8647000d010101000000010100368e8759910dab756d344995f1d3c79374ca8f70066d3a709e48029f6bf0ee7e";
+
+        Asset memory asset = Asset({
+            id: AssetId({location: parent()}),
+            fungibility: fungible(FungibleParams({amount: 1200000000}))
+        });
+
+        AssetFilter memory filter = wild(
+            WildParams({
+                wildAsset: allOf(
+                    AllOfParams({
+                        id: AssetId({location: parent()}),
+                        fun: WildFungibility.Fungible
+                    })
+                )
+            })
+        );
+
+        Location memory beneficiary = Location({
+            parents: 0,
+            interior: fromJunction(
+                accountId32(
+                    AccountId32Params({
+                        hasNetwork: false,
+                        network: polkadot(),
+                        id: hex"368e8759910dab756d344995f1d3c79374ca8f70066d3a709e48029f6bf0ee7e"
+                    })
+                )
+            )
+        });
+
+        Xcm memory xcm = XcmBuilder.create();
+        xcm = XcmBuilder.withdrawAsset(
+            xcm,
+            WithdrawAssetParams({assets: fromAsset(asset)})
+        );
+        xcm = XcmBuilder.buyExecution(
+            xcm,
+            BuyExecutionParams({fees: asset, weightLimit: unlimited()})
+        );
+        xcm = XcmBuilder.depositAsset(
+            xcm,
+            DepositAssetParams({assets: filter, beneficiary: beneficiary})
+        );
+
+        bytes memory encoded = VersionedXcmCodec.encode(v5(xcm));
+        assertEq(encoded, expected);
     }
 }
