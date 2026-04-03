@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]
 
+## Version 1.0.0
+
 ### Added
 
 - `BytesUtils.sol`, a new utility library for byte manipulation, including functions for copying byte arrays. - [#3](https://github.com/LucasGrasso/solidity-scale-codec/pull/3)
 - `UnsignedUtils.sol`, a new utility library for safely converting `uint256` values to smaller unsigned integer types (`uint8`, `uint16`, `uint32`, `uint64`, `uint128`) with overflow checks. - [#3](https://github.com/LucasGrasso/solidity-scale-codec/pull/3)
 - `XcmBuilder.sol`, a new utility library for constructing XCM messages in a more ergonomic way, with functions for building various XCM instructions. - [#3](https://github.com/LucasGrasso/solidity-scale-codec/pull/3)
+- Added `parent()` helper function in `Location.sol` to create a `Location` struct representing the parent location (one level up in the hierarchy). - [#93618bf](https://github.com/LucasGrasso/solidity-scale-codec/commit/93618bf)
+- Added `fromAsset(Asset)` and `fromAssets(Asset[])` helper functions in `Assets.sol` to construct `Assets` values ergonomically from a single asset or an array. - [#dd79e86](https://github.com/LucasGrasso/solidity-scale-codec/commit/dd79e86)
 
 ### Changed
 
@@ -19,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Type Checking with `UnsignedUtils` in all codecs to ensure safe downcasting of `uint256` to smaller unsigned integer types, preventing potential overflow issues and improving robustness. - [#3](https://github.com/LucasGrasso/solidity-scale-codec/pull/3)
 - DRY with `BytesUtils.copy` in all codecs to replace manual byte copying loops, improving code readability, maintainability, and gas efficiency. - [#3](https://github.com/LucasGrasso/solidity-scale-codec/pull/3)
 - Removed unnecessary length checks at the beginning of decoding functions since `encodedSizeAt` and `BytesUtils.copy` will handle those checks and revert if data is insufficient, simplifying the code and centralizing error handling. - [#3](https://github.com/LucasGrasso/solidity-scale-codec/pull/3)
+- Moved helper `Junction` functions to outside of the codec. - [#b91bdfa](https://github.com/LucasGrasso/solidity-scale-codec/commit/b91bdfa24472fe931ee5dd6625ae2b4796d23248)
 
 ### Fixed
 
@@ -28,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Inconsistencies in Xcm Instruction factory functions:
   - Some factory functions were taking individual parameters instead of `{Variant}Params` structs, leading to less consistent and ergonomic API. - [#3](https://github.com/LucasGrasso/solidity-scale-codec/pull/3)
 - Now checking Variant bounds when calling `decodeAt` at all enum equivalents. - [#3](https://github.com/LucasGrasso/solidity-scale-codec/pull/3)
+- Optional encoding in `Junction` factory functions was not correctly implemented, leading to incorrect encoding when `hasNetwork` was false. - [#93618bf](https://github.com/LucasGrasso/solidity-scale-codec/commit/93618bf)
 
 ## Version 0.3.4
 
