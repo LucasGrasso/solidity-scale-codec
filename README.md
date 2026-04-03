@@ -26,9 +26,13 @@ See the [Definitions](https://lucasgrasso.github.io/solidity-scale-codec/Definit
 
 ## Usage
 
-## Encode Structs
+### Encode Structs
 
 See this [example](https://github.com/LucasGrasso/solidity-scale-codec/blob/main/contracts/examples/Foo.sol).
+
+### Encode XCM messages
+
+Check out the [Xcm Builder](https://lucasgrasso.github.io/solidity-scale-codec/Xcm/v5/Xcm/XcmBuilder.html) for an ergonomic API to build XCM messages in Solidity, and how you can use it in this [example](https://github.com/LucasGrasso/solidity-scale-codec/blob/main/test/VersionedXcm.t.sol#L120)
 
 ## About the libraries
 
