@@ -4,7 +4,7 @@ pragma solidity ^0.8.28;
 import {Compact} from "../../../Scale/Compact.sol";
 import {AssetInstance} from "../AssetInstance/AssetInstance.sol";
 import {AssetInstanceCodec} from "../AssetInstance/AssetInstanceCodec.sol";
-import {Fungibility, FungibilityVariant} from "./Fungibility.sol";
+import {Fungibility, FungibilityVariant, FungibleParams, NonFungibleParams} from "./Fungibility.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 
@@ -103,23 +103,23 @@ library FungibilityCodec {
 
     /// @notice Decodes a `Fungibility` struct representing a fungible asset and extracts the amount.
     /// @param fungibility The `Fungibility` struct to decode, which must have `variant` equal to `FungibilityVariant.Fungible`.
-    /// @return amount The number of units of the fungible asset, as a `uint128`.
+    /// @return params A `FungibleParams` struct containing the amount of the fungible asset.
     function asFungible(
         Fungibility memory fungibility
-    ) internal pure returns (uint128 amount) {
+    ) internal pure returns (FungibleParams memory params) {
         _assertVariant(fungibility, FungibilityVariant.Fungible);
         (uint256 decodedAmount, ) = Compact.decode(fungibility.payload);
-        amount = UnsignedUtils.toU128(decodedAmount);
+        params.amount = UnsignedUtils.toU128(decodedAmount);
     }
 
     /// @notice Decodes a `Fungibility` struct representing a non-fungible asset and extracts the instance identifier.
     /// @param fungibility The `Fungibility` struct to decode, which must have `variant` equal to `FungibilityVariant.NonFungible`.
-    /// @return instance The `AssetInstance` struct identifying the specific instance of the non-fungible asset.
+    /// @return params A `NonFungibleParams` struct containing the specific non-fungible asset instance.
     function asNonFungible(
         Fungibility memory fungibility
-    ) internal pure returns (AssetInstance memory instance) {
+    ) internal pure returns (NonFungibleParams memory params) {
         _assertVariant(fungibility, FungibilityVariant.NonFungible);
-        (instance, ) = AssetInstanceCodec.decode(fungibility.payload);
+        (params.instance, ) = AssetInstanceCodec.decode(fungibility.payload);
     }
 
     function _assertVariant(

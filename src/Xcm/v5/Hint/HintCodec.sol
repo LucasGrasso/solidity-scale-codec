@@ -3,7 +3,7 @@ pragma solidity ^0.8.28;
 
 import {Location} from "../Location/Location.sol";
 import {LocationCodec} from "../Location/LocationCodec.sol";
-import {Hint, HintVariant} from "./Hint.sol";
+import {Hint, HintVariant, AssetClaimerParams} from "./Hint.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `Hint`
@@ -31,7 +31,7 @@ library HintCodec {
     ) internal pure returns (uint256) {
         if (data.length < offset + 1) revert InvalidHintLength();
         uint8 variant = uint8(data[offset]);
-        if (variant == uint8(HintVariant.AssetClaimer)) {
+        if (variant == uint8(type(HintVariant).max) + 1) {
             return 1 + LocationCodec.encodedSizeAt(data, offset + 1);
         }
         revert InvalidHintVariant(variant);
@@ -70,13 +70,20 @@ library HintCodec {
 
     /// @notice Decodes the `Location` from an `AssetClaimer` hint.
     /// @param hint The `Hint` struct. Must be of type `AssetClaimer`.
-    /// @return The claimer `Location`.
+    /// @return params An `AssetClaimerParams` struct containing the claimer location.
     function asAssetClaimer(
         Hint memory hint
-    ) internal pure returns (Location memory) {
-        if (hint.variant != HintVariant.AssetClaimer)
+    ) internal pure returns (AssetClaimerParams memory params) {
+        _assertVariant(hint, HintVariant.AssetClaimer);
+        (params.location, ) = LocationCodec.decode(hint.payload);
+    }
+
+    function _assertVariant(
+        Hint memory hint,
+        HintVariant expected
+    ) internal pure {
+        if (hint.variant != expected) {
             revert InvalidHintVariant(uint8(hint.variant));
-        (Location memory location, ) = LocationCodec.decode(hint.payload);
-        return location;
+        }
     }
 }
