@@ -4,7 +4,6 @@ pragma solidity ^0.8.28;
 import {LittleEndianU64} from "../../../LittleEndian/LittleEndianU64.sol";
 import {XcmError, XcmErrorVariant, TrapParams} from "./XcmError.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
-import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `Error`
 /// @notice SCALE-compliant encoder/decoder for the XCM v5 `Error` type.
