@@ -12,7 +12,7 @@ import {Address} from "../../../Scale/Address.sol";
 import {Compact} from "../../../Scale/Compact.sol";
 
 /// @dev Discriminant for the different types of junctions in XCM v5. Each variant corresponds to a specific structure of the payload.
-enum JunctionType {
+enum JunctionVariant {
     /// @custom:variant An indexed parachain belonging to and operated by the context.
     Parachain,
     /// @custom:variantA 32-byte identifier for an account of a specific network that is respected as a sovereign endpoint within the context.
@@ -101,9 +101,9 @@ struct GeneralIndexParams {
 
 /// @notice A single item in a path to describe the relative location of a consensus system. Each item assumes a pre-existing location as its context and is defined in terms of it.
 struct Junction {
-    /// @custom:property jType The type of the junction, determining how to interpret the payload. See `JunctionType` enum for possible values.
-    JunctionType jType;
-    /// @custom:property payload The SCALE-encoded data specific to the junction type. The structure of this data varies based on `jType`.
+    /// @custom:property variant The type of the junction, determining how to interpret the payload. See `JunctionVariant` enum for possible values.
+    JunctionVariant variant;
+    /// @custom:property payload The SCALE-encoded data specific to the junction type. The structure of this data varies based on `variant`.
     bytes payload;
 }
 
@@ -123,7 +123,7 @@ function parachain(
 ) pure returns (Junction memory) {
     return
         Junction({
-            jType: JunctionType.Parachain,
+            variant: JunctionVariant.Parachain,
             payload: Compact.encode(params.parachainId)
         });
 }
@@ -140,7 +140,7 @@ function accountId32(
 ) pure returns (Junction memory) {
     return
         Junction({
-            jType: JunctionType.AccountId32,
+            variant: JunctionVariant.AccountId32,
             payload: abi.encodePacked(hasNetwork, network.encode(), id.encode())
         });
 }
@@ -157,7 +157,7 @@ function accountIndex64(
 ) pure returns (Junction memory) {
     return
         Junction({
-            jType: JunctionType.AccountIndex64,
+            variant: JunctionVariant.AccountIndex64,
             payload: abi.encodePacked(
                 hasNetwork,
                 network.encode(),
@@ -178,7 +178,7 @@ function accountKey20(
 ) pure returns (Junction memory) {
     return
         Junction({
-            jType: JunctionType.AccountKey20,
+            variant: JunctionVariant.AccountKey20,
             payload: abi.encodePacked(
                 hasNetwork,
                 network.encode(),
@@ -195,7 +195,7 @@ function palletInstance(
 ) pure returns (Junction memory) {
     return
         Junction({
-            jType: JunctionType.PalletInstance,
+            variant: JunctionVariant.PalletInstance,
             payload: abi.encodePacked(params.instance)
         });
 }
@@ -208,7 +208,7 @@ function generalIndex(
 ) pure returns (Junction memory) {
     return
         Junction({
-            jType: JunctionType.GeneralIndex,
+            variant: JunctionVariant.GeneralIndex,
             payload: Compact.encode(params.index)
         });
 }
@@ -222,7 +222,7 @@ function generalKey(uint8 length, bytes32 key) pure returns (Junction memory) {
         revert InvalidJunctionPayload();
     return
         Junction({
-            jType: JunctionType.GeneralKey,
+            variant: JunctionVariant.GeneralKey,
             payload: abi.encodePacked(length, key)
         });
 }
@@ -230,7 +230,7 @@ function generalKey(uint8 length, bytes32 key) pure returns (Junction memory) {
 /// @notice Creates an `OnlyChild` junction, which represents the unambiguous child in the context.
 /// @return A `Junction` struct representing the `OnlyChild` junction, with an empty payload.
 function onlyChild() pure returns (Junction memory) {
-    return Junction({jType: JunctionType.OnlyChild, payload: ""});
+    return Junction({variant: JunctionVariant.OnlyChild, payload: ""});
 }
 
 /// @notice Creates a `Plurality` junction with the specified body ID and body part.
@@ -243,7 +243,7 @@ function plurality(
 ) pure returns (Junction memory) {
     return
         Junction({
-            jType: JunctionType.Plurality,
+            variant: JunctionVariant.Plurality,
             payload: abi.encodePacked(
                 BodyIdCodec.encode(id),
                 BodyPartCodec.encode(part)
@@ -254,5 +254,5 @@ function plurality(
 /// @notice Creates a `GlobalConsensus` junction, which represents a global network capable of externalizing its own consensus.
 /// @return A `Junction` struct representing the `GlobalConsensus` junction, with an empty payload.
 function globalConsensus() pure returns (Junction memory) {
-    return Junction({jType: JunctionType.GlobalConsensus, payload: ""});
+    return Junction({variant: JunctionVariant.GlobalConsensus, payload: ""});
 }
