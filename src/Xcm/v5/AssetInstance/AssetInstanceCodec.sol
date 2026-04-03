@@ -7,6 +7,8 @@ import {Bytes8} from "../../../Scale/Bytes/Bytes8.sol";
 import {Bytes16} from "../../../Scale/Bytes/Bytes16.sol";
 import {Bytes32} from "../../../Scale/Bytes/Bytes32.sol";
 import {AssetInstance, AssetInstanceVariant} from "./AssetInstance.sol";
+import {BytesUtils} from "../../../Utils/BytesUtils.sol";
+import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `AssetInstance`
 /// @notice SCALE-compliant encoder/decoder for the `AssetInstance` type.
@@ -94,10 +96,7 @@ library AssetInstanceCodec {
         }
         uint8 variant = uint8(data[offset]);
         uint256 payloadLength = encodedSizeAt(data, offset) - 1; // subtract 1 byte for the variant
-        bytes memory payload = new bytes(payloadLength);
-        for (uint256 i = 0; i < payloadLength; i++) {
-            payload[i] = data[offset + 1 + i];
-        }
+        bytes memory payload = BytesUtils.copy(data, offset + 1, payloadLength);
 
         assetInstance = AssetInstance({
             variant: AssetInstanceVariant(variant),
@@ -114,12 +113,7 @@ library AssetInstanceCodec {
     ) internal pure returns (uint128 idx) {
         _assertVariant(assetInstance, AssetInstanceVariant.Index);
         (uint256 decodedIndex, ) = Compact.decode(assetInstance.payload);
-        if (decodedIndex > type(uint128).max) {
-            revert InvalidAssetInstancePayload();
-        }
-        unchecked {
-            idx = uint128(decodedIndex);
-        }
+        idx = UnsignedUtils.toU128(decodedIndex);
     }
 
     /// @notice Extracts the 4-byte data from an `Array4` asset instance. Reverts if the asset instance is not of type `Array4`.
