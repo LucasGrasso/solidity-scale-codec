@@ -60,11 +60,8 @@ library XcmErrorCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (XcmError memory e, uint256 bytesRead) {
-        if (data.length < offset + 1) revert InvalidXcmErrorLength();
-        uint8 raw = uint8(data[offset]);
-        if (raw > uint8(type(XcmErrorVariant).max) + 1)
-            revert InvalidXcmErrorVariant(raw);
         uint256 size = encodedSizeAt(data, offset);
+        uint8 raw = uint8(data[offset]);
         uint256 payloadLength = size - 1;
         bytes memory payload = BytesUtils.copy(data, offset + 1, payloadLength);
         e = XcmError({variant: XcmErrorVariant(raw), payload: payload});

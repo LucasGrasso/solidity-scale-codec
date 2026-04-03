@@ -68,9 +68,6 @@ library AssetsCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (Assets memory assets, uint256 bytesRead) {
-        if (data.length < offset + 1) {
-            revert InvalidAssetsLength();
-        }
         (uint256 length, uint256 compactBytesRead) = Compact.decodeAt(
             data,
             offset

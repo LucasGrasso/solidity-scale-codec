@@ -82,14 +82,8 @@ library FungibilityCodec {
         pure
         returns (Fungibility memory fungibility, uint256 bytesRead)
     {
-        if (data.length < offset + 1) {
-            revert InvalidFungibilityLength();
-        }
-        uint8 variant = uint8(data[offset]);
-        if (variant > uint8(type(FungibilityVariant).max) + 1) {
-            revert InvalidFungibilityVariant(variant);
-        }
         uint256 payloadLength = encodedSizeAt(data, offset) - 1; // subtract 1 byte for the variant
+        uint8 variant = uint8(data[offset]);
         bytes memory payload = BytesUtils.copy(data, offset + 1, payloadLength);
 
         return (

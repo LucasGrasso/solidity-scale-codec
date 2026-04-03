@@ -81,15 +81,9 @@ library BodyIdCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (BodyId memory bodyId, uint256 bytesRead) {
-        if (data.length < offset + 1) {
-            revert InvalidBodyIdLength();
-        }
-        uint8 variantValue = uint8(data[offset]);
-        if (variantValue > uint8(type(BodyIdVariant).max) + 1) {
-            revert InvalidBodyIdVariant(variantValue);
-        }
-        BodyIdVariant variant = BodyIdVariant(variantValue);
         uint256 payloadLength = encodedSizeAt(data, offset) - 1; // subtract 1 byte for the variant
+        uint8 variantValue = uint8(data[offset]);
+        BodyIdVariant variant = BodyIdVariant(variantValue);
         bytes memory payload = BytesUtils.copy(data, offset + 1, payloadLength);
         bodyId = BodyId({variant: variant, payload: payload});
         bytesRead = 1 + payloadLength;

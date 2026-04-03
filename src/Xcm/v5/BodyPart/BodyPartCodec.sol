@@ -78,13 +78,8 @@ library BodyPartCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (BodyPart memory bodyPart, uint256 bytesRead) {
-        if (offset >= data.length) revert InvalidBodyPartLength();
-
-        uint8 variant = uint8(data[offset]);
-        if (variant > uint8(type(BodyPartVariant).max) + 1) {
-            revert InvalidBodyPartVariant(variant);
-        }
         uint256 payloadLength = encodedSizeAt(data, offset) - 1; // total size minus 1 byte for the variant
+        uint8 variant = uint8(data[offset]);
 
         bytes memory payload = BytesUtils.copy(data, offset + 1, payloadLength);
 

@@ -73,13 +73,8 @@ library NetworkIdCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (NetworkId memory networkId, uint256 bytesRead) {
-        if (offset >= data.length) revert InvalidNetworkIdLength();
-
-        uint8 variant = uint8(data[offset]);
-        if (variant > uint8(type(NetworkIdVariant).max) + 1) {
-            revert InvalidNetworkIdVariant(variant);
-        }
         uint256 payloadLen = encodedSizeAt(data, offset) - 1; // Subtract 1 byte for the variant
+        uint8 variant = uint8(data[offset]);
         bytes memory payload = BytesUtils.copy(data, offset + 1, payloadLen);
 
         networkId = NetworkId({

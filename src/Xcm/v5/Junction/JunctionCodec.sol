@@ -100,12 +100,8 @@ library JunctionCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (Junction memory junction, uint256 bytesRead) {
-        if (offset >= data.length) revert InvalidJunctionLength();
-        uint8 variant = uint8(data[offset]);
-        if (variant > uint8(type(JunctionVariant).max) + 1) {
-            revert InvalidJunctionVariant(variant);
-        }
         uint256 payloadLength = encodedSizeAt(data, offset) - 1; // Subtract 1 byte for the type
+        uint8 variant = uint8(data[offset]);
         bytes memory payload = BytesUtils.copy(data, offset + 1, payloadLength);
         junction = Junction({
             variant: JunctionVariant(variant),

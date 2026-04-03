@@ -74,17 +74,8 @@ library AssetFilterCodec {
         pure
         returns (AssetFilter memory assetFilter, uint256 bytesRead)
     {
-        if (data.length < offset + 1) {
-            revert InvalidAssetFilterLength();
-        }
-        uint8 variant = uint8(data[offset]);
-        if (variant > uint8(type(AssetFilterVariant).max) + 1) {
-            revert InvalidAssetFilterVariant(variant);
-        }
         uint256 payloadLength = encodedSizeAt(data, offset) - 1; // Subtract 1 byte for the variant
-        if (data.length < offset + 1 + payloadLength) {
-            revert InvalidAssetFilterLength();
-        }
+        uint8 variant = uint8(data[offset]);
         bytes memory payload = BytesUtils.copy(data, offset + 1, payloadLength);
         assetFilter.variant = AssetFilterVariant(variant);
         assetFilter.payload = payload;
