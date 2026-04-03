@@ -3,7 +3,7 @@ pragma solidity ^0.8.28;
 
 import {AssetFilter} from "../AssetFilter/AssetFilter.sol";
 import {AssetFilterCodec} from "../AssetFilter/AssetFilterCodec.sol";
-import {AssetTransferFilter, AssetTransferFilterVariant} from "./AssetTransferFilter.sol";
+import {AssetTransferFilter, AssetTransferFilterVariant, TeleportParams, ReserveDepositParams, ReserveWithdrawParams} from "./AssetTransferFilter.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `AssetTransferFilter`
@@ -82,32 +82,32 @@ library AssetTransferFilterCodec {
 
     /// @notice Extracts the inner `AssetFilter` from an `AssetTransferFilter` with `Teleport` variant
     /// @param atf The `AssetTransferFilter` struct to decode.
-    /// @return assetFilter The inner `AssetFilter`.
+    /// @return params A `TeleportParams` struct containing the inner `AssetFilter`.
     function asTeleport(
         AssetTransferFilter memory atf
-    ) internal pure returns (AssetFilter memory assetFilter) {
+    ) internal pure returns (TeleportParams memory params) {
         _assertVariant(atf, AssetTransferFilterVariant.Teleport);
-        (assetFilter, ) = AssetFilterCodec.decode(atf.payload);
+        (params.assetFilter, ) = AssetFilterCodec.decode(atf.payload);
     }
 
     /// @notice Extracts the inner `AssetFilter` from an `AssetTransferFilter` with `ReserveDeposit` variant
     /// @param atf The `AssetTransferFilter` struct to decode.
-    /// @return assetFilter The inner `AssetFilter`.
+    /// @return params A `ReserveDepositParams` struct containing the inner `AssetFilter`.
     function asReserveDeposit(
         AssetTransferFilter memory atf
-    ) internal pure returns (AssetFilter memory assetFilter) {
+    ) internal pure returns (ReserveDepositParams memory params) {
         _assertVariant(atf, AssetTransferFilterVariant.ReserveDeposit);
-        (assetFilter, ) = AssetFilterCodec.decode(atf.payload);
+        (params.assetFilter, ) = AssetFilterCodec.decode(atf.payload);
     }
 
     /// @notice Extracts the inner `AssetFilter` from an `AssetTransferFilter` with `ReserveWithdraw` variant
     /// @param atf The `AssetTransferFilter` struct to decode.
-    /// @return assetFilter The inner `AssetFilter`.
+    /// @return params A `ReserveWithdrawParams` struct containing the inner `AssetFilter`.
     function asReserveWithdraw(
         AssetTransferFilter memory atf
-    ) internal pure returns (AssetFilter memory assetFilter) {
+    ) internal pure returns (ReserveWithdrawParams memory params) {
         _assertVariant(atf, AssetTransferFilterVariant.ReserveWithdraw);
-        (assetFilter, ) = AssetFilterCodec.decode(atf.payload);
+        (params.assetFilter, ) = AssetFilterCodec.decode(atf.payload);
     }
 
     function _assertVariant(

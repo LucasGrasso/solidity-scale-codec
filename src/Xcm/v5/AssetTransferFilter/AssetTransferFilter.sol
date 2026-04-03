@@ -25,19 +25,19 @@ struct AssetTransferFilter {
 /// @notice Parameters for the `Teleport` variant.
 struct TeleportParams {
     /// @custom:property Asset filter used for teleport transfer.
-    AssetFilter filter;
+    AssetFilter assetFilter;
 }
 
 /// @notice Parameters for the `ReserveDeposit` variant.
 struct ReserveDepositParams {
     /// @custom:property Asset filter used for reserve-deposit transfer.
-    AssetFilter filter;
+    AssetFilter assetFilter;
 }
 
 /// @notice Parameters for the `ReserveWithdraw` variant.
 struct ReserveWithdrawParams {
     /// @custom:property Asset filter used for reserve-withdraw transfer.
-    AssetFilter filter;
+    AssetFilter assetFilter;
 }
 
 // ============ Factory Functions ============
@@ -51,7 +51,7 @@ function teleport(
     return
         AssetTransferFilter({
             variant: AssetTransferFilterVariant.Teleport,
-            payload: AssetFilterCodec.encode(params.filter)
+            payload: AssetFilterCodec.encode(params.assetFilter)
         });
 }
 
@@ -64,7 +64,7 @@ function reserveDeposit(
     return
         AssetTransferFilter({
             variant: AssetTransferFilterVariant.ReserveDeposit,
-            payload: AssetFilterCodec.encode(params.filter)
+            payload: AssetFilterCodec.encode(params.assetFilter)
         });
 }
 
@@ -77,6 +77,6 @@ function reserveWithdraw(
     return
         AssetTransferFilter({
             variant: AssetTransferFilterVariant.ReserveWithdraw,
-            payload: AssetFilterCodec.encode(params.filter)
+            payload: AssetFilterCodec.encode(params.assetFilter)
         });
 }
