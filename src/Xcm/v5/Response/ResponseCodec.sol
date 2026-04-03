@@ -11,7 +11,9 @@ import {MaybeErrorCode} from "../../v3/MaybeErrorCode/MaybeErrorCode.sol";
 import {MaybeErrorCodeCodec} from "../../v3/MaybeErrorCode/MaybeErrorCodeCodec.sol";
 import {Compact} from "../../../Scale/Compact.sol";
 import {LittleEndianU32} from "../../../LittleEndian/LittleEndianU32.sol";
-import {Response, ResponseType} from "./Response.sol";
+import {Response, ResponseVariant, AssetsParams, VersionParams, DispatchResultParams, ExecutionResultParams, PalletsInfoParams} from "./Response.sol";
+
+import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `Response`
 /// @notice SCALE-compliant encoder/decoder for the `Response` type.
@@ -19,13 +21,13 @@ import {Response, ResponseType} from "./Response.sol";
 /// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
 library ResponseCodec {
     error InvalidResponseLength();
-    error InvalidResponseType(uint8 rType);
+    error InvalidResponseVariant(uint8 variant);
 
     /// @notice Encodes a `Response` struct into SCALE bytes.
     /// @param r The `Response` struct to encode.
     /// @return SCALE-encoded bytes representing the `Response`.
     function encode(Response memory r) internal pure returns (bytes memory) {
-        return abi.encodePacked(uint8(r.rType), r.payload);
+        return abi.encodePacked(uint8(r.variant), r.payload);
     }
 
     /// @notice Returns the number of bytes that a `Response` would occupy when SCALE-encoded.
@@ -37,22 +39,22 @@ library ResponseCodec {
         uint256 offset
     ) internal pure returns (uint256) {
         if (data.length < offset + 1) revert InvalidResponseLength();
-        uint8 rType = uint8(data[offset]);
+        uint8 variant = uint8(data[offset]);
         uint256 pos = offset + 1;
 
-        if (rType == uint8(ResponseType.Null)) {
+        if (variant == uint8(ResponseVariant.Null)) {
             return 1;
-        } else if (rType == uint8(ResponseType.Assets)) {
+        } else if (variant == uint8(ResponseVariant.Assets)) {
             return 1 + AssetsCodec.encodedSizeAt(data, pos);
-        } else if (rType == uint8(ResponseType.ExecutionResult)) {
+        } else if (variant == uint8(ResponseVariant.ExecutionResult)) {
             if (data.length < pos + 1) revert InvalidResponseLength();
             uint8 isSome = uint8(data[pos]);
             if (isSome == 0) return 2; // 1 type + 1 None byte
             return 2 + 4 + XcmErrorCodec.encodedSizeAt(data, pos + 1 + 4);
-        } else if (rType == uint8(ResponseType.Version)) {
+        } else if (variant == uint8(ResponseVariant.Version)) {
             if (data.length < pos + 4) revert InvalidResponseLength();
             return 1 + 4; // 1 type + 4 bytes for version
-        } else if (rType == uint8(ResponseType.PalletsInfo)) {
+        } else if (variant == uint8(ResponseVariant.PalletsInfo)) {
             (uint256 count, uint256 prefixSize) = Compact.decodeAt(data, pos);
             uint256 size = prefixSize;
             uint256 innerPos = pos + prefixSize;
@@ -65,10 +67,10 @@ library ResponseCodec {
                 innerPos += palletSize;
             }
             return 1 + size;
-        } else if (rType == uint8(ResponseType.DispatchResult)) {
+        } else if (variant == uint8(ResponseVariant.DispatchResult)) {
             return 1 + MaybeErrorCodeCodec.encodedSizeAt(data, pos);
         } else {
-            revert InvalidResponseType(rType);
+            revert InvalidResponseVariant(variant);
         }
     }
 
@@ -92,83 +94,84 @@ library ResponseCodec {
         uint256 offset
     ) internal pure returns (Response memory r, uint256 bytesRead) {
         if (data.length < offset + 1) revert InvalidResponseLength();
-        uint8 rType = uint8(data[offset]);
+        uint8 variant = uint8(data[offset]);
         uint256 size = encodedSizeAt(data, offset);
         uint256 payloadLength = size - 1;
-        bytes memory payload = new bytes(payloadLength);
-        for (uint256 i = 0; i < payloadLength; ++i) {
-            payload[i] = data[offset + 1 + i];
-        }
-        r = Response({rType: ResponseType(rType), payload: payload});
+        bytes memory payload = BytesUtils.copy(data, offset + 1, payloadLength);
+        r = Response({variant: ResponseVariant(variant), payload: payload});
         bytesRead = size;
     }
 
     /// @notice Decodes the `Assets` from an `Assets` response.
     /// @param r The `Response` struct. Must be of type `Assets`.
-    /// @return The decoded `Assets`.
-    function asAssets(Response memory r) internal pure returns (Assets memory) {
-        if (r.rType != ResponseType.Assets)
-            revert InvalidResponseType(uint8(r.rType));
-        (Assets memory a, ) = AssetsCodec.decode(r.payload);
-        return a;
+    /// @return params An `AssetsParams` struct containing the decoded assets.
+    function asAssets(
+        Response memory r
+    ) internal pure returns (AssetsParams memory params) {
+        _assertVariant(r, ResponseVariant.Assets);
+        (params.assets, ) = AssetsCodec.decode(r.payload);
     }
 
     /// @notice Decodes the execution result from an `ExecutionResult` response.
     /// @param r The `Response` struct. Must be of type `ExecutionResult`.
-    /// @return hasError Whether the execution result contains an error.
-    /// @return index The instruction index that caused the error. Only meaningful if `hasError` is true.
-    /// @return err The XCM error. Only meaningful if `hasError` is true.
+    /// @return params An `ExecutionResultParams` struct containing the execution result details.
     function asExecutionResult(
         Response memory r
-    ) internal pure returns (bool hasError, uint32 index, XcmError memory err) {
-        if (r.rType != ResponseType.ExecutionResult)
-            revert InvalidResponseType(uint8(r.rType));
-        if (r.payload.length < 1) revert InvalidResponseLength();
-        hasError = r.payload[0] != 0;
-        if (hasError) {
-            if (r.payload.length < 4) revert InvalidResponseLength();
-            index = LittleEndianU32.fromLittleEndian(r.payload, 1);
-            (err, ) = XcmErrorCodec.decodeAt(r.payload, 1 + 4);
+    ) internal pure returns (ExecutionResultParams memory params) {
+        _assertVariant(r, ResponseVariant.ExecutionResult);
+        params.hasError = r.payload[0] != 0;
+        if (params.hasError) {
+            params.index = LittleEndianU32.fromLittleEndian(r.payload, 1);
+            (params.err, ) = XcmErrorCodec.decodeAt(r.payload, 1 + 4);
         }
     }
 
     /// @notice Decodes the version from a `Version` response.
     /// @param r The `Response` struct. Must be of type `Version`.
-    /// @return The decoded version.
-    function asVersion(Response memory r) internal pure returns (uint32) {
-        if (r.rType != ResponseType.Version)
-            revert InvalidResponseType(uint8(r.rType));
-        if (r.payload.length != 4) revert InvalidResponseLength();
-        return LittleEndianU32.fromLittleEndian(r.payload, 0);
+    /// @return params A `VersionParams` struct containing the decoded version number.
+    function asVersion(
+        Response memory r
+    ) internal pure returns (VersionParams memory params) {
+        _assertVariant(r, ResponseVariant.Version);
+        params.version = LittleEndianU32.fromLittleEndian(r.payload, 0);
     }
 
     /// @notice Decodes the pallets info from a `PalletsInfo` response.
     /// @param r The `Response` struct. Must be of type `PalletsInfo`.
-    /// @return pallets The decoded array of `PalletInfo`.
+    /// @return params A `PalletsInfoParams` struct containing the decoded array of `PalletInfo`.
     function asPalletsInfo(
         Response memory r
-    ) internal pure returns (PalletInfo[] memory pallets) {
-        if (r.rType != ResponseType.PalletsInfo)
-            revert InvalidResponseType(uint8(r.rType));
+    ) internal pure returns (PalletsInfoParams memory params) {
+        _assertVariant(r, ResponseVariant.PalletsInfo);
         (uint256 count, uint256 prefixSize) = Compact.decodeAt(r.payload, 0);
-        pallets = new PalletInfo[](count);
+        params.pallets = new PalletInfo[](count);
         uint256 pos = prefixSize;
         for (uint256 i = 0; i < count; ++i) {
             uint256 read;
-            (pallets[i], read) = PalletInfoCodec.decodeAt(r.payload, pos);
+            (params.pallets[i], read) = PalletInfoCodec.decodeAt(
+                r.payload,
+                pos
+            );
             pos += read;
         }
     }
 
     /// @notice Decodes the dispatch result from a `DispatchResult` response.
     /// @param r The `Response` struct. Must be of type `DispatchResult`.
-    /// @return The decoded `MaybeErrorCode`.
+    /// @return params A `DispatchResultParams` struct containing the decoded dispatch result.
     function asDispatchResult(
         Response memory r
-    ) internal pure returns (MaybeErrorCode memory) {
-        if (r.rType != ResponseType.DispatchResult)
-            revert InvalidResponseType(uint8(r.rType));
-        (MaybeErrorCode memory me, ) = MaybeErrorCodeCodec.decode(r.payload);
-        return me;
+    ) internal pure returns (DispatchResultParams memory params) {
+        _assertVariant(r, ResponseVariant.DispatchResult);
+        (params.result, ) = MaybeErrorCodeCodec.decode(r.payload);
+    }
+
+    function _assertVariant(
+        Response memory r,
+        ResponseVariant expected
+    ) internal pure {
+        if (r.variant != expected) {
+            revert InvalidResponseVariant(uint8(r.variant));
+        }
     }
 }
