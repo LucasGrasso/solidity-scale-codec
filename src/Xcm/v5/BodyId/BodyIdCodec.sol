@@ -3,7 +3,9 @@ pragma solidity ^0.8.28;
 
 import {Bytes4} from "../../../Scale/Bytes.sol";
 import {Compact} from "../../../Scale/Compact.sol";
-import {BodyId, BodyIdType} from "./BodyId.sol";
+import {BodyId, BodyIdVariant} from "./BodyId.sol";
+import {BytesUtils} from "../../../Utils/BytesUtils.sol";
+import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `BodyId`
 /// @notice SCALE-compliant encoder/decoder for the `BodyId` type.
@@ -11,13 +13,13 @@ import {BodyId, BodyIdType} from "./BodyId.sol";
 /// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
 library BodyIdCodec {
     error InvalidBodyIdLength();
-    error InvalidBodyIdType(uint8 bodyIdType);
+    error InvalidBodyIdVariant(uint8 variant);
 
     /// @notice Encodes a `BodyId` into bytes.
     /// @param bodyId The `BodyId` to encode.
     /// @return SCALE-encoded byte sequence representing the `BodyId`.
     function encode(BodyId memory bodyId) internal pure returns (bytes memory) {
-        return abi.encodePacked(uint8(bodyId.bodyIdType), bodyId.payload);
+        return abi.encodePacked(uint8(bodyId.variant), bodyId.payload);
     }
 
     /// @notice Returns the number of bytes that a `BodyId` struct would occupy when SCALE-encoded, starting at a given offset in the data.
@@ -31,26 +33,26 @@ library BodyIdCodec {
         if (data.length < offset + 1) {
             revert InvalidBodyIdLength();
         }
-        uint8 bodyIdTypeValue = uint8(data[offset]);
-        BodyIdType bodyIdType = BodyIdType(bodyIdTypeValue);
+        uint8 variantValue = uint8(data[offset]);
+        BodyIdVariant variant = BodyIdVariant(variantValue);
         uint256 payloadLength;
         if (
-            bodyIdType == BodyIdType.Unit ||
-            bodyIdType == BodyIdType.Executive ||
-            bodyIdType == BodyIdType.Technical ||
-            bodyIdType == BodyIdType.Legislative ||
-            bodyIdType == BodyIdType.Judicial ||
-            bodyIdType == BodyIdType.Defense ||
-            bodyIdType == BodyIdType.Administration ||
-            bodyIdType == BodyIdType.Treasury
+            variant == BodyIdVariant.Unit ||
+            variant == BodyIdVariant.Executive ||
+            variant == BodyIdVariant.Technical ||
+            variant == BodyIdVariant.Legislative ||
+            variant == BodyIdVariant.Judicial ||
+            variant == BodyIdVariant.Defense ||
+            variant == BodyIdVariant.Administration ||
+            variant == BodyIdVariant.Treasury
         ) {
             payloadLength = 0;
-        } else if (bodyIdType == BodyIdType.Moniker) {
+        } else if (variant == BodyIdVariant.Moniker) {
             payloadLength = 4;
-        } else if (bodyIdType == BodyIdType.Index) {
+        } else if (variant == BodyIdVariant.Index) {
             payloadLength = 4;
         } else {
-            revert InvalidBodyIdType(bodyIdTypeValue);
+            revert InvalidBodyIdVariant(variantValue);
         }
 
         if (data.length < offset + 1 + payloadLength) {
@@ -82,47 +84,39 @@ library BodyIdCodec {
         if (data.length < offset + 1) {
             revert InvalidBodyIdLength();
         }
-        uint8 bodyIdTypeValue = uint8(data[offset]);
-        BodyIdType bodyIdType = BodyIdType(bodyIdTypeValue);
-        uint256 payloadLength = encodedSizeAt(data, offset) - 1; // subtract 1 byte for the bodyIdType
-        bytes memory payload = new bytes(payloadLength);
-
-        for (uint256 i = 0; i < payloadLength; i++) {
-            payload[i] = data[offset + 1 + i];
-        }
-
-        bodyId = BodyId({bodyIdType: bodyIdType, payload: payload});
+        uint8 variantValue = uint8(data[offset]);
+        BodyIdVariant variant = BodyIdVariant(variantValue);
+        uint256 payloadLength = encodedSizeAt(data, offset) - 1; // subtract 1 byte for the variant
+        bytes memory payload = BytesUtils.copy(data, offset + 1, payloadLength);
+        bodyId = BodyId({variant: variant, payload: payload});
         bytesRead = 1 + payloadLength;
     }
 
     /// @notice Helper function to decode a `BodyId` and extract the moniker name if the type is `Moniker`.
     /// @param bodyId The `BodyId` to extract the moniker name from.
-    /// @return name The 4-byte name of the moniker if the `bodyIdType` is `Moniker`.
+    /// @return name The 4-byte name of the moniker if the `variant` is `Moniker`.
     function asMoniker(
         BodyId memory bodyId
     ) internal pure returns (bytes4 name) {
-        if (bodyId.bodyIdType != BodyIdType.Moniker) {
-            revert InvalidBodyIdType(uint8(bodyId.bodyIdType));
-        }
+        _assertVariant(bodyId, BodyIdVariant.Moniker);
         return Bytes4.decode(bodyId.payload);
     }
 
     /// @notice Helper function to decode a `BodyId` and extract the index if the type is `Index`.
     /// @param bodyId The `BodyId` to extract the index from.
-    /// @return idx The index of the body if the `bodyIdType` is `Index`.
+    /// @return idx The index of the body if the `variant` is `Index`.
     function asIndex(BodyId memory bodyId) internal pure returns (uint32 idx) {
-        if (bodyId.bodyIdType != BodyIdType.Index) {
-            revert InvalidBodyIdType(uint8(bodyId.bodyIdType));
-        }
-        if (bodyId.payload.length != 4) {
-            revert InvalidBodyIdLength();
-        }
+        _assertVariant(bodyId, BodyIdVariant.Index);
         (uint256 decodedIndex, ) = Compact.decode(bodyId.payload);
-        if (decodedIndex > type(uint32).max) {
-            revert InvalidBodyIdLength();
-        }
-        unchecked {
-            idx = uint32(decodedIndex);
+        idx = UnsignedUtils.toU32(decodedIndex);
+    }
+
+    function _assertVariant(
+        BodyId memory bodyId,
+        BodyIdVariant expected
+    ) internal pure {
+        if (bodyId.variant != expected) {
+            revert InvalidBodyIdVariant(uint8(bodyId.variant));
         }
     }
 }
