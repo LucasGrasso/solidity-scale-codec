@@ -15,7 +15,6 @@ import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 library AssetFilterCodec {
     error InvalidAssetFilterLength();
     error InvalidAssetFilterVariant(uint8 variant);
-    error InvalidAssetFilterPayload();
 
     /// @notice Encodes an `AssetFilter` struct into a SCALE-compliant byte array.
     /// @param assetFilter The `AssetFilter` struct to encode.

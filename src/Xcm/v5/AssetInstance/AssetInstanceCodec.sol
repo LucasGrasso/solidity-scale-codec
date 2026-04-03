@@ -17,7 +17,6 @@ import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 library AssetInstanceCodec {
     error InvalidAssetInstanceLength();
     error InvalidAssetInstanceVariant(uint8 variant);
-    error InvalidAssetInstancePayload();
 
     /// @notice Encodes an `AssetInstance` struct into bytes.
     /// @param assetInstance The `AssetInstance` struct to encode.
