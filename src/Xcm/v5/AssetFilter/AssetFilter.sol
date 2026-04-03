@@ -31,7 +31,7 @@ struct DefiniteParams {
 /// @notice Parameters for the `Wild` variant.
 struct WildParams {
     /// @custom:property The wildcard asset selector.
-    WildAsset wA;
+    WildAsset wildAsset;
 }
 
 // ============ Factory Functions ============
@@ -56,6 +56,6 @@ function wild(WildParams memory params) pure returns (AssetFilter memory) {
     return
         AssetFilter({
             variant: AssetFilterVariant.Wild,
-            payload: WildAssetCodec.encode(params.wA)
+            payload: WildAssetCodec.encode(params.wildAsset)
         });
 }

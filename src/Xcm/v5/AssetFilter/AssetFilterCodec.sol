@@ -5,7 +5,7 @@ import {Assets} from "../Assets/Assets.sol";
 import {AssetsCodec} from "../Assets/AssetsCodec.sol";
 import {WildAsset} from "../WildAsset/WildAsset.sol";
 import {WildAssetCodec} from "../WildAsset/WildAssetCodec.sol";
-import {AssetFilter, AssetFilterVariant} from "./AssetFilter.sol";
+import {AssetFilter, AssetFilterVariant, DefiniteParams, WildParams} from "./AssetFilter.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `AssetFilter`
@@ -93,22 +93,22 @@ library AssetFilterCodec {
 
     /// @notice Extracs the inner `Assets` collection. Reverts if the `AssetFilter` is not of the `Definite` variant.
     /// @param assetFilter The `AssetFilter` struct to decode, which must have the `Definite` variant.
-    /// @return assets The `Assets` collection contained within the `AssetFilter` if it is of the `Definite` variant.
+    /// @return params A `DefiniteParams` struct containing the decoded `Assets` collection.
     function asDefinite(
         AssetFilter memory assetFilter
-    ) internal pure returns (Assets memory assets) {
+    ) internal pure returns (DefiniteParams memory params) {
         _assertVariant(assetFilter, AssetFilterVariant.Definite);
-        (assets, ) = AssetsCodec.decode(assetFilter.payload);
+        (params.assets, ) = AssetsCodec.decode(assetFilter.payload);
     }
 
     /// @notice Extracts the inner `WildAsset` wildcard. Reverts if the `AssetFilter` is not of the `Wild` variant.
     /// @param assetFilter The `AssetFilter` struct to decode, which must have the `Wild` variant.
-    /// @return wA The `WildAsset` wildcard contained within the `AssetFilter` if it is of the `Wild` variant.
+    /// @return params A `WildParams` struct containing the decoded `WildAsset` wildcard.
     function asWild(
         AssetFilter memory assetFilter
-    ) internal pure returns (WildAsset memory wA) {
+    ) internal pure returns (WildParams memory params) {
         _assertVariant(assetFilter, AssetFilterVariant.Wild);
-        (wA, ) = WildAssetCodec.decode(assetFilter.payload);
+        (params.wildAsset, ) = WildAssetCodec.decode(assetFilter.payload);
     }
 
     function _assertVariant(
