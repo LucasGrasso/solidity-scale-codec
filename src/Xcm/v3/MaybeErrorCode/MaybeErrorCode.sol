@@ -5,7 +5,7 @@ import {U8Arr} from "../../../Scale/Array.sol";
 import {MAX_DISPATCH_ERROR_LEN} from "../Constants.sol";
 
 /// @notice Discriminant for the `MaybeErrorCode` enum.
-enum MaybeErrorCodeType {
+enum MaybeErrorCodeVariant {
     /// @custom:variant No error occurred.
     Success,
     /// @custom:variant An error occurred, containing the dispatch error bytes.
@@ -16,9 +16,9 @@ enum MaybeErrorCodeType {
 
 /// @notice The result of a `Transact` dispatch, either success or an error code.
 struct MaybeErrorCode {
-    /// @custom:property The type of the result. See `MaybeErrorCodeType` enum for possible values.
-    MaybeErrorCodeType meType;
-    /// @custom:property The SCALE-encoded dispatch error bytes. Only meaningful when `meType` is `Error` or `TruncatedError`. Max length is MAX_DISPATCH_ERROR_LEN (128 bytes).
+    /// @custom:property The type of the result. See `MaybeErrorCodeVariant` enum for possible values.
+    MaybeErrorCodeVariant variant;
+    /// @custom:property The SCALE-encoded dispatch error bytes. Only meaningful when `variant` is `Error` or `TruncatedError`. Max length is MAX_DISPATCH_ERROR_LEN (128 bytes).
     bytes payload;
 }
 
@@ -39,7 +39,8 @@ struct TruncatedErrorParams {
 /// @notice Creates a `Success` MaybeErrorCode.
 /// @return A `MaybeErrorCode` struct representing success.
 function success() pure returns (MaybeErrorCode memory) {
-    return MaybeErrorCode({meType: MaybeErrorCodeType.Success, payload: ""});
+    return
+        MaybeErrorCode({variant: MaybeErrorCodeVariant.Success, payload: ""});
 }
 
 /// @notice Creates an `Error` MaybeErrorCode with the given dispatch error bytes.
@@ -50,7 +51,7 @@ function error(ErrorParams memory params) pure returns (MaybeErrorCode memory) {
         revert MaybeErrorCodeTooLong(params.errorBytes.length);
     return
         MaybeErrorCode({
-            meType: MaybeErrorCodeType.Error,
+            variant: MaybeErrorCodeVariant.Error,
             payload: U8Arr.encode(params.errorBytes)
         });
 }
@@ -65,7 +66,7 @@ function truncatedError(
         revert MaybeErrorCodeTooLong(params.errorBytes.length);
     return
         MaybeErrorCode({
-            meType: MaybeErrorCodeType.TruncatedError,
+            variant: MaybeErrorCodeVariant.TruncatedError,
             payload: U8Arr.encode(params.errorBytes)
         });
 }
