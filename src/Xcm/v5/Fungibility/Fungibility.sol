@@ -6,7 +6,7 @@ import {AssetInstance} from "../AssetInstance/AssetInstance.sol";
 import {AssetInstanceCodec} from "../AssetInstance/AssetInstanceCodec.sol";
 
 /// @dev Discriminant for the different types of Fungibility in XCM v5.
-enum FungibilityType {
+enum FungibilityVariant {
     /// @custom:variant A fungible asset; we record a number of units, as a `uint128` in the inner item.
     Fungible,
     /// @custom:variant A non-fungible asset. We record the instance identifier in the inner item. Only one asset of each instance identifier may ever be in existence at once.
@@ -15,9 +15,9 @@ enum FungibilityType {
 
 /// @notice Classification of whether an asset is fungible or not, along with a mandatory amount or instance.
 struct Fungibility {
-    /// @custom:property The type of fungibility, determining how to interpret the payload. See `FungibilityType` enum for possible values.
-    FungibilityType fType;
-    /// @custom:property The encoded payload containing the fungibility data, whose structure depends on the `fType`.
+    /// @custom:property The type of fungibility, determining how to interpret the payload. See `FungibilityVariant` enum for possible values.
+    FungibilityVariant variant;
+    /// @custom:property The encoded payload containing the fungibility data, whose structure depends on the `variant`.
     bytes payload;
 }
 
@@ -42,7 +42,7 @@ function fungible(
 ) pure returns (Fungibility memory) {
     return
         Fungibility({
-            fType: FungibilityType.Fungible,
+            variant: FungibilityVariant.Fungible,
             payload: Compact.encode(params.amount)
         });
 }
@@ -54,7 +54,7 @@ function nonFungible(
 ) pure returns (Fungibility memory) {
     return
         Fungibility({
-            fType: FungibilityType.NonFungible,
+            variant: FungibilityVariant.NonFungible,
             payload: AssetInstanceCodec.encode(params.instance)
         });
 }

@@ -12,7 +12,7 @@ import {Address} from "../../../Scale/Address.sol";
 import {Compact} from "../../../Scale/Compact.sol";
 
 /// @dev Discriminant for the different types of junctions in XCM v5. Each variant corresponds to a specific structure of the payload.
-enum JunctionType {
+enum JunctionVariant {
     /// @custom:variant An indexed parachain belonging to and operated by the context.
     Parachain,
     /// @custom:variantA 32-byte identifier for an account of a specific network that is respected as a sovereign endpoint within the context.
@@ -33,6 +33,12 @@ enum JunctionType {
     Plurality,
     /// @custom:variant A global network capable of externalizing its own consensus. This is not generally meaningful outside of the universal level.
     GlobalConsensus
+}
+
+/// @notice Parameters for a `Parachain` junction.
+struct ParachainParams {
+    /// @custom:property The parachain identifier.
+    uint32 parachainId;
 }
 
 /// @notice Parameters for an `AccountId32` junction, containing optional network information and a 32-byte account identifier.
@@ -81,12 +87,6 @@ struct GeneralKeyParams {
     bytes32 key;
 }
 
-/// @notice Parameters for a `Parachain` junction.
-struct ParachainParams {
-    /// @custom:property The parachain identifier.
-    uint32 parachainId;
-}
-
 /// @notice Parameters for a `PalletInstance` junction.
 struct PalletInstanceParams {
     /// @custom:property The pallet instance index.
@@ -101,9 +101,9 @@ struct GeneralIndexParams {
 
 /// @notice A single item in a path to describe the relative location of a consensus system. Each item assumes a pre-existing location as its context and is defined in terms of it.
 struct Junction {
-    /// @custom:property jType The type of the junction, determining how to interpret the payload. See `JunctionType` enum for possible values.
-    JunctionType jType;
-    /// @custom:property payload The SCALE-encoded data specific to the junction type. The structure of this data varies based on `jType`.
+    /// @custom:property variant The type of the junction, determining how to interpret the payload. See `JunctionVariant` enum for possible values.
+    JunctionVariant variant;
+    /// @custom:property payload The SCALE-encoded data specific to the junction type. The structure of this data varies based on `variant`.
     bytes payload;
 }
 
@@ -123,66 +123,58 @@ function parachain(
 ) pure returns (Junction memory) {
     return
         Junction({
-            jType: JunctionType.Parachain,
+            variant: JunctionVariant.Parachain,
             payload: Compact.encode(params.parachainId)
         });
 }
 
 /// @notice Creates an `AccountId32` junction with the specified parameters.
-/// @param hasNetwork A boolean indicating whether the junction includes network information.
-/// @param network The `NetworkId` associated with the account, if `hasNetwork` is true.
-/// @param id The 32-byte identifier for the account.
+/// @param params Parameters for the account-id-32 variant.
 /// @return A `Junction` struct representing the `AccountId32` junction with the provided parameters.
 function accountId32(
-    bool hasNetwork,
-    NetworkId memory network,
-    bytes32 id
+    AccountId32Params memory params
 ) pure returns (Junction memory) {
     return
         Junction({
-            jType: JunctionType.AccountId32,
-            payload: abi.encodePacked(hasNetwork, network.encode(), id.encode())
+            variant: JunctionVariant.AccountId32,
+            payload: abi.encodePacked(
+                params.hasNetwork,
+                params.network.encode(),
+                params.id.encode()
+            )
         });
 }
 
 /// @notice Creates an `AccountIndex64` junction with the specified parameters.
-/// @param hasNetwork A boolean indicating whether the junction includes network information.
-/// @param network The `NetworkId` associated with the account, if `hasNetwork` is true.
-/// @param index The 64-bit index identifier for the account.
+/// @param params Parameters for the account-index-64 variant.
 /// @return A `Junction` struct representing the `AccountIndex64` junction with the provided parameters.
 function accountIndex64(
-    bool hasNetwork,
-    NetworkId memory network,
-    uint64 index
+    AccountIndex64Params memory params
 ) pure returns (Junction memory) {
     return
         Junction({
-            jType: JunctionType.AccountIndex64,
+            variant: JunctionVariant.AccountIndex64,
             payload: abi.encodePacked(
-                hasNetwork,
-                network.encode(),
-                Compact.encode(index)
+                params.hasNetwork,
+                params.network.encode(),
+                Compact.encode(params.index)
             )
         });
 }
 
 /// @notice Creates an `AccountKey20` junction with the specified parameters.
-/// @param hasNetwork A boolean indicating whether the junction includes network information.
-/// @param network The `NetworkId` associated with the account, if `hasNetwork` is true.
-/// @param key The 20-byte key identifier for the account, represented as an `address` in Solidity.
+/// @param params Parameters for the account-key-20 variant.
 /// @return A `Junction` struct representing the `AccountKey20` junction with the provided parameters.
 function accountKey20(
-    bool hasNetwork,
-    NetworkId memory network,
-    address key
+    AccountKey20Params memory params
 ) pure returns (Junction memory) {
     return
         Junction({
-            jType: JunctionType.AccountKey20,
+            variant: JunctionVariant.AccountKey20,
             payload: abi.encodePacked(
-                hasNetwork,
-                network.encode(),
-                key.encode()
+                params.hasNetwork,
+                params.network.encode(),
+                params.key.encode()
             )
         });
 }
@@ -195,7 +187,7 @@ function palletInstance(
 ) pure returns (Junction memory) {
     return
         Junction({
-            jType: JunctionType.PalletInstance,
+            variant: JunctionVariant.PalletInstance,
             payload: abi.encodePacked(params.instance)
         });
 }
@@ -208,45 +200,47 @@ function generalIndex(
 ) pure returns (Junction memory) {
     return
         Junction({
-            jType: JunctionType.GeneralIndex,
+            variant: JunctionVariant.GeneralIndex,
             payload: Compact.encode(params.index)
         });
 }
 
 /// @notice Creates a `GeneralKey` junction with the given key.
-/// @param length The byte array acting as a key within the context location. This should be between 1 and 32 bytes in length.
-/// @param key The byte array acting as a key within the context location, represented as a `bytes32` in Solidity. Only the first `length` bytes will be used.
+/// @param params Parameters for the general-key variant.
 /// @return A `Junction` struct representing the general key junction with the provided parameters.
-function generalKey(uint8 length, bytes32 key) pure returns (Junction memory) {
-    if (length == 0 || length > 32 || key.length != length)
-        revert InvalidJunctionPayload();
+function generalKey(
+    GeneralKeyParams memory params
+) pure returns (Junction memory) {
+    if (
+        params.length == 0 ||
+        params.length > 32 ||
+        params.key.length != params.length
+    ) revert InvalidJunctionPayload();
     return
         Junction({
-            jType: JunctionType.GeneralKey,
-            payload: abi.encodePacked(length, key)
+            variant: JunctionVariant.GeneralKey,
+            payload: abi.encodePacked(params.length, params.key)
         });
 }
 
 /// @notice Creates an `OnlyChild` junction, which represents the unambiguous child in the context.
 /// @return A `Junction` struct representing the `OnlyChild` junction, with an empty payload.
 function onlyChild() pure returns (Junction memory) {
-    return Junction({jType: JunctionType.OnlyChild, payload: ""});
+    return Junction({variant: JunctionVariant.OnlyChild, payload: ""});
 }
 
 /// @notice Creates a `Plurality` junction with the specified body ID and body part.
-/// @param id The identifier for the body of the plurality, represented as a `BodyId` struct.
-/// @param part The part of the body that is relevant for this junction, represented as a `BodyPart` struct.
+/// @param params Parameters for the plurality variant.
 /// @return A `Junction` struct representing the `Plurality` junction with the provided parameters.
 function plurality(
-    BodyId memory id,
-    BodyPart memory part
+    PluralityParams memory params
 ) pure returns (Junction memory) {
     return
         Junction({
-            jType: JunctionType.Plurality,
+            variant: JunctionVariant.Plurality,
             payload: abi.encodePacked(
-                BodyIdCodec.encode(id),
-                BodyPartCodec.encode(part)
+                BodyIdCodec.encode(params.id),
+                BodyPartCodec.encode(params.part)
             )
         });
 }
@@ -254,5 +248,5 @@ function plurality(
 /// @notice Creates a `GlobalConsensus` junction, which represents a global network capable of externalizing its own consensus.
 /// @return A `Junction` struct representing the `GlobalConsensus` junction, with an empty payload.
 function globalConsensus() pure returns (Junction memory) {
-    return Junction({jType: JunctionType.GlobalConsensus, payload: ""});
+    return Junction({variant: JunctionVariant.GlobalConsensus, payload: ""});
 }

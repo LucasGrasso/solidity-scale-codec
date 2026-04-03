@@ -8,8 +8,8 @@ import {WildFungibility} from "./WildFungibility.sol";
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 /// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
 library WildFungibilityCodec {
-    error InvalidWildFungibilityLength(uint256 length);
-    error InvalidWildFungibilityType(uint8 fType);
+    error InvalidWildFungibilityLength();
+    error InvalidWildFungibility(uint8 fType);
 
     /// @notice Encodes a `WildFungibility` value into bytes.
     /// @param wildFungibility The `WildFungibility` value to encode.
@@ -29,7 +29,7 @@ library WildFungibilityCodec {
         uint256 offset
     ) internal pure returns (uint256) {
         if (offset >= data.length) {
-            revert InvalidWildFungibilityLength(data.length - offset);
+            revert InvalidWildFungibilityLength();
         }
         return 1;
     }
@@ -62,11 +62,11 @@ library WildFungibilityCodec {
         returns (WildFungibility wildFungibility, uint256 bytesRead)
     {
         if (offset >= data.length) {
-            revert InvalidWildFungibilityLength(data.length - offset);
+            revert InvalidWildFungibilityLength();
         }
         uint8 fType = uint8(data[offset]);
-        if (fType > uint8(WildFungibility.NonFungible)) {
-            revert InvalidWildFungibilityType(fType);
+        if (fType > uint8(type(WildFungibility).max)) {
+            revert InvalidWildFungibility(fType);
         }
         wildFungibility = WildFungibility(fType);
         bytesRead = 1;

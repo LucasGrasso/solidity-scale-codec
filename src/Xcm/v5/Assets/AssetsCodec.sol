@@ -41,6 +41,9 @@ library AssetsCodec {
             revert InvalidAssetsLength();
         }
         (uint256 length, uint256 bytesRead) = Compact.decodeAt(data, offset);
+        if (length > MAX_ITEMS_IN_ASSETS) {
+            revert InvalidAssetsPayload();
+        }
         uint256 currentOffset = offset + bytesRead;
         for (uint256 i = 0; i < length; i++) {
             uint256 assetSize = AssetCodec.encodedSizeAt(data, currentOffset);
@@ -68,9 +71,6 @@ library AssetsCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (Assets memory assets, uint256 bytesRead) {
-        if (data.length < offset + 1) {
-            revert InvalidAssetsLength();
-        }
         (uint256 length, uint256 compactBytesRead) = Compact.decodeAt(
             data,
             offset

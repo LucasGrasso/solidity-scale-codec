@@ -15,7 +15,7 @@ import {LittleEndianU32} from "../../../LittleEndian/LittleEndianU32.sol";
 import {MAX_PALLETS_INFO} from "../Constants.sol";
 
 /// @notice Discriminant for the `Response` enum.
-enum ResponseType {
+enum ResponseVariant {
     /// @custom:variant No response. Serves as a neutral default.
     Null,
     /// @custom:variant Some assets.
@@ -32,9 +32,9 @@ enum ResponseType {
 
 /// @notice Response data to a query.
 struct Response {
-    /// @custom:property The type of the response. See `ResponseType` enum for possible values.
-    ResponseType rType;
-    /// @custom:property The SCALE-encoded payload of the response. Structure depends on `rType`.
+    /// @custom:property The type of the response. See `ResponseVariant` enum for possible values.
+    ResponseVariant variant;
+    /// @custom:property The SCALE-encoded payload of the response. Structure depends on `variant`.
     bytes payload;
 }
 
@@ -44,10 +44,26 @@ struct AssetsParams {
     Assets assets;
 }
 
+/// @notice Parameters for the `ExecutionResult` response variant.
+struct ExecutionResultParams {
+    /// @custom:property Indicates if there was an error.
+    bool hasError;
+    /// @custom:property The index of the instruction that caused the error.
+    uint32 index;
+    /// @custom:property The XCM error that occurred.
+    XcmError err;
+}
+
 /// @notice Parameters for the `Version` response variant.
 struct VersionParams {
     /// @custom:property XCM version value.
     uint32 version;
+}
+
+/// @notice Parameters for the `PalletsInfo` response variant.
+struct PalletsInfoParams {
+    /// @custom:property Array of `PalletInfo` structs, containing the info of the pallets. Max length is MAX_PALLETS_INFO (64).
+    PalletInfo[] pallets;
 }
 
 /// @notice Parameters for the `DispatchResult` response variant.
@@ -63,7 +79,7 @@ using LittleEndianU32 for uint32;
 /// @notice Creates a `Null` response.
 /// @return A `Response` struct representing the null response.
 function null_() pure returns (Response memory) {
-    return Response({rType: ResponseType.Null, payload: ""});
+    return Response({variant: ResponseVariant.Null, payload: ""});
 }
 
 /// @notice Creates an `Assets` response.
@@ -72,39 +88,29 @@ function null_() pure returns (Response memory) {
 function assets(AssetsParams memory params) pure returns (Response memory) {
     return
         Response({
-            rType: ResponseType.Assets,
+            variant: ResponseVariant.Assets,
             payload: AssetsCodec.encode(params.assets)
         });
 }
 
-/// @notice Creates an `ExecutionResult` response with no error.
-/// @return A `Response` struct representing a successful execution result.
-function executionResultSuccess() pure returns (Response memory) {
-    // Option<(u32, Error)>: None = 0x00
-    return
-        Response({
-            rType: ResponseType.ExecutionResult,
-            payload: abi.encodePacked(uint8(0))
-        });
-}
-
-/// @notice Creates an `ExecutionResult` response with an error.
-/// @param index The index of the instruction that caused the error.
-/// @param err The XCM error that occurred.
-/// @return A `Response` struct representing a failed execution result.
-function executionResultError(
-    uint32 index,
-    XcmError memory err
+/// @notice Creates an `ExecutionResult` response.
+/// @param params Parameters for the execution result variant.
+/// @return A `Response` struct representing the execution result response.
+function executionResult(
+    ExecutionResultParams memory params
 ) pure returns (Response memory) {
+    bytes memory payload;
+    if (!params.hasError) {
+        payload = abi.encodePacked(uint8(0));
+    } else {
+        payload = abi.encodePacked(
+            uint8(1),
+            params.index.toLittleEndian(),
+            XcmErrorCodec.encode(params.err)
+        );
+    }
     return
-        Response({
-            rType: ResponseType.ExecutionResult,
-            payload: abi.encodePacked(
-                uint8(1),
-                index.toLittleEndian(),
-                XcmErrorCodec.encode(err)
-            )
-        });
+        Response({variant: ResponseVariant.ExecutionResult, payload: payload});
 }
 
 /// @notice Creates a `Version` response.
@@ -113,22 +119,25 @@ function executionResultError(
 function version(VersionParams memory params) pure returns (Response memory) {
     return
         Response({
-            rType: ResponseType.Version,
+            variant: ResponseVariant.Version,
             payload: abi.encodePacked(params.version.toLittleEndian())
         });
 }
 
 /// @notice Creates a `PalletsInfo` response.
-/// @param pallets The pallet info array. Max length is MAX_PALLETS_INFO (64).
+/// @param params Parameters for the pallets info variant.
 /// @return A `Response` struct representing the pallets info response.
 function palletsInfo(
-    PalletInfo[] memory pallets
+    PalletsInfoParams memory params
 ) pure returns (Response memory) {
-    bytes memory encoded = Compact.encode(pallets.length);
-    for (uint256 i = 0; i < pallets.length; ++i) {
-        encoded = bytes.concat(encoded, PalletInfoCodec.encode(pallets[i]));
+    bytes memory encoded = Compact.encode(params.pallets.length);
+    for (uint256 i = 0; i < params.pallets.length; ++i) {
+        encoded = bytes.concat(
+            encoded,
+            PalletInfoCodec.encode(params.pallets[i])
+        );
     }
-    return Response({rType: ResponseType.PalletsInfo, payload: encoded});
+    return Response({variant: ResponseVariant.PalletsInfo, payload: encoded});
 }
 
 /// @notice Creates a `DispatchResult` response.
@@ -139,7 +148,7 @@ function dispatchResult(
 ) pure returns (Response memory) {
     return
         Response({
-            rType: ResponseType.DispatchResult,
+            variant: ResponseVariant.DispatchResult,
             payload: MaybeErrorCodeCodec.encode(params.result)
         });
 }

@@ -6,8 +6,11 @@ import {XcmCodec as XcmV5Codec} from "../v5/Xcm/XcmCodec.sol";
 
 /// @notice The XCM versions supported by this package.
 enum XcmVersion {
-    _unsupported_V2,
+    _reserved0,
+    _reserved1,
+    _reserved2,
     _unsupported_V3,
+    _unsupported_V4,
     V5
 }
 

@@ -48,7 +48,7 @@ import {Bytes} from "../../../Scale/Bytes/Bytes.sol";
 error InvalidInstruction();
 
 /// @notice Discriminant for the `Instruction` enum, representing the type of instruction being executed.
-enum InstructionType {
+enum InstructionVariant {
     /// @custom:variant Withdraw asset(s) from the ownership of `origin` and place them into the Holding Register.
     WithdrawAsset,
     /// @custom:variant Asset(s) have been received into the ownership of this system on the `origin` system and equivalent derivatives should be placed into the Holding Register.
@@ -534,8 +534,8 @@ struct SetHintsParams {
 /// @notice Cross-Consensus Message: A message from one consensus system to another.
 /// @dev This is the inner XCM format and is version-sensitive. Messages are typically passed using the outer XCM format, known as `VersionedXcm`.
 struct Instruction {
-    /// @custom:property The type of the instruction. See `InstructionType` enum for possible values.
-    InstructionType iType;
+    /// @custom:property The type of the instruction. See `InstructionVariant` enum for possible values.
+    InstructionVariant variant;
     /// @custom:property SCALE-encoded instruction parameters. The type of the parameters depends on the instruction type; see the corresponding `Params` struct for each variant.
     bytes payload;
 }
@@ -548,7 +548,7 @@ function withdrawAsset(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.WithdrawAsset,
+            variant: InstructionVariant.WithdrawAsset,
             payload: AssetsCodec.encode(params.assets)
         });
 }
@@ -559,7 +559,7 @@ function reserveAssetDeposited(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.ReserveAssetDeposited,
+            variant: InstructionVariant.ReserveAssetDeposited,
             payload: AssetsCodec.encode(params.assets)
         });
 }
@@ -570,7 +570,7 @@ function receiveTeleportedAsset(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.ReceiveTeleportedAsset,
+            variant: InstructionVariant.ReceiveTeleportedAsset,
             payload: AssetsCodec.encode(params.assets)
         });
 }
@@ -592,7 +592,10 @@ function queryResponse(
         );
     }
     return
-        Instruction({iType: InstructionType.QueryResponse, payload: payload});
+        Instruction({
+            variant: InstructionVariant.QueryResponse,
+            payload: payload
+        });
 }
 
 /// @notice Creates an `Instruction` struct representing the `TransferAsset` variant with the provided `params`.
@@ -601,7 +604,7 @@ function transferAsset(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.TransferAsset,
+            variant: InstructionVariant.TransferAsset,
             payload: abi.encodePacked(
                 AssetsCodec.encode(params.assets),
                 LocationCodec.encode(params.beneficiary)
@@ -615,7 +618,7 @@ function transferReserveAsset(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.TransferReserveAsset,
+            variant: InstructionVariant.TransferReserveAsset,
             payload: abi.encodePacked(
                 AssetsCodec.encode(params.assets),
                 LocationCodec.encode(params.dest),
@@ -639,7 +642,8 @@ function transact(
         );
     }
     payload = abi.encodePacked(payload, Bytes.encode(params.call));
-    return Instruction({iType: InstructionType.Transact, payload: payload});
+    return
+        Instruction({variant: InstructionVariant.Transact, payload: payload});
 }
 
 /// @notice Creates an `Instruction` struct representing the `HrmpNewChannelOpenRequest` variant with the provided `params`.
@@ -648,7 +652,7 @@ function hrmpNewChannelOpenRequest(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.HrmpNewChannelOpenRequest,
+            variant: InstructionVariant.HrmpNewChannelOpenRequest,
             payload: abi.encodePacked(
                 Compact.encode(params.sender),
                 Compact.encode(params.maxMessageSize),
@@ -663,7 +667,7 @@ function hrmpChannelAccepted(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.HrmpChannelAccepted,
+            variant: InstructionVariant.HrmpChannelAccepted,
             payload: Compact.encode(params.recipient)
         });
 }
@@ -674,7 +678,7 @@ function hrmpChannelClosing(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.HrmpChannelClosing,
+            variant: InstructionVariant.HrmpChannelClosing,
             payload: abi.encodePacked(
                 Compact.encode(params.initiator),
                 Compact.encode(params.sender),
@@ -685,7 +689,7 @@ function hrmpChannelClosing(
 
 /// @notice Creates an `Instruction` struct representing the `ClearOrigin` variant.
 function clearOrigin() pure returns (Instruction memory) {
-    return Instruction({iType: InstructionType.ClearOrigin, payload: ""});
+    return Instruction({variant: InstructionVariant.ClearOrigin, payload: ""});
 }
 
 /// @notice Creates an `Instruction` struct representing the `DescendOrigin` variant with the provided `params`.
@@ -694,7 +698,7 @@ function descendOrigin(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.DescendOrigin,
+            variant: InstructionVariant.DescendOrigin,
             payload: JunctionsCodec.encode(params.interior)
         });
 }
@@ -705,7 +709,7 @@ function reportError(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.ReportError,
+            variant: InstructionVariant.ReportError,
             payload: QueryResponseInfoCodec.encode(params.responseInfo)
         });
 }
@@ -716,7 +720,7 @@ function depositAsset(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.DepositAsset,
+            variant: InstructionVariant.DepositAsset,
             payload: abi.encodePacked(
                 AssetFilterCodec.encode(params.assets),
                 LocationCodec.encode(params.beneficiary)
@@ -730,7 +734,7 @@ function depositReserveAsset(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.DepositReserveAsset,
+            variant: InstructionVariant.DepositReserveAsset,
             payload: abi.encodePacked(
                 AssetFilterCodec.encode(params.assets),
                 LocationCodec.encode(params.dest),
@@ -745,7 +749,7 @@ function exchangeAsset(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.ExchangeAsset,
+            variant: InstructionVariant.ExchangeAsset,
             payload: abi.encodePacked(
                 AssetFilterCodec.encode(params.give),
                 AssetsCodec.encode(params.want),
@@ -760,7 +764,7 @@ function initiateReserveWithdraw(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.InitiateReserveWithdraw,
+            variant: InstructionVariant.InitiateReserveWithdraw,
             payload: abi.encodePacked(
                 AssetFilterCodec.encode(params.assets),
                 LocationCodec.encode(params.reserve),
@@ -775,7 +779,7 @@ function initiateTeleport(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.InitiateTeleport,
+            variant: InstructionVariant.InitiateTeleport,
             payload: abi.encodePacked(
                 AssetFilterCodec.encode(params.assets),
                 LocationCodec.encode(params.dest),
@@ -790,7 +794,7 @@ function reportHolding(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.ReportHolding,
+            variant: InstructionVariant.ReportHolding,
             payload: abi.encodePacked(
                 QueryResponseInfoCodec.encode(params.responseInfo),
                 AssetFilterCodec.encode(params.assets)
@@ -804,7 +808,7 @@ function buyExecution(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.BuyExecution,
+            variant: InstructionVariant.BuyExecution,
             payload: abi.encodePacked(
                 AssetCodec.encode(params.fees),
                 WeightLimitCodec.encode(params.weightLimit)
@@ -814,7 +818,8 @@ function buyExecution(
 
 /// @notice Creates an `Instruction` struct representing the `RefundSurplus` variant.
 function refundSurplus() pure returns (Instruction memory) {
-    return Instruction({iType: InstructionType.RefundSurplus, payload: ""});
+    return
+        Instruction({variant: InstructionVariant.RefundSurplus, payload: ""});
 }
 
 /// @notice Creates an `Instruction` struct representing the `SetErrorHandler` variant with the provided `params`.
@@ -823,7 +828,7 @@ function setErrorHandler(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.SetErrorHandler,
+            variant: InstructionVariant.SetErrorHandler,
             payload: params.xcm
         });
 }
@@ -833,12 +838,15 @@ function setAppendix(
     SetAppendixParams memory params
 ) pure returns (Instruction memory) {
     return
-        Instruction({iType: InstructionType.SetAppendix, payload: params.xcm});
+        Instruction({
+            variant: InstructionVariant.SetAppendix,
+            payload: params.xcm
+        });
 }
 
 /// @notice Creates an `Instruction` struct representing the `ClearError` variant.
 function clearError() pure returns (Instruction memory) {
-    return Instruction({iType: InstructionType.ClearError, payload: ""});
+    return Instruction({variant: InstructionVariant.ClearError, payload: ""});
 }
 
 /// @notice Creates an `Instruction` struct representing the `ClaimAsset` variant with the provided `params`.
@@ -847,7 +855,7 @@ function claimAsset(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.ClaimAsset,
+            variant: InstructionVariant.ClaimAsset,
             payload: abi.encodePacked(
                 AssetsCodec.encode(params.assets),
                 LocationCodec.encode(params.ticket)
@@ -859,7 +867,7 @@ function claimAsset(
 function trap(TrapParams memory params) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.Trap,
+            variant: InstructionVariant.Trap,
             payload: Compact.encode(params.code)
         });
 }
@@ -870,7 +878,7 @@ function subscribeVersion(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.SubscribeVersion,
+            variant: InstructionVariant.SubscribeVersion,
             payload: abi.encodePacked(
                 Compact.encode(uint256(QueryId.unwrap(params.queryId))),
                 WeightCodec.encode(params.maxResponseWeight)
@@ -881,7 +889,10 @@ function subscribeVersion(
 /// @notice Creates an `Instruction` struct representing the `UnsubscribeVersion` variant.
 function unsubscribeVersion() pure returns (Instruction memory) {
     return
-        Instruction({iType: InstructionType.UnsubscribeVersion, payload: ""});
+        Instruction({
+            variant: InstructionVariant.UnsubscribeVersion,
+            payload: ""
+        });
 }
 
 /// @notice Creates an `Instruction` struct representing the `BurnAsset` variant with the provided `params`.
@@ -890,7 +901,7 @@ function burnAsset(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.BurnAsset,
+            variant: InstructionVariant.BurnAsset,
             payload: AssetsCodec.encode(params.assets)
         });
 }
@@ -901,7 +912,7 @@ function expectAsset(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.ExpectAsset,
+            variant: InstructionVariant.ExpectAsset,
             payload: AssetsCodec.encode(params.assets)
         });
 }
@@ -917,7 +928,11 @@ function expectOrigin(
             LocationCodec.encode(params.origin)
         );
     }
-    return Instruction({iType: InstructionType.ExpectOrigin, payload: payload});
+    return
+        Instruction({
+            variant: InstructionVariant.ExpectOrigin,
+            payload: payload
+        });
 }
 
 /// @notice Creates an `Instruction` struct representing the `ExpectError` variant with the provided `params`.
@@ -932,7 +947,11 @@ function expectError(
             XcmErrorCodec.encode(params.err)
         );
     }
-    return Instruction({iType: InstructionType.ExpectError, payload: payload});
+    return
+        Instruction({
+            variant: InstructionVariant.ExpectError,
+            payload: payload
+        });
 }
 
 /// @notice Creates an `Instruction` struct representing the `ExpectTransactStatus` variant with the provided `params`.
@@ -941,7 +960,7 @@ function expectTransactStatus(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.ExpectTransactStatus,
+            variant: InstructionVariant.ExpectTransactStatus,
             payload: MaybeErrorCodeCodec.encode(params.transactStatus)
         });
 }
@@ -952,7 +971,7 @@ function queryPallet(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.QueryPallet,
+            variant: InstructionVariant.QueryPallet,
             payload: abi.encodePacked(
                 Bytes.encode(params.moduleName),
                 QueryResponseInfoCodec.encode(params.responseInfo)
@@ -966,7 +985,7 @@ function expectPallet(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.ExpectPallet,
+            variant: InstructionVariant.ExpectPallet,
             payload: abi.encodePacked(
                 Compact.encode(params.index),
                 Bytes.encode(params.name),
@@ -983,7 +1002,7 @@ function reportTransactStatus(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.ReportTransactStatus,
+            variant: InstructionVariant.ReportTransactStatus,
             payload: QueryResponseInfoCodec.encode(params.responseInfo)
         });
 }
@@ -991,7 +1010,10 @@ function reportTransactStatus(
 /// @notice Creates an `Instruction` struct representing the `ClearTransactStatus` variant.
 function clearTransactStatus() pure returns (Instruction memory) {
     return
-        Instruction({iType: InstructionType.ClearTransactStatus, payload: ""});
+        Instruction({
+            variant: InstructionVariant.ClearTransactStatus,
+            payload: ""
+        });
 }
 
 /// @notice Creates an `Instruction` struct representing the `UniversalOrigin` variant with the provided `params`.
@@ -1000,7 +1022,7 @@ function universalOrigin(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.UniversalOrigin,
+            variant: InstructionVariant.UniversalOrigin,
             payload: JunctionCodec.encode(params.junction)
         });
 }
@@ -1011,7 +1033,7 @@ function exportMessage(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.ExportMessage,
+            variant: InstructionVariant.ExportMessage,
             payload: abi.encodePacked(
                 NetworkIdCodec.encode(params.network),
                 JunctionsCodec.encode(params.destination),
@@ -1026,7 +1048,7 @@ function lockAsset(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.LockAsset,
+            variant: InstructionVariant.LockAsset,
             payload: abi.encodePacked(
                 AssetCodec.encode(params.asset),
                 LocationCodec.encode(params.unlocker)
@@ -1040,7 +1062,7 @@ function unlockAsset(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.UnlockAsset,
+            variant: InstructionVariant.UnlockAsset,
             payload: abi.encodePacked(
                 AssetCodec.encode(params.asset),
                 LocationCodec.encode(params.target)
@@ -1054,7 +1076,7 @@ function noteUnlockable(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.NoteUnlockable,
+            variant: InstructionVariant.NoteUnlockable,
             payload: abi.encodePacked(
                 AssetCodec.encode(params.asset),
                 LocationCodec.encode(params.owner)
@@ -1068,7 +1090,7 @@ function requestUnlock(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.RequestUnlock,
+            variant: InstructionVariant.RequestUnlock,
             payload: abi.encodePacked(
                 AssetCodec.encode(params.asset),
                 LocationCodec.encode(params.locker)
@@ -1082,7 +1104,7 @@ function setFeesMode(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.SetFeesMode,
+            variant: InstructionVariant.SetFeesMode,
             payload: Bool.encode(params.jitWithdraw)
         });
 }
@@ -1093,14 +1115,14 @@ function setTopic(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.SetTopic,
+            variant: InstructionVariant.SetTopic,
             payload: Bytes32.encode(params.topic)
         });
 }
 
 /// @notice Creates an `Instruction` struct representing the `ClearTopic` variant.
 function clearTopic() pure returns (Instruction memory) {
-    return Instruction({iType: InstructionType.ClearTopic, payload: ""});
+    return Instruction({variant: InstructionVariant.ClearTopic, payload: ""});
 }
 
 /// @notice Creates an `Instruction` struct representing the `AliasOrigin` variant with the provided `params`.
@@ -1109,7 +1131,7 @@ function aliasOrigin(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.AliasOrigin,
+            variant: InstructionVariant.AliasOrigin,
             payload: LocationCodec.encode(params.location)
         });
 }
@@ -1129,7 +1151,10 @@ function unpaidExecution(
         );
     }
     return
-        Instruction({iType: InstructionType.UnpaidExecution, payload: payload});
+        Instruction({
+            variant: InstructionVariant.UnpaidExecution,
+            payload: payload
+        });
 }
 
 /// @notice Creates an `Instruction` struct representing the `PayFees` variant with the provided `params`.
@@ -1138,7 +1163,7 @@ function payFees(
 ) pure returns (Instruction memory) {
     return
         Instruction({
-            iType: InstructionType.PayFees,
+            variant: InstructionVariant.PayFees,
             payload: AssetCodec.encode(params.asset)
         });
 }
@@ -1178,7 +1203,7 @@ function initiateTransfer(
     );
     return
         Instruction({
-            iType: InstructionType.InitiateTransfer,
+            variant: InstructionVariant.InitiateTransfer,
             payload: payload
         });
 }
@@ -1197,7 +1222,7 @@ function executeWithOrigin(
     payload = abi.encodePacked(payload, params.xcm);
     return
         Instruction({
-            iType: InstructionType.ExecuteWithOrigin,
+            variant: InstructionVariant.ExecuteWithOrigin,
             payload: payload
         });
 }
@@ -1213,5 +1238,6 @@ function setHints(
     for (uint256 i = 0; i < params.hints.length; i++) {
         payload = abi.encodePacked(payload, HintCodec.encode(params.hints[i]));
     }
-    return Instruction({iType: InstructionType.SetHints, payload: payload});
+    return
+        Instruction({variant: InstructionVariant.SetHints, payload: payload});
 }

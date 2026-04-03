@@ -2,7 +2,9 @@
 pragma solidity ^0.8.28;
 
 import {Compact} from "../../../Scale/Compact.sol";
-import {BodyPart, BodyPartType} from "./BodyPart.sol";
+import {BodyPart, BodyPartVariant, MembersParams, FractionParams, AtLeastProportionParams, MoreThanProportionParams} from "./BodyPart.sol";
+import {BytesUtils} from "../../../Utils/BytesUtils.sol";
+import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `BodyPart`
 /// @notice SCALE-compliant encoder/decoder for the `BodyPart` type.
@@ -10,8 +12,7 @@ import {BodyPart, BodyPartType} from "./BodyPart.sol";
 /// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
 library BodyPartCodec {
     error InvalidBodyPartLength();
-    error InvalidBodyPartType(uint8 bodyPartType);
-    error InvalidBodyPartPayload();
+    error InvalidBodyPartVariant(uint8 variant);
 
     /// @notice Encodes a `BodyPart` struct into bytes.
     /// @param bodyPart The `BodyPart` struct to encode.
@@ -19,7 +20,7 @@ library BodyPartCodec {
     function encode(
         BodyPart memory bodyPart
     ) internal pure returns (bytes memory) {
-        return abi.encodePacked(uint8(bodyPart.bodyPartType), bodyPart.payload);
+        return abi.encodePacked(uint8(bodyPart.variant), bodyPart.payload);
     }
 
     /// @notice Returns the number of bytes that a `BodyPart` struct would occupy when SCALE-encoded.
@@ -32,23 +33,23 @@ library BodyPartCodec {
     ) internal pure returns (uint256) {
         if (offset >= data.length) revert InvalidBodyPartLength();
 
-        uint8 bodyPartType = uint8(data[offset]);
+        uint8 variant = uint8(data[offset]);
         uint256 payloadLength;
-        if (bodyPartType == uint8(BodyPartType.Voice)) {
+        if (variant == uint8(BodyPartVariant.Voice)) {
             payloadLength = 0;
-        } else if (bodyPartType == uint8(BodyPartType.Members)) {
+        } else if (variant == uint8(BodyPartVariant.Members)) {
             payloadLength = Compact.encodedSizeAt(data, offset + 1);
         } else if (
-            bodyPartType == uint8(BodyPartType.Fraction) ||
-            bodyPartType == uint8(BodyPartType.AtLeastProportion) ||
-            bodyPartType == uint8(BodyPartType.MoreThanProportion)
+            variant == uint8(BodyPartVariant.Fraction) ||
+            variant == uint8(BodyPartVariant.AtLeastProportion) ||
+            variant == uint8(BodyPartVariant.MoreThanProportion)
         ) {
             uint256 innerLength = Compact.encodedSizeAt(data, offset + 1);
             payloadLength =
                 innerLength +
                 Compact.encodedSizeAt(data, offset + 1 + innerLength);
         } else {
-            revert InvalidBodyPartType(bodyPartType);
+            revert InvalidBodyPartVariant(variant);
         }
 
         if (data.length < offset + 1 + payloadLength) {
@@ -77,18 +78,13 @@ library BodyPartCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (BodyPart memory bodyPart, uint256 bytesRead) {
-        if (offset >= data.length) revert InvalidBodyPartLength();
+        uint256 payloadLength = encodedSizeAt(data, offset) - 1; // total size minus 1 byte for the variant
+        uint8 variant = uint8(data[offset]);
 
-        uint8 bodyPartType = uint8(data[offset]);
-        uint256 payloadLength = encodedSizeAt(data, offset) - 1; // total size minus 1 byte for the bodyPartType
-
-        bytes memory payload = new bytes(payloadLength);
-        for (uint256 i = 0; i < payloadLength; i++) {
-            payload[i] = data[offset + 1 + i];
-        }
+        bytes memory payload = BytesUtils.copy(data, offset + 1, payloadLength);
 
         bodyPart = BodyPart({
-            bodyPartType: BodyPartType(bodyPartType),
+            variant: BodyPartVariant(variant),
             payload: payload
         });
         bytesRead = 1 + payloadLength;
@@ -96,31 +92,52 @@ library BodyPartCodec {
 
     /// @notice Decodes a `Members` body part to extract the member count.
     /// @param bodyPart The `BodyPart` struct to decode, which must be of type `Members`.
-    /// @return count The number of members encoded in the body part's payload.
+    /// @return params A `MembersParams` struct containing the member count encoded in the body part's payload.
     function asMembers(
         BodyPart memory bodyPart
-    ) internal pure returns (uint32 count) {
-        if (bodyPart.bodyPartType != BodyPartType.Members) {
-            revert InvalidBodyPartType(uint8(bodyPart.bodyPartType));
-        }
+    ) internal pure returns (MembersParams memory params) {
+        _assertVariant(bodyPart, BodyPartVariant.Members);
         (uint256 decodedCount, ) = Compact.decode(bodyPart.payload);
-        count = uint32(decodedCount);
+        params.count = UnsignedUtils.toU32(decodedCount);
+    }
+
+    /// @notice Decodes a `Fraction` body part to extract the nominator and denominator.
+    /// @param bodyPart The `BodyPart` struct to decode, which must be of type `Fraction`.
+    /// @return params A `FractionParams` struct containing the nominator and denominator encoded in the body part's payload.
+    function asFraction(
+        BodyPart memory bodyPart
+    ) internal pure returns (FractionParams memory params) {
+        _assertVariant(bodyPart, BodyPartVariant.Fraction);
+        (params.nominator, params.denominator) = _asProportion(bodyPart);
+    }
+
+    /// @notice Decodes a `AtLeastProportion` body part to extract the nominator and denominator.
+    /// @param bodyPart The `BodyPart` struct to decode, which must be of type `AtLeastProportion`.
+    /// @return params An `AtLeastProportionParams` struct containing the nominator and denominator encoded in the body part's payload.
+    function asAtLeastProportion(
+        BodyPart memory bodyPart
+    ) internal pure returns (AtLeastProportionParams memory params) {
+        _assertVariant(bodyPart, BodyPartVariant.AtLeastProportion);
+        (params.nominator, params.denominator) = _asProportion(bodyPart);
+    }
+
+    /// @notice Decodes a `MoreThanProportion` body part to extract the nominator and denominator.
+    /// @param bodyPart The `BodyPart` struct to decode, which must be of type `MoreThanProportion`.
+    /// @return params A `MoreThanProportionParams` struct containing the nominator and denominator encoded in the body part's payload.
+    function asMoreThanProportion(
+        BodyPart memory bodyPart
+    ) internal pure returns (MoreThanProportionParams memory params) {
+        _assertVariant(bodyPart, BodyPartVariant.MoreThanProportion);
+        (params.nominator, params.denominator) = _asProportion(bodyPart);
     }
 
     /// @notice Decodes a `Fraction`, `AtLeastProportion`, or `MoreThanProportion` body part to extract the nominator and denominator.
     /// @param bodyPart The `BodyPart` struct to decode, which must be of type `Fraction`, `AtLeastProportion`, or `MoreThanProportion`.
     /// @return nominator The numerator of the proportion encoded in the body part's payload.
     /// @return denominator The denominator of the proportion encoded in the body part's payload.
-    function asProportion(
+    function _asProportion(
         BodyPart memory bodyPart
-    ) internal pure returns (uint32 nominator, uint32 denominator) {
-        if (
-            bodyPart.bodyPartType != BodyPartType.Fraction &&
-            bodyPart.bodyPartType != BodyPartType.AtLeastProportion &&
-            bodyPart.bodyPartType != BodyPartType.MoreThanProportion
-        ) {
-            revert InvalidBodyPartType(uint8(bodyPart.bodyPartType));
-        }
+    ) private pure returns (uint32 nominator, uint32 denominator) {
         (uint256 decodedNominator, uint256 offset) = Compact.decode(
             bodyPart.payload
         );
@@ -128,7 +145,16 @@ library BodyPartCodec {
             bodyPart.payload,
             offset
         );
-        nominator = uint32(decodedNominator);
-        denominator = uint32(decodedDenominator);
+        nominator = UnsignedUtils.toU32(decodedNominator);
+        denominator = UnsignedUtils.toU32(decodedDenominator);
+    }
+
+    function _assertVariant(
+        BodyPart memory bodyPart,
+        BodyPartVariant expected
+    ) internal pure {
+        if (bodyPart.variant != expected) {
+            revert InvalidBodyPartVariant(uint8(bodyPart.variant));
+        }
     }
 }

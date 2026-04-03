@@ -5,7 +5,7 @@ import {AssetFilter} from "../AssetFilter/AssetFilter.sol";
 import {AssetFilterCodec} from "../AssetFilter/AssetFilterCodec.sol";
 
 /// @notice Discriminant for the `AssetTransferFilter` enum.
-enum AssetTransferFilterType {
+enum AssetTransferFilterVariant {
     /// @custom:variant Teleport assets matching `AssetFilter` to a specific destination.
     Teleport,
     /// @custom:variant Reserve-transfer assets matching `AssetFilter` to a specific destination, using the local chain as reserve.
@@ -16,8 +16,8 @@ enum AssetTransferFilterType {
 
 /// @notice Matches assets based on inner `AssetFilter` and tags them for a specific type of asset transfer.
 struct AssetTransferFilter {
-    /// @custom:property The type of asset transfer. See `AssetTransferFilterType` enum for possible values.
-    AssetTransferFilterType atfType;
+    /// @custom:property The type of asset transfer. See `AssetTransferFilterVariant` enum for possible values.
+    AssetTransferFilterVariant variant;
     /// @custom:property The SCALE-encoded `AssetFilter` payload.
     bytes payload;
 }
@@ -25,19 +25,19 @@ struct AssetTransferFilter {
 /// @notice Parameters for the `Teleport` variant.
 struct TeleportParams {
     /// @custom:property Asset filter used for teleport transfer.
-    AssetFilter filter;
+    AssetFilter assetFilter;
 }
 
 /// @notice Parameters for the `ReserveDeposit` variant.
 struct ReserveDepositParams {
     /// @custom:property Asset filter used for reserve-deposit transfer.
-    AssetFilter filter;
+    AssetFilter assetFilter;
 }
 
 /// @notice Parameters for the `ReserveWithdraw` variant.
 struct ReserveWithdrawParams {
     /// @custom:property Asset filter used for reserve-withdraw transfer.
-    AssetFilter filter;
+    AssetFilter assetFilter;
 }
 
 // ============ Factory Functions ============
@@ -50,8 +50,8 @@ function teleport(
 ) pure returns (AssetTransferFilter memory) {
     return
         AssetTransferFilter({
-            atfType: AssetTransferFilterType.Teleport,
-            payload: AssetFilterCodec.encode(params.filter)
+            variant: AssetTransferFilterVariant.Teleport,
+            payload: AssetFilterCodec.encode(params.assetFilter)
         });
 }
 
@@ -63,8 +63,8 @@ function reserveDeposit(
 ) pure returns (AssetTransferFilter memory) {
     return
         AssetTransferFilter({
-            atfType: AssetTransferFilterType.ReserveDeposit,
-            payload: AssetFilterCodec.encode(params.filter)
+            variant: AssetTransferFilterVariant.ReserveDeposit,
+            payload: AssetFilterCodec.encode(params.assetFilter)
         });
 }
 
@@ -76,7 +76,7 @@ function reserveWithdraw(
 ) pure returns (AssetTransferFilter memory) {
     return
         AssetTransferFilter({
-            atfType: AssetTransferFilterType.ReserveWithdraw,
-            payload: AssetFilterCodec.encode(params.filter)
+            variant: AssetTransferFilterVariant.ReserveWithdraw,
+            payload: AssetFilterCodec.encode(params.assetFilter)
         });
 }

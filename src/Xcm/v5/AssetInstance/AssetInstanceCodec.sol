@@ -6,7 +6,9 @@ import {Bytes4} from "../../../Scale/Bytes/Bytes4.sol";
 import {Bytes8} from "../../../Scale/Bytes/Bytes8.sol";
 import {Bytes16} from "../../../Scale/Bytes/Bytes16.sol";
 import {Bytes32} from "../../../Scale/Bytes/Bytes32.sol";
-import {AssetInstance, AssetInstanceType} from "./AssetInstance.sol";
+import {AssetInstance, AssetInstanceVariant, IndexParams, Array4Params, Array8Params, Array16Params, Array32Params} from "./AssetInstance.sol";
+import {BytesUtils} from "../../../Utils/BytesUtils.sol";
+import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `AssetInstance`
 /// @notice SCALE-compliant encoder/decoder for the `AssetInstance` type.
@@ -14,8 +16,7 @@ import {AssetInstance, AssetInstanceType} from "./AssetInstance.sol";
 /// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
 library AssetInstanceCodec {
     error InvalidAssetInstanceLength();
-    error InvalidAssetInstanceType(uint8 iType);
-    error InvalidAssetInstancePayload();
+    error InvalidAssetInstanceVariant(uint8 variant);
 
     /// @notice Encodes an `AssetInstance` struct into bytes.
     /// @param assetInstance The `AssetInstance` struct to encode.
@@ -23,7 +24,7 @@ library AssetInstanceCodec {
     function encode(
         AssetInstance memory assetInstance
     ) internal pure returns (bytes memory) {
-        return abi.encodePacked(assetInstance.iType, assetInstance.payload);
+        return abi.encodePacked(assetInstance.variant, assetInstance.payload);
     }
 
     /// @notice Returns the total number of bytes that an `AssetInstance` would occupy when encoded, based on the type and payload.
@@ -37,22 +38,22 @@ library AssetInstanceCodec {
         if (data.length < offset + 1) {
             revert InvalidAssetInstanceLength();
         }
-        uint8 iType = uint8(data[offset]);
+        uint8 variant = uint8(data[offset]);
         uint256 payloadLength;
-        if (iType == uint8(AssetInstanceType.Index)) {
+        if (variant == uint8(AssetInstanceVariant.Index)) {
             payloadLength = Compact.encodedSizeAt(data, offset + 1);
-        } else if (iType == uint8(AssetInstanceType.Array4)) {
+        } else if (variant == uint8(AssetInstanceVariant.Array4)) {
             payloadLength = 4;
-        } else if (iType == uint8(AssetInstanceType.Array8)) {
+        } else if (variant == uint8(AssetInstanceVariant.Array8)) {
             payloadLength = 8;
-        } else if (iType == uint8(AssetInstanceType.Array16)) {
+        } else if (variant == uint8(AssetInstanceVariant.Array16)) {
             payloadLength = 16;
-        } else if (iType == uint8(AssetInstanceType.Array32)) {
+        } else if (variant == uint8(AssetInstanceVariant.Array32)) {
             payloadLength = 32;
-        } else if (iType == uint8(AssetInstanceType.Undefined)) {
+        } else if (variant == uint8(AssetInstanceVariant.Undefined)) {
             payloadLength = 0;
         } else {
-            revert InvalidAssetInstanceType(iType);
+            revert InvalidAssetInstanceVariant(variant);
         }
 
         if (data.length < offset + 1 + payloadLength) {
@@ -89,18 +90,12 @@ library AssetInstanceCodec {
         pure
         returns (AssetInstance memory assetInstance, uint256 bytesRead)
     {
-        if (data.length < offset + 1) {
-            revert InvalidAssetInstanceLength();
-        }
-        uint8 iType = uint8(data[offset]);
-        uint256 payloadLength = encodedSizeAt(data, offset) - 1; // subtract 1 byte for the iType
-        bytes memory payload = new bytes(payloadLength);
-        for (uint256 i = 0; i < payloadLength; i++) {
-            payload[i] = data[offset + 1 + i];
-        }
+        uint256 payloadLength = encodedSizeAt(data, offset) - 1; // subtract 1 byte for the variant
+        uint8 variant = uint8(data[offset]);
+        bytes memory payload = BytesUtils.copy(data, offset + 1, payloadLength);
 
         assetInstance = AssetInstance({
-            iType: AssetInstanceType(iType),
+            variant: AssetInstanceVariant(variant),
             payload: payload
         });
         bytesRead = 1 + payloadLength;
@@ -108,67 +103,61 @@ library AssetInstanceCodec {
 
     /// @notice Extracts the index value from an `Index` asset instance. Reverts if the asset instance is not of type `Index` or if the decoded index exceeds the maximum value for `uint128`.
     /// @param assetInstance The `AssetInstance` struct to decode, which must have type `Index`.
-    /// @return idx The index value extracted from the asset instance.
+    /// @return params A `IndexParams` struct containing the decoded index value.
     function asIndex(
         AssetInstance memory assetInstance
-    ) internal pure returns (uint128 idx) {
-        if (assetInstance.iType != AssetInstanceType.Index) {
-            revert InvalidAssetInstanceType(uint8(assetInstance.iType));
-        }
+    ) internal pure returns (IndexParams memory params) {
+        _assertVariant(assetInstance, AssetInstanceVariant.Index);
         (uint256 decodedIndex, ) = Compact.decode(assetInstance.payload);
-        if (decodedIndex > type(uint128).max) {
-            revert InvalidAssetInstancePayload();
-        }
-        unchecked {
-            idx = uint128(decodedIndex);
-        }
+        params.index = UnsignedUtils.toU128(decodedIndex);
     }
 
     /// @notice Extracts the 4-byte data from an `Array4` asset instance. Reverts if the asset instance is not of type `Array4`.
     /// @param assetInstance The `AssetInstance` struct to decode, which must have type `Array4`.
-    /// @return data The 4-byte data extracted from the asset instance.
+    /// @return params A `Array4Params` struct containing the decoded 4-byte data.
     function asArray4(
         AssetInstance memory assetInstance
-    ) internal pure returns (bytes4 data) {
-        if (assetInstance.iType != AssetInstanceType.Array4) {
-            revert InvalidAssetInstanceType(uint8(assetInstance.iType));
-        }
-        return Bytes4.decode(assetInstance.payload);
+    ) internal pure returns (Array4Params memory params) {
+        _assertVariant(assetInstance, AssetInstanceVariant.Array4);
+        params.data = Bytes4.decode(assetInstance.payload);
     }
 
     /// @notice Extracts the 8-byte data from an `Array8` asset instance. Reverts if the asset instance is not of type `Array8`.
     /// @param assetInstance The `AssetInstance` struct to decode, which must have type `Array8`.
-    /// @return data The 8-byte data extracted from the asset instance.
+    /// @return params A `Array8Params` struct containing the decoded 8-byte data.
     function asArray8(
         AssetInstance memory assetInstance
-    ) internal pure returns (bytes8 data) {
-        if (assetInstance.iType != AssetInstanceType.Array8) {
-            revert InvalidAssetInstanceType(uint8(assetInstance.iType));
-        }
-        return Bytes8.decode(assetInstance.payload);
+    ) internal pure returns (Array8Params memory params) {
+        _assertVariant(assetInstance, AssetInstanceVariant.Array8);
+        params.data = Bytes8.decode(assetInstance.payload);
     }
 
     /// @notice Extracts the 16-byte data from an `Array16` asset instance. Reverts if the asset instance is not of type `Array16`.
     /// @param assetInstance The `AssetInstance` struct to decode, which must have type `Array16`.
-    /// @return data The 16-byte data extracted from the asset instance.
+    /// @return params A `Array16Params` struct containing the decoded 16-byte data.
     function asArray16(
         AssetInstance memory assetInstance
-    ) internal pure returns (bytes16 data) {
-        if (assetInstance.iType != AssetInstanceType.Array16) {
-            revert InvalidAssetInstanceType(uint8(assetInstance.iType));
-        }
-        return Bytes16.decode(assetInstance.payload);
+    ) internal pure returns (Array16Params memory params) {
+        _assertVariant(assetInstance, AssetInstanceVariant.Array16);
+        params.data = Bytes16.decode(assetInstance.payload);
     }
 
     /// @notice Extracts the 32-byte data from an `Array32` asset instance. Reverts if the asset instance is not of type `Array32`.
     /// @param assetInstance The `AssetInstance` struct to decode, which must have type `Array32`.
-    /// @return data The 32-byte data extracted from the asset instance.
+    /// @return params A `Array32Params` struct containing the decoded 32-byte data.
     function asArray32(
         AssetInstance memory assetInstance
-    ) internal pure returns (bytes32 data) {
-        if (assetInstance.iType != AssetInstanceType.Array32) {
-            revert InvalidAssetInstanceType(uint8(assetInstance.iType));
+    ) internal pure returns (Array32Params memory params) {
+        _assertVariant(assetInstance, AssetInstanceVariant.Array32);
+        params.data = Bytes32.decode(assetInstance.payload);
+    }
+
+    function _assertVariant(
+        AssetInstance memory assetInstance,
+        AssetInstanceVariant expected
+    ) private pure {
+        if (assetInstance.variant != expected) {
+            revert InvalidAssetInstanceVariant(uint8(assetInstance.variant));
         }
-        return Bytes32.decode(assetInstance.payload);
     }
 }

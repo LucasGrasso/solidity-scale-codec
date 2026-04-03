@@ -5,7 +5,7 @@ import {Weight} from "../Weight/Weight.sol";
 import {WeightCodec} from "../Weight/WeightCodec.sol";
 
 /// @notice Discriminant for the `WeightLimit` enum.
-enum WeightLimitType {
+enum WeightLimitVariant {
     /// @custom:variant No limit on weight.
     Unlimited,
     /// @custom:variant A specific weight limit.
@@ -14,9 +14,9 @@ enum WeightLimitType {
 
 /// @notice An optional weight limit.
 struct WeightLimit {
-    /// @custom:property The type of the weight limit. See `WeightLimitType` enum for possible values.
-    WeightLimitType wlType;
-    /// @custom:property The SCALE-encoded `Weight`. Only meaningful when `wlType` is `Limited`.
+    /// @custom:property The type of the weight limit. See `WeightLimitVariant` enum for possible values.
+    WeightLimitVariant variant;
+    /// @custom:property The SCALE-encoded `Weight`. Only meaningful when `variant` is `Limited`.
     bytes payload;
 }
 
@@ -31,7 +31,7 @@ struct LimitedParams {
 /// @notice Creates an `Unlimited` weight limit.
 /// @return A `WeightLimit` struct representing no limit.
 function unlimited() pure returns (WeightLimit memory) {
-    return WeightLimit({wlType: WeightLimitType.Unlimited, payload: ""});
+    return WeightLimit({variant: WeightLimitVariant.Unlimited, payload: ""});
 }
 
 /// @notice Creates a `Limited` weight limit with the given `Weight`.
@@ -42,7 +42,7 @@ function limited(
 ) pure returns (WeightLimit memory) {
     return
         WeightLimit({
-            wlType: WeightLimitType.Limited,
+            variant: WeightLimitVariant.Limited,
             payload: WeightCodec.encode(params.weight)
         });
 }

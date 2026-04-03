@@ -4,7 +4,9 @@ pragma solidity ^0.8.28;
 import {Compact} from "../../../Scale/Compact.sol";
 import {AssetInstance} from "../AssetInstance/AssetInstance.sol";
 import {AssetInstanceCodec} from "../AssetInstance/AssetInstanceCodec.sol";
-import {Fungibility, FungibilityType} from "./Fungibility.sol";
+import {Fungibility, FungibilityVariant, FungibleParams, NonFungibleParams} from "./Fungibility.sol";
+import {BytesUtils} from "../../../Utils/BytesUtils.sol";
+import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `Fungibility`
 /// @notice SCALE-compliant encoder/decoder for the `Fungibility` type.
@@ -12,8 +14,7 @@ import {Fungibility, FungibilityType} from "./Fungibility.sol";
 /// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
 library FungibilityCodec {
     error InvalidFungibilityLength();
-    error InvalidFungibilityType(uint8 fType);
-    error InvalidFungibilityPayload();
+    error InvalidFungibilityVariant(uint8 variant);
 
     /// @notice Encodes a `Fungibility` struct into bytes.
     /// @param fungibility The `Fungibility` struct to encode.
@@ -21,7 +22,8 @@ library FungibilityCodec {
     function encode(
         Fungibility memory fungibility
     ) internal pure returns (bytes memory) {
-        return abi.encodePacked(uint8(fungibility.fType), fungibility.payload);
+        return
+            abi.encodePacked(uint8(fungibility.variant), fungibility.payload);
     }
 
     /// @notice Returns the number of bytes that a `Fungibility` struct would occupy when SCALE-encoded, starting at a given offset in the data.
@@ -35,15 +37,15 @@ library FungibilityCodec {
         if (data.length < offset + 1) {
             revert InvalidFungibilityLength();
         }
-        uint8 fType = uint8(data[offset]);
+        uint8 variant = uint8(data[offset]);
         uint256 payloadLength;
         ++offset;
-        if (fType == uint8(FungibilityType.Fungible)) {
+        if (variant == uint8(FungibilityVariant.Fungible)) {
             payloadLength = Compact.encodedSizeAt(data, offset);
-        } else if (fType == uint8(FungibilityType.NonFungible)) {
+        } else if (variant == uint8(FungibilityVariant.NonFungible)) {
             payloadLength = AssetInstanceCodec.encodedSizeAt(data, offset);
         } else {
-            revert InvalidFungibilityType(fType);
+            revert InvalidFungibilityVariant(variant);
         }
 
         if (data.length < offset + payloadLength) {
@@ -80,49 +82,46 @@ library FungibilityCodec {
         pure
         returns (Fungibility memory fungibility, uint256 bytesRead)
     {
-        if (data.length < offset + 1) {
-            revert InvalidFungibilityLength();
-        }
-        uint8 fType = uint8(data[offset]);
-        uint256 payloadLength = encodedSizeAt(data, offset) - 1; // subtract 1 byte for the fType
-        bytes memory payload = new bytes(payloadLength);
-        for (uint256 i = 0; i < payloadLength; i++) {
-            payload[i] = data[offset + 1 + i];
-        }
+        uint256 payloadLength = encodedSizeAt(data, offset) - 1; // subtract 1 byte for the variant
+        uint8 variant = uint8(data[offset]);
+        bytes memory payload = BytesUtils.copy(data, offset + 1, payloadLength);
 
         return (
-            Fungibility({fType: FungibilityType(fType), payload: payload}),
+            Fungibility({
+                variant: FungibilityVariant(variant),
+                payload: payload
+            }),
             1 + payloadLength
         );
     }
 
     /// @notice Decodes a `Fungibility` struct representing a fungible asset and extracts the amount.
-    /// @param fungibility The `Fungibility` struct to decode, which must have `fType` equal to `FungibilityType.Fungible`.
-    /// @return amount The number of units of the fungible asset, as a `uint128`.
+    /// @param fungibility The `Fungibility` struct to decode, which must have `variant` equal to `FungibilityVariant.Fungible`.
+    /// @return params A `FungibleParams` struct containing the amount of the fungible asset.
     function asFungible(
         Fungibility memory fungibility
-    ) internal pure returns (uint128 amount) {
-        if (fungibility.fType != FungibilityType.Fungible) {
-            revert InvalidFungibilityType(uint8(fungibility.fType));
-        }
+    ) internal pure returns (FungibleParams memory params) {
+        _assertVariant(fungibility, FungibilityVariant.Fungible);
         (uint256 decodedAmount, ) = Compact.decode(fungibility.payload);
-        if (decodedAmount > type(uint128).max) {
-            revert InvalidFungibilityPayload();
-        }
-        unchecked {
-            amount = uint128(decodedAmount);
-        }
+        params.amount = UnsignedUtils.toU128(decodedAmount);
     }
 
     /// @notice Decodes a `Fungibility` struct representing a non-fungible asset and extracts the instance identifier.
-    /// @param fungibility The `Fungibility` struct to decode, which must have `fType` equal to `FungibilityType.NonFungible`.
-    /// @return instance The `AssetInstance` struct identifying the specific instance of the non-fungible asset.
+    /// @param fungibility The `Fungibility` struct to decode, which must have `variant` equal to `FungibilityVariant.NonFungible`.
+    /// @return params A `NonFungibleParams` struct containing the specific non-fungible asset instance.
     function asNonFungible(
         Fungibility memory fungibility
-    ) internal pure returns (AssetInstance memory instance) {
-        if (fungibility.fType != FungibilityType.NonFungible) {
-            revert InvalidFungibilityType(uint8(fungibility.fType));
+    ) internal pure returns (NonFungibleParams memory params) {
+        _assertVariant(fungibility, FungibilityVariant.NonFungible);
+        (params.instance, ) = AssetInstanceCodec.decode(fungibility.payload);
+    }
+
+    function _assertVariant(
+        Fungibility memory fungibility,
+        FungibilityVariant expected
+    ) private pure {
+        if (fungibility.variant != expected) {
+            revert InvalidFungibilityVariant(uint8(fungibility.variant));
         }
-        (instance, ) = AssetInstanceCodec.decode(fungibility.payload);
     }
 }

@@ -4,7 +4,7 @@ pragma solidity ^0.8.28;
 import {Compact} from "../../../Scale/Compact.sol";
 
 /// @dev Discriminant for the different types of BodyParts in XCM v5. Each variant corresponds to a specific structure of the payload.
-enum BodyPartType {
+enum BodyPartVariant {
     /// @custom:variant The body's declaration, under whatever means it decides.
     Voice,
     /// @custom:variant A given number of members of the body.
@@ -19,8 +19,8 @@ enum BodyPartType {
 
 /// @notice A part of a pluralistic body.
 struct BodyPart {
-    /// @custom:property The type of BodyPart, which determines how to interpret the payload. See `BodyPartType` enum for possible values.
-    BodyPartType bodyPartType;
+    /// @custom:property The type of BodyPart, which determines how to interpret the payload. See `BodyPartVariant` enum for possible values.
+    BodyPartVariant variant;
     /// @custom:property For Members, this will hold the count. For Fraction, AtLeastProportion, and MoreThanProportion, this will hold the encoded Proportion struct. For Voice, this will be empty.
     bytes payload;
 }
@@ -31,12 +31,36 @@ struct MembersParams {
     uint32 count;
 }
 
+/// @notice Parameters for the `Fraction` variant.
+struct FractionParams {
+    /// @custom:property The numerator of the fraction, representing the number of members in favor.
+    uint32 nominator;
+    /// @custom:property The denominator of the fraction, representing the total number of members considered.
+    uint32 denominator;
+}
+
+/// @notice Parameters for the `AtLeastProportion` variant.
+struct AtLeastProportionParams {
+    /// @custom:property The numerator of the proportion, representing the minimum number of members in favor.
+    uint32 nominator;
+    /// @custom:property The denominator of the proportion, representing the total number of members considered.
+    uint32 denominator;
+}
+
+/// @notice Parameters for the `MoreThanProportion` variant.
+struct MoreThanProportionParams {
+    /// @custom:property The numerator of the proportion, representing the minimum number of members in favor.
+    uint32 nominator;
+    /// @custom:property The denominator of the proportion, representing the total number of members considered.
+    uint32 denominator;
+}
+
 // ============ Factory Functions ============
 
 /// @notice Creates a `BodyPart` struct representing a `Voice` body part.
 /// @return A `BodyPart` with the `Voice` variant.
 function voice() pure returns (BodyPart memory) {
-    return BodyPart({bodyPartType: BodyPartType.Voice, payload: ""});
+    return BodyPart({variant: BodyPartVariant.Voice, payload: ""});
 }
 
 /// @notice Creates a `BodyPart` struct representing a `Members` body part with the given count.
@@ -45,61 +69,53 @@ function voice() pure returns (BodyPart memory) {
 function members(MembersParams memory params) pure returns (BodyPart memory) {
     return
         BodyPart({
-            bodyPartType: BodyPartType.Members,
+            variant: BodyPartVariant.Members,
             payload: Compact.encode(params.count)
         });
 }
 
 /// @notice Creates a `BodyPart` struct representing a `Fraction` body part with the given proportion.
-/// @param nominator The numerator of the proportion, representing the number of members in favor.
-/// @param denominator The denominator of the proportion, representing the total number of members considered.
+/// @param params Parameters for the fraction variant.
 /// @return A `BodyPart` with the `Fraction` variant and the encoded proportion in the payload.
-function fraction(
-    uint32 nominator,
-    uint32 denominator
-) pure returns (BodyPart memory) {
+function fraction(FractionParams memory params) pure returns (BodyPart memory) {
     return
         BodyPart({
-            bodyPartType: BodyPartType.Fraction,
+            variant: BodyPartVariant.Fraction,
             payload: abi.encodePacked(
-                Compact.encode(nominator),
-                Compact.encode(denominator)
+                Compact.encode(params.nominator),
+                Compact.encode(params.denominator)
             )
         });
 }
 
 /// @notice Creates a `BodyPart` struct representing an `AtLeastProportion` body part with the given proportion.
-/// @param nominator The numerator of the proportion, representing the minimum number of members in favor.
-/// @param denominator The denominator of the proportion, representing the total number of members considered.
+/// @param params Parameters for the at least proportion variant.
 /// @return A `BodyPart` with the `AtLeastProportion` variant and the encoded proportion in the payload.
 function atLeastProportion(
-    uint32 nominator,
-    uint32 denominator
+    AtLeastProportionParams memory params
 ) pure returns (BodyPart memory) {
     return
         BodyPart({
-            bodyPartType: BodyPartType.AtLeastProportion,
+            variant: BodyPartVariant.AtLeastProportion,
             payload: abi.encodePacked(
-                Compact.encode(nominator),
-                Compact.encode(denominator)
+                Compact.encode(params.nominator),
+                Compact.encode(params.denominator)
             )
         });
 }
 
 /// @notice Creates a `BodyPart` struct representing a `MoreThanProportion` body part with the given proportion.
-/// @param nominator The numerator of the proportion, representing the minimum number of members in favor.
-/// @param denominator The denominator of the proportion, representing the total number of members considered.
+/// @param params Parameters for the more than proportion variant.
 /// @return A `BodyPart` with the `MoreThanProportion` variant and the encoded proportion in the payload.
 function moreThanProportion(
-    uint32 nominator,
-    uint32 denominator
+    MoreThanProportionParams memory params
 ) pure returns (BodyPart memory) {
     return
         BodyPart({
-            bodyPartType: BodyPartType.MoreThanProportion,
+            variant: BodyPartVariant.MoreThanProportion,
             payload: abi.encodePacked(
-                Compact.encode(nominator),
-                Compact.encode(denominator)
+                Compact.encode(params.nominator),
+                Compact.encode(params.denominator)
             )
         });
 }

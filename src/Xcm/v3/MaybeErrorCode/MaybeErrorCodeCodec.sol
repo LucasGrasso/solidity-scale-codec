@@ -2,7 +2,8 @@
 pragma solidity ^0.8.28;
 
 import {U8Arr} from "../../../Scale/Array.sol";
-import {MaybeErrorCode, MaybeErrorCodeType} from "./MaybeErrorCode.sol";
+import {MaybeErrorCode, MaybeErrorCodeVariant} from "./MaybeErrorCode.sol";
+import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 
 /// @title SCALE Codec for XCM v3 `MaybeErrorCode`
 /// @notice SCALE-compliant encoder/decoder for the `MaybeErrorCode` type.
@@ -10,7 +11,7 @@ import {MaybeErrorCode, MaybeErrorCodeType} from "./MaybeErrorCode.sol";
 /// @dev XCM v3 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v3/index.html
 library MaybeErrorCodeCodec {
     error InvalidMaybeErrorCodeLength();
-    error InvalidMaybeErrorCodeType(uint8 meType);
+    error InvalidMaybeErrorCodeVariant(uint8 variant);
 
     /// @notice Encodes a `MaybeErrorCode` struct into SCALE bytes.
     /// @param me The `MaybeErrorCode` struct to encode.
@@ -18,7 +19,7 @@ library MaybeErrorCodeCodec {
     function encode(
         MaybeErrorCode memory me
     ) internal pure returns (bytes memory) {
-        return abi.encodePacked(uint8(me.meType), me.payload);
+        return abi.encodePacked(uint8(me.variant), me.payload);
     }
 
     /// @notice Returns the number of bytes that a `MaybeErrorCode` would occupy when SCALE-encoded.
@@ -30,16 +31,16 @@ library MaybeErrorCodeCodec {
         uint256 offset
     ) internal pure returns (uint256) {
         if (data.length < offset + 1) revert InvalidMaybeErrorCodeLength();
-        uint8 meType = uint8(data[offset]);
-        if (meType == uint8(MaybeErrorCodeType.Success)) {
+        uint8 variant = uint8(data[offset]);
+        if (variant == uint8(MaybeErrorCodeVariant.Success)) {
             return 1;
         } else if (
-            meType == uint8(MaybeErrorCodeType.Error) ||
-            meType == uint8(MaybeErrorCodeType.TruncatedError)
+            variant == uint8(MaybeErrorCodeVariant.Error) ||
+            variant == uint8(MaybeErrorCodeVariant.TruncatedError)
         ) {
             return 1 + U8Arr.encodedSizeAt(data, offset + 1);
         } else {
-            revert InvalidMaybeErrorCodeType(meType);
+            revert InvalidMaybeErrorCodeVariant(variant);
         }
     }
 
@@ -63,17 +64,15 @@ library MaybeErrorCodeCodec {
         uint256 offset
     ) internal pure returns (MaybeErrorCode memory me, uint256 bytesRead) {
         if (data.length < offset + 1) revert InvalidMaybeErrorCodeLength();
-        uint8 meType = uint8(data[offset]);
-        if (meType > uint8(MaybeErrorCodeType.TruncatedError))
-            revert InvalidMaybeErrorCodeType(meType);
+        uint8 variant = uint8(data[offset]);
+        if (variant > uint8(type(MaybeErrorCodeVariant).max)) {
+            revert InvalidMaybeErrorCodeVariant(variant);
+        }
         uint256 size = encodedSizeAt(data, offset);
         uint256 payloadLength = size - 1;
-        bytes memory payload = new bytes(payloadLength);
-        for (uint256 i = 0; i < payloadLength; ++i) {
-            payload[i] = data[offset + 1 + i];
-        }
+        bytes memory payload = BytesUtils.copy(data, offset + 1, payloadLength);
         me = MaybeErrorCode({
-            meType: MaybeErrorCodeType(meType),
+            variant: MaybeErrorCodeVariant(variant),
             payload: payload
         });
         bytesRead = size;
@@ -86,9 +85,9 @@ library MaybeErrorCodeCodec {
         MaybeErrorCode memory me
     ) internal pure returns (uint8[] memory errorBytes) {
         if (
-            me.meType != MaybeErrorCodeType.Error &&
-            me.meType != MaybeErrorCodeType.TruncatedError
-        ) revert InvalidMaybeErrorCodeType(uint8(me.meType));
+            me.variant != MaybeErrorCodeVariant.Error &&
+            me.variant != MaybeErrorCodeVariant.TruncatedError
+        ) revert InvalidMaybeErrorCodeVariant(uint8(me.variant));
         (errorBytes, ) = U8Arr.decode(me.payload);
     }
 }

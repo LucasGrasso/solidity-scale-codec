@@ -5,7 +5,7 @@ import {Bytes4} from "../../../Scale/Bytes.sol";
 import {Compact} from "../../../Scale/Compact.sol";
 
 /// @dev Discriminant for the different types of BodyIds in XCM v5. Each variant corresponds to a specific structure of the payload.
-enum BodyIdType {
+enum BodyIdVariant {
     /// @custom:variant The only body in its context.
     Unit,
     /// @custom:variant A named body.
@@ -31,7 +31,7 @@ enum BodyIdType {
 /// @notice An identifier of a pluralistic body.
 struct BodyId {
     /// @custom:property The type of BodyId, which determines how to interpret the payload
-    BodyIdType bodyIdType;
+    BodyIdVariant variant;
     /// @custom:property For Moniker and Index types, this will hold the relevant data
     bytes payload;
 }
@@ -45,77 +45,77 @@ struct MonikerParams {
 /// @notice Parameters for the `Index` variant.
 struct IndexParams {
     /// @custom:property The index of the body.
-    uint32 idx;
+    uint32 index;
 }
 
 // ============ Factory Functions ============
 
 /// @notice Creates a `BodyId` representing a `Unit` body.
-/// @return A `BodyId` with `bodyIdType` set to `Unit` and an empty payload.
+/// @return A `BodyId` with `variant` set to `Unit` and an empty payload.
 function unit() pure returns (BodyId memory) {
-    return BodyId({bodyIdType: BodyIdType.Unit, payload: ""});
+    return BodyId({variant: BodyIdVariant.Unit, payload: ""});
 }
 
 /// @notice Creates a `BodyId` representing a `Moniker` body with the given 4-byte name.
 /// @param params Parameters for the moniker variant.
-/// @return A `BodyId` with `bodyIdType` set to `Moniker` and the provided name encoded in the payload.
+/// @return A `BodyId` with `variant` set to `Moniker` and the provided name encoded in the payload.
 function moniker(MonikerParams memory params) pure returns (BodyId memory) {
     return
         BodyId({
-            bodyIdType: BodyIdType.Moniker,
+            variant: BodyIdVariant.Moniker,
             payload: Bytes4.encode(params.name)
         });
 }
 
 /// @notice Creates a `BodyId` representing an `Index` body with the given index.
 /// @param params Parameters for the index variant.
-/// @return A `BodyId` with `bodyIdType` set to `Index` and the provided index encoded in the payload.
+/// @return A `BodyId` with `variant` set to `Index` and the provided index encoded in the payload.
 function index(IndexParams memory params) pure returns (BodyId memory) {
     return
         BodyId({
-            bodyIdType: BodyIdType.Index,
-            payload: Compact.encode(params.idx)
+            variant: BodyIdVariant.Index,
+            payload: Compact.encode(params.index)
         });
 }
 
 /// @notice Creates a `BodyId` representing an `Executive` body.
-/// @return A `BodyId` with `bodyIdType` set to `Executive` and an empty payload.
+/// @return A `BodyId` with `variant` set to `Executive` and an empty payload.
 function executive() pure returns (BodyId memory) {
-    return BodyId({bodyIdType: BodyIdType.Executive, payload: ""});
+    return BodyId({variant: BodyIdVariant.Executive, payload: ""});
 }
 
 /// @notice Creates a `BodyId` representing a `Technical` body.
-/// @return A `BodyId` with `bodyIdType` set to `Technical` and an empty payload.
+/// @return A `BodyId` with `variant` set to `Technical` and an empty payload.
 function technical() pure returns (BodyId memory) {
-    return BodyId({bodyIdType: BodyIdType.Technical, payload: ""});
+    return BodyId({variant: BodyIdVariant.Technical, payload: ""});
 }
 
 /// @notice Creates a `BodyId` representing a `Legislative` body.
-/// @return A `BodyId` with `bodyIdType` set to `Legislative` and an empty payload.
+/// @return A `BodyId` with `variant` set to `Legislative` and an empty payload.
 function legislative() pure returns (BodyId memory) {
-    return BodyId({bodyIdType: BodyIdType.Legislative, payload: ""});
+    return BodyId({variant: BodyIdVariant.Legislative, payload: ""});
 }
 
 /// @notice Creates a `BodyId` representing a `Judicial` body.
-/// @return A `BodyId` with `bodyIdType` set to `Judicial` and an empty payload.
+/// @return A `BodyId` with `variant` set to `Judicial` and an empty payload.
 function judicial() pure returns (BodyId memory) {
-    return BodyId({bodyIdType: BodyIdType.Judicial, payload: ""});
+    return BodyId({variant: BodyIdVariant.Judicial, payload: ""});
 }
 
 /// @notice Creates a `BodyId` representing a `Defense` body.
-/// @return A `BodyId` with `bodyIdType` set to `Defense` and an empty payload.
+/// @return A `BodyId` with `variant` set to `Defense` and an empty payload.
 function defense() pure returns (BodyId memory) {
-    return BodyId({bodyIdType: BodyIdType.Defense, payload: ""});
+    return BodyId({variant: BodyIdVariant.Defense, payload: ""});
 }
 
 /// @notice Creates a `BodyId` representing an `Administration` body.
-/// @return A `BodyId` with `bodyIdType` set to `Administration` and an empty payload.
+/// @return A `BodyId` with `variant` set to `Administration` and an empty payload.
 function administration() pure returns (BodyId memory) {
-    return BodyId({bodyIdType: BodyIdType.Administration, payload: ""});
+    return BodyId({variant: BodyIdVariant.Administration, payload: ""});
 }
 
 /// @notice Creates a `BodyId` representing a `Treasury` body.
-/// @return A `BodyId` with `bodyIdType` set to `Treasury` and an empty payload.
+/// @return A `BodyId` with `variant` set to `Treasury` and an empty payload.
 function treasury() pure returns (BodyId memory) {
-    return BodyId({bodyIdType: BodyIdType.Treasury, payload: ""});
+    return BodyId({variant: BodyIdVariant.Treasury, payload: ""});
 }

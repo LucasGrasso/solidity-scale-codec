@@ -3,7 +3,8 @@ pragma solidity ^0.8.28;
 
 import {Location} from "../Location/Location.sol";
 import {LocationCodec} from "../Location/LocationCodec.sol";
-import {Hint, HintType} from "./Hint.sol";
+import {Hint, HintVariant, AssetClaimerParams} from "./Hint.sol";
+import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `Hint`
 /// @notice SCALE-compliant encoder/decoder for the `Hint` type.
@@ -11,13 +12,13 @@ import {Hint, HintType} from "./Hint.sol";
 /// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/enum.Hint.html
 library HintCodec {
     error InvalidHintLength();
-    error InvalidHintType(uint8 hType);
+    error InvalidHintVariant(uint8 variant);
 
     /// @notice Encodes a `Hint` struct into SCALE bytes.
     /// @param hint The `Hint` struct to encode.
     /// @return SCALE-encoded bytes representing the `Hint`.
     function encode(Hint memory hint) internal pure returns (bytes memory) {
-        return abi.encodePacked(uint8(hint.hType), hint.payload);
+        return abi.encodePacked(uint8(hint.variant), hint.payload);
     }
 
     /// @notice Returns the number of bytes that a `Hint` would occupy when SCALE-encoded.
@@ -29,11 +30,12 @@ library HintCodec {
         uint256 offset
     ) internal pure returns (uint256) {
         if (data.length < offset + 1) revert InvalidHintLength();
-        uint8 hType = uint8(data[offset]);
-        if (hType == uint8(HintType.AssetClaimer)) {
+        uint8 variant = uint8(data[offset]);
+        if (variant == uint8(HintVariant.AssetClaimer)) {
             return 1 + LocationCodec.encodedSizeAt(data, offset + 1);
+        } else {
+            revert InvalidHintVariant(variant);
         }
-        revert InvalidHintType(hType);
     }
 
     /// @notice Decodes a `Hint` from SCALE bytes starting at the beginning.
@@ -55,28 +57,30 @@ library HintCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (Hint memory hint, uint256 bytesRead) {
-        if (data.length < offset + 1) revert InvalidHintLength();
-        uint8 hType = uint8(data[offset]);
-        if (hType > uint8(HintType.AssetClaimer)) revert InvalidHintType(hType);
         uint256 size = encodedSizeAt(data, offset);
+        uint8 variant = uint8(data[offset]);
         uint256 payloadLength = size - 1;
-        bytes memory payload = new bytes(payloadLength);
-        for (uint256 i = 0; i < payloadLength; ++i) {
-            payload[i] = data[offset + 1 + i];
-        }
-        hint = Hint({hType: HintType(hType), payload: payload});
+        bytes memory payload = BytesUtils.copy(data, offset + 1, payloadLength);
+        hint = Hint({variant: HintVariant(variant), payload: payload});
         bytesRead = size;
     }
 
     /// @notice Decodes the `Location` from an `AssetClaimer` hint.
     /// @param hint The `Hint` struct. Must be of type `AssetClaimer`.
-    /// @return The claimer `Location`.
+    /// @return params An `AssetClaimerParams` struct containing the claimer location.
     function asAssetClaimer(
         Hint memory hint
-    ) internal pure returns (Location memory) {
-        if (hint.hType != HintType.AssetClaimer)
-            revert InvalidHintType(uint8(hint.hType));
-        (Location memory location, ) = LocationCodec.decode(hint.payload);
-        return location;
+    ) internal pure returns (AssetClaimerParams memory params) {
+        _assertVariant(hint, HintVariant.AssetClaimer);
+        (params.location, ) = LocationCodec.decode(hint.payload);
+    }
+
+    function _assertVariant(
+        Hint memory hint,
+        HintVariant expected
+    ) internal pure {
+        if (hint.variant != expected) {
+            revert InvalidHintVariant(uint8(hint.variant));
+        }
     }
 }

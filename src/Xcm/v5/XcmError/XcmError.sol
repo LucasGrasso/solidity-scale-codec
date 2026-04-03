@@ -4,7 +4,7 @@ pragma solidity ^0.8.28;
 import {LittleEndianU64} from "../../../LittleEndian/LittleEndianU64.sol";
 
 /// @notice Error codes used in XCM.
-enum XcmErrorType {
+enum XcmErrorVariant {
     /// @custom:variant An arithmetic overflow happened.
     Overflow,
     /// @custom:variant The instruction is intentionally unsupported.
@@ -81,16 +81,16 @@ enum XcmErrorType {
 
 /// @notice XCM v5 error, containing the error type and an optional payload for `Trap`.
 struct XcmError {
-    /// @custom:property The type of the error. See `XcmErrorType` enum for possible values.
-    XcmErrorType eType;
-    /// @custom:property The trap code. Only meaningful when `eType` is `Trap`.
+    /// @custom:property The type of the error. See `XcmErrorVariant` enum for possible values.
+    XcmErrorVariant variant;
+    /// @custom:property The trap code. Only meaningful when `variant` is `Trap`.
     bytes payload;
 }
 
 /// @notice Parameters for unit (payload-less) XCM errors.
 struct UnitParams {
     /// @custom:property The non-trap error discriminant.
-    XcmErrorType eType;
+    XcmErrorVariant variant;
 }
 
 /// @notice Parameters for the `Trap` error variant.
@@ -107,7 +107,7 @@ using LittleEndianU64 for uint64;
 /// @param params Parameters for the unit error.
 /// @return The `XcmError` struct.
 function unit(UnitParams memory params) pure returns (XcmError memory) {
-    return XcmError({eType: params.eType, payload: ""});
+    return XcmError({variant: params.variant, payload: ""});
 }
 
 /// @notice Creates a `Trap` error with the given u64 code.
@@ -116,7 +116,7 @@ function unit(UnitParams memory params) pure returns (XcmError memory) {
 function trap(TrapParams memory params) pure returns (XcmError memory) {
     return
         XcmError({
-            eType: XcmErrorType.Trap,
+            variant: XcmErrorVariant.Trap,
             payload: abi.encodePacked(params.code.toLittleEndian())
         });
 }
