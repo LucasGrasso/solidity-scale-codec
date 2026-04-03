@@ -13,24 +13,6 @@ library JunctionsCodec {
     error InvalidJunctionsLength(uint8 count);
     error InvalidJunctionsCount(uint8 count);
 
-    /// @notice Creates a `Here` junctions struct.
-    function here() internal pure returns (Junctions memory) {
-        return Junctions({count: 0, items: new Junction[](0)});
-    }
-
-    /// @notice Creates a `Junctions` struct with the given junctions.
-    function junction(
-        Junction[] memory junctions
-    ) internal pure returns (Junctions memory) {
-        if (junctions.length == 0) {
-            return here();
-        }
-        if (junctions.length > 8) {
-            revert InvalidJunctionsCount(uint8(junctions.length));
-        }
-        return Junctions({count: uint8(junctions.length), items: junctions});
-    }
-
     /// @notice Encodes a Junctions struct into bytes.
     /// @param junctions The Junctions struct to encode.
     /// @return SCALE-encoded byte sequence representing the Junctions.
