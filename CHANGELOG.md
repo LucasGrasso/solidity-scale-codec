@@ -7,21 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]
 
+### Added
+
+- `ByteUtils.sol`, a new utility library for byte manipulation, including functions for copying byte arrays.
+- `UnsignedUtils.sol`, a new utility library for safely converting `uint256` values to smaller unsigned integer types (`uint8`, `uint16`, `uint32`, `uint64`, `uint128`) with overflow checks.
+- `XcmBuilder.sol`, a new utility library for constructing XCM messages in a more ergonomic way, with functions for building various XCM instructions.
+
+### Changed
+
+- For every enum equivalent, rename `Type` suffix to `Variant` for better clarity and consistency.
+- Type Checking with `UnsignedUtils` in all codecs to ensure safe downcasting of `uint256` to smaller unsigned integer types, preventing potential overflow issues and improving robustness.
+- DRY with `BytesUtils.copy` in all codecs to replace manual byte copying loops, improving code readability, maintainability, and gas efficiency.
+
+### Fixed
+
+- Inconsistencies in Xcm Codec libraries:
+  - `decode`, `decodeAt` functions not returning `bytesRead` in some codecs.
+  - Now returning `{Variant}Params` structs in `as{Variant}` decoding functions for consistency and better ergonomics.
+- Now checking Variant bounds when calling `decodeAt` at all enum equivalents.
+
 ## Version 0.3.4
 
-## Changed
+### Changed
 
 - Move Definitions to website docs - [#f57c914](https://github.com/LucasGrasso/solidity-scale-codec/commit/7e88534930cdb8ac47b5f16a02f2203c588a7e7f)
 
 ## Version 0.3.3
 
-## Changed
+### Changed
 
 - Homepage for the docsite - [#fcbac35](https://github.com/LucasGrasso/solidity-scale-codec/commit/757cddcce6d9f7a82f9535471c86f0cffa878956)
 
 ## Version 0.3.2
 
-## Changed
+### Changed
 
 - Better Changelog - [#288b3e9](https://github.com/LucasGrasso/solidity-scale-codec/commit/288b3e966ff1d030b7e50dcc40d0610cd30b201c)
 
