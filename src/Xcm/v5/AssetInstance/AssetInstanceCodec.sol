@@ -6,7 +6,7 @@ import {Bytes4} from "../../../Scale/Bytes/Bytes4.sol";
 import {Bytes8} from "../../../Scale/Bytes/Bytes8.sol";
 import {Bytes16} from "../../../Scale/Bytes/Bytes16.sol";
 import {Bytes32} from "../../../Scale/Bytes/Bytes32.sol";
-import {AssetInstance, AssetInstanceVariant} from "./AssetInstance.sol";
+import {AssetInstance, AssetInstanceVariant, IndexParams, Array4Params, Array8Params, Array16Params, Array32Params} from "./AssetInstance.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 
@@ -109,53 +109,53 @@ library AssetInstanceCodec {
 
     /// @notice Extracts the index value from an `Index` asset instance. Reverts if the asset instance is not of type `Index` or if the decoded index exceeds the maximum value for `uint128`.
     /// @param assetInstance The `AssetInstance` struct to decode, which must have type `Index`.
-    /// @return idx The index value extracted from the asset instance.
+    /// @return params A `IndexParams` struct containing the decoded index value.
     function asIndex(
         AssetInstance memory assetInstance
-    ) internal pure returns (uint128 idx) {
+    ) internal pure returns (IndexParams memory params) {
         _assertVariant(assetInstance, AssetInstanceVariant.Index);
         (uint256 decodedIndex, ) = Compact.decode(assetInstance.payload);
-        idx = UnsignedUtils.toU128(decodedIndex);
+        params.index = UnsignedUtils.toU128(decodedIndex);
     }
 
     /// @notice Extracts the 4-byte data from an `Array4` asset instance. Reverts if the asset instance is not of type `Array4`.
     /// @param assetInstance The `AssetInstance` struct to decode, which must have type `Array4`.
-    /// @return data The 4-byte data extracted from the asset instance.
+    /// @return params A `Array4Params` struct containing the decoded 4-byte data.
     function asArray4(
         AssetInstance memory assetInstance
-    ) internal pure returns (bytes4 data) {
+    ) internal pure returns (Array4Params memory params) {
         _assertVariant(assetInstance, AssetInstanceVariant.Array4);
-        return Bytes4.decode(assetInstance.payload);
+        params.data = Bytes4.decode(assetInstance.payload);
     }
 
     /// @notice Extracts the 8-byte data from an `Array8` asset instance. Reverts if the asset instance is not of type `Array8`.
     /// @param assetInstance The `AssetInstance` struct to decode, which must have type `Array8`.
-    /// @return data The 8-byte data extracted from the asset instance.
+    /// @return params A `Array8Params` struct containing the decoded 8-byte data.
     function asArray8(
         AssetInstance memory assetInstance
-    ) internal pure returns (bytes8 data) {
+    ) internal pure returns (Array8Params memory params) {
         _assertVariant(assetInstance, AssetInstanceVariant.Array8);
-        return Bytes8.decode(assetInstance.payload);
+        params.data = Bytes8.decode(assetInstance.payload);
     }
 
     /// @notice Extracts the 16-byte data from an `Array16` asset instance. Reverts if the asset instance is not of type `Array16`.
     /// @param assetInstance The `AssetInstance` struct to decode, which must have type `Array16`.
-    /// @return data The 16-byte data extracted from the asset instance.
+    /// @return params A `Array16Params` struct containing the decoded 16-byte data.
     function asArray16(
         AssetInstance memory assetInstance
-    ) internal pure returns (bytes16 data) {
+    ) internal pure returns (Array16Params memory params) {
         _assertVariant(assetInstance, AssetInstanceVariant.Array16);
-        return Bytes16.decode(assetInstance.payload);
+        params.data = Bytes16.decode(assetInstance.payload);
     }
 
     /// @notice Extracts the 32-byte data from an `Array32` asset instance. Reverts if the asset instance is not of type `Array32`.
     /// @param assetInstance The `AssetInstance` struct to decode, which must have type `Array32`.
-    /// @return data The 32-byte data extracted from the asset instance.
+    /// @return params A `Array32Params` struct containing the decoded 32-byte data.
     function asArray32(
         AssetInstance memory assetInstance
-    ) internal pure returns (bytes32 data) {
+    ) internal pure returns (Array32Params memory params) {
         _assertVariant(assetInstance, AssetInstanceVariant.Array32);
-        return Bytes32.decode(assetInstance.payload);
+        params.data = Bytes32.decode(assetInstance.payload);
     }
 
     function _assertVariant(

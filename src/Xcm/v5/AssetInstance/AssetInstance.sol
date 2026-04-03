@@ -39,7 +39,7 @@ struct AssetInstance {
 /// @notice Parameters for the `Index` variant.
 struct IndexParams {
     /// @custom:property The compact index value.
-    uint128 idx;
+    uint128 index;
 }
 
 /// @notice Parameters for the `Array4` variant.
@@ -82,7 +82,7 @@ function undefined() pure returns (AssetInstance memory) {
 /// @param params Parameters for the index variant.
 /// @return An `AssetInstance` struct with type `Index` and the provided index value encoded in the payload.
 function index(IndexParams memory params) pure returns (AssetInstance memory) {
-    bytes memory payload = Compact.encode(params.idx);
+    bytes memory payload = Compact.encode(params.index);
     return
         AssetInstance({variant: AssetInstanceVariant.Index, payload: payload});
 }
