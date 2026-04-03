@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]
 
+## Version 1.0.1
+
+### Added
+
+- More docs and examples - [#5006d28](https://github.com/LucasGrasso/solidity-scale-codec/commit/5006d28)
+
 ## Version 1.0.0
 
 ### Added
