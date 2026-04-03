@@ -129,60 +129,52 @@ function parachain(
 }
 
 /// @notice Creates an `AccountId32` junction with the specified parameters.
-/// @param hasNetwork A boolean indicating whether the junction includes network information.
-/// @param network The `NetworkId` associated with the account, if `hasNetwork` is true.
-/// @param id The 32-byte identifier for the account.
+/// @param params Parameters for the account-id-32 variant.
 /// @return A `Junction` struct representing the `AccountId32` junction with the provided parameters.
 function accountId32(
-    bool hasNetwork,
-    NetworkId memory network,
-    bytes32 id
+    AccountId32Params memory params
 ) pure returns (Junction memory) {
     return
         Junction({
             variant: JunctionVariant.AccountId32,
-            payload: abi.encodePacked(hasNetwork, network.encode(), id.encode())
+            payload: abi.encodePacked(
+                params.hasNetwork,
+                params.network.encode(),
+                params.id.encode()
+            )
         });
 }
 
 /// @notice Creates an `AccountIndex64` junction with the specified parameters.
-/// @param hasNetwork A boolean indicating whether the junction includes network information.
-/// @param network The `NetworkId` associated with the account, if `hasNetwork` is true.
-/// @param index The 64-bit index identifier for the account.
+/// @param params Parameters for the account-index-64 variant.
 /// @return A `Junction` struct representing the `AccountIndex64` junction with the provided parameters.
 function accountIndex64(
-    bool hasNetwork,
-    NetworkId memory network,
-    uint64 index
+    AccountIndex64Params memory params
 ) pure returns (Junction memory) {
     return
         Junction({
             variant: JunctionVariant.AccountIndex64,
             payload: abi.encodePacked(
-                hasNetwork,
-                network.encode(),
-                Compact.encode(index)
+                params.hasNetwork,
+                params.network.encode(),
+                Compact.encode(params.index)
             )
         });
 }
 
 /// @notice Creates an `AccountKey20` junction with the specified parameters.
-/// @param hasNetwork A boolean indicating whether the junction includes network information.
-/// @param network The `NetworkId` associated with the account, if `hasNetwork` is true.
-/// @param key The 20-byte key identifier for the account, represented as an `address` in Solidity.
+/// @param params Parameters for the account-key-20 variant.
 /// @return A `Junction` struct representing the `AccountKey20` junction with the provided parameters.
 function accountKey20(
-    bool hasNetwork,
-    NetworkId memory network,
-    address key
+    AccountKey20Params memory params
 ) pure returns (Junction memory) {
     return
         Junction({
             variant: JunctionVariant.AccountKey20,
             payload: abi.encodePacked(
-                hasNetwork,
-                network.encode(),
-                key.encode()
+                params.hasNetwork,
+                params.network.encode(),
+                params.key.encode()
             )
         });
 }
@@ -214,16 +206,20 @@ function generalIndex(
 }
 
 /// @notice Creates a `GeneralKey` junction with the given key.
-/// @param length The byte array acting as a key within the context location. This should be between 1 and 32 bytes in length.
-/// @param key The byte array acting as a key within the context location, represented as a `bytes32` in Solidity. Only the first `length` bytes will be used.
+/// @param params Parameters for the general-key variant.
 /// @return A `Junction` struct representing the general key junction with the provided parameters.
-function generalKey(uint8 length, bytes32 key) pure returns (Junction memory) {
-    if (length == 0 || length > 32 || key.length != length)
-        revert InvalidJunctionPayload();
+function generalKey(
+    GeneralKeyParams memory params
+) pure returns (Junction memory) {
+    if (
+        params.length == 0 ||
+        params.length > 32 ||
+        params.key.length != params.length
+    ) revert InvalidJunctionPayload();
     return
         Junction({
             variant: JunctionVariant.GeneralKey,
-            payload: abi.encodePacked(length, key)
+            payload: abi.encodePacked(params.length, params.key)
         });
 }
 
@@ -234,19 +230,17 @@ function onlyChild() pure returns (Junction memory) {
 }
 
 /// @notice Creates a `Plurality` junction with the specified body ID and body part.
-/// @param id The identifier for the body of the plurality, represented as a `BodyId` struct.
-/// @param part The part of the body that is relevant for this junction, represented as a `BodyPart` struct.
+/// @param params Parameters for the plurality variant.
 /// @return A `Junction` struct representing the `Plurality` junction with the provided parameters.
 function plurality(
-    BodyId memory id,
-    BodyPart memory part
+    PluralityParams memory params
 ) pure returns (Junction memory) {
     return
         Junction({
             variant: JunctionVariant.Plurality,
             payload: abi.encodePacked(
-                BodyIdCodec.encode(id),
-                BodyPartCodec.encode(part)
+                BodyIdCodec.encode(params.id),
+                BodyPartCodec.encode(params.part)
             )
         });
 }
