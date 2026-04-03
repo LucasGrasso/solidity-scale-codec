@@ -95,6 +95,9 @@ library ResponseCodec {
     ) internal pure returns (Response memory r, uint256 bytesRead) {
         if (data.length < offset + 1) revert InvalidResponseLength();
         uint8 variant = uint8(data[offset]);
+        if (variant > uint8(type(ResponseVariant).max) + 1) {
+            revert InvalidResponseVariant(variant);
+        }
         uint256 size = encodedSizeAt(data, offset);
         uint256 payloadLength = size - 1;
         bytes memory payload = BytesUtils.copy(data, offset + 1, payloadLength);

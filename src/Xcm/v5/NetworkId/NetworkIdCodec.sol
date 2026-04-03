@@ -76,6 +76,9 @@ library NetworkIdCodec {
         if (offset >= data.length) revert InvalidNetworkIdLength();
 
         uint8 variant = uint8(data[offset]);
+        if (variant > uint8(type(NetworkIdVariant).max) + 1) {
+            revert InvalidNetworkIdVariant(variant);
+        }
         uint256 payloadLen = encodedSizeAt(data, offset) - 1; // Subtract 1 byte for the variant
         bytes memory payload = BytesUtils.copy(data, offset + 1, payloadLen);
 
