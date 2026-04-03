@@ -134,15 +134,12 @@ function parachain(
 function accountId32(
     AccountId32Params memory params
 ) pure returns (Junction memory) {
-    return
-        Junction({
-            variant: JunctionVariant.AccountId32,
-            payload: abi.encodePacked(
-                params.hasNetwork,
-                params.network.encode(),
-                params.id.encode()
-            )
-        });
+    bytes memory payload = abi.encodePacked(params.hasNetwork);
+    if (params.hasNetwork) {
+        payload = abi.encodePacked(payload, params.network.encode());
+    }
+    payload = abi.encodePacked(payload, params.id);
+    return Junction({variant: JunctionVariant.AccountId32, payload: payload});
 }
 
 /// @notice Creates an `AccountIndex64` junction with the specified parameters.
@@ -151,15 +148,13 @@ function accountId32(
 function accountIndex64(
     AccountIndex64Params memory params
 ) pure returns (Junction memory) {
+    bytes memory payload = abi.encodePacked(params.hasNetwork);
+    if (params.hasNetwork) {
+        payload = abi.encodePacked(payload, params.network.encode());
+    }
+    payload = abi.encodePacked(payload, Compact.encode(params.index));
     return
-        Junction({
-            variant: JunctionVariant.AccountIndex64,
-            payload: abi.encodePacked(
-                params.hasNetwork,
-                params.network.encode(),
-                Compact.encode(params.index)
-            )
-        });
+        Junction({variant: JunctionVariant.AccountIndex64, payload: payload});
 }
 
 /// @notice Creates an `AccountKey20` junction with the specified parameters.
@@ -168,15 +163,12 @@ function accountIndex64(
 function accountKey20(
     AccountKey20Params memory params
 ) pure returns (Junction memory) {
-    return
-        Junction({
-            variant: JunctionVariant.AccountKey20,
-            payload: abi.encodePacked(
-                params.hasNetwork,
-                params.network.encode(),
-                params.key.encode()
-            )
-        });
+    bytes memory payload = abi.encodePacked(params.hasNetwork);
+    if (params.hasNetwork) {
+        payload = abi.encodePacked(payload, params.network.encode());
+    }
+    payload = abi.encodePacked(payload, params.key.encode());
+    return Junction({variant: JunctionVariant.AccountKey20, payload: payload});
 }
 
 /// @notice Creates a `PalletInstance` junction with the given instance index.
