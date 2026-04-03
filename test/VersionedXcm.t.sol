@@ -35,6 +35,7 @@ contract VersionedXcmTest is Test {
     VersionedXcmWrapper wrapper;
 
     using InstructionCodec for Instruction;
+    using XcmBuilder for Xcm;
 
     function setUp() public {
         wrapper = new VersionedXcmWrapper();
@@ -149,21 +150,27 @@ contract VersionedXcmTest is Test {
             )
         });
 
-        Xcm memory xcm = XcmBuilder.create();
-        xcm = XcmBuilder.withdrawAsset(
-            xcm,
-            WithdrawAssetParams({assets: fromAsset(asset)})
+        bytes memory encoded = VersionedXcmCodec.encode(
+            v5(
+                XcmBuilder
+                    .create()
+                    .withdrawAsset(
+                        WithdrawAssetParams({assets: fromAsset(asset)})
+                    )
+                    .buyExecution(
+                        BuyExecutionParams({
+                            fees: asset,
+                            weightLimit: unlimited()
+                        })
+                    )
+                    .depositAsset(
+                        DepositAssetParams({
+                            assets: filter,
+                            beneficiary: beneficiary
+                        })
+                    )
+            )
         );
-        xcm = XcmBuilder.buyExecution(
-            xcm,
-            BuyExecutionParams({fees: asset, weightLimit: unlimited()})
-        );
-        xcm = XcmBuilder.depositAsset(
-            xcm,
-            DepositAssetParams({assets: filter, beneficiary: beneficiary})
-        );
-
-        bytes memory encoded = VersionedXcmCodec.encode(v5(xcm));
         assertEq(encoded, expected);
     }
 }
