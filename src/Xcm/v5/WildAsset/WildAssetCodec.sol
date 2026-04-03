@@ -6,7 +6,9 @@ import {AssetIdCodec} from "../AssetId/AssetIdCodec.sol";
 import {WildFungibilityCodec} from "../WildFungibility/WildFungibilityCodec.sol";
 import {AssetId} from "../AssetId/AssetId.sol";
 import {WildFungibility} from "../WildFungibility/WildFungibility.sol";
-import {WildAsset, WildAssetType, AllOfParams, AllOfCountedParams} from "./WildAsset.sol";
+import {WildAsset, WildAssetVariant, AllOfParams, AllCountedParams, AllOfCountedParams} from "./WildAsset.sol";
+import {BytesUtils} from "../../../Utils/BytesUtils.sol";
+import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `WildAsset`
 /// @notice SCALE-compliant encoder/decoder for the `WildAsset` type.
@@ -14,7 +16,7 @@ import {WildAsset, WildAssetType, AllOfParams, AllOfCountedParams} from "./WildA
 /// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
 library WildAssetCodec {
     error InvalidWildAssetLength();
-    error InvalidWildAssetType(uint8 waType);
+    error InvalidWildAssetVariant(uint8 variant);
     error InvalidWildAssetPayload();
 
     /// @notice Encodes a `WildAsset` struct into bytes.
@@ -23,7 +25,7 @@ library WildAssetCodec {
     function encode(
         WildAsset memory wildAsset
     ) internal pure returns (bytes memory) {
-        return abi.encodePacked(uint8(wildAsset.waType), wildAsset.payload);
+        return abi.encodePacked(uint8(wildAsset.variant), wildAsset.payload);
     }
 
     /// @notice Returns the number of bytes that a `WildAsset` struct would occupy when SCALE-encoded.
@@ -37,21 +39,21 @@ library WildAssetCodec {
         if (offset >= data.length) {
             revert InvalidWildAssetLength();
         }
-        uint8 waType = uint8(data[offset]);
-        if (waType > uint8(WildAssetType.AllOfCounted)) {
-            revert InvalidWildAssetType(waType);
+        uint8 variant = uint8(data[offset]);
+        if (variant > uint8(WildAssetVariant.AllOfCounted)) {
+            revert InvalidWildAssetVariant(variant);
         }
         uint256 payloadLength;
-        if (waType == uint8(WildAssetType.All)) {
+        if (variant == uint8(WildAssetVariant.All)) {
             payloadLength = 0;
-        } else if (waType == uint8(WildAssetType.AllOf)) {
+        } else if (variant == uint8(WildAssetVariant.AllOf)) {
             uint256 idSize = AssetIdCodec.encodedSizeAt(data, offset + 1);
             payloadLength =
                 idSize +
                 WildFungibilityCodec.encodedSizeAt(data, offset + 1 + idSize);
-        } else if (waType == uint8(WildAssetType.AllCounted)) {
+        } else if (variant == uint8(WildAssetVariant.AllCounted)) {
             payloadLength = Compact.encodedSizeAt(data, offset + 1);
-        } else if (waType == uint8(WildAssetType.AllOfCounted)) {
+        } else if (variant == uint8(WildAssetVariant.AllOfCounted)) {
             uint256 idSize = AssetIdCodec.encodedSizeAt(data, offset + 1);
             uint256 funSize = WildFungibilityCodec.encodedSizeAt(
                 data,
@@ -62,9 +64,9 @@ library WildAssetCodec {
                 funSize +
                 Compact.encodedSizeAt(data, offset + 1 + idSize + funSize);
         } else {
-            revert InvalidWildAssetType(waType);
+            revert InvalidWildAssetVariant(variant);
         }
-        return 1 + payloadLength; // 1 byte for the waType
+        return 1 + payloadLength; // 1 byte for the variant
     }
 
     /// @notice Decodes a `WildAsset` instance from bytes starting at the beginning of the data.
@@ -89,16 +91,13 @@ library WildAssetCodec {
         if (offset >= data.length) {
             revert InvalidWildAssetLength();
         }
-        uint8 waType = uint8(data[offset]);
-        if (waType > uint8(WildAssetType.AllOfCounted)) {
-            revert InvalidWildAssetType(waType);
+        uint8 variant = uint8(data[offset]);
+        if (variant > uint8(type(WildAssetVariant).max) + 1) {
+            revert InvalidWildAssetVariant(variant);
         }
-        wildAsset.waType = WildAssetType(waType);
-        uint256 payloadLength = encodedSizeAt(data, offset) - 1; // subtract 1 byte for the waType
-        wildAsset.payload = new bytes(payloadLength);
-        for (uint256 i = 0; i < payloadLength; i++) {
-            wildAsset.payload[i] = data[offset + 1 + i];
-        }
+        wildAsset.variant = WildAssetVariant(variant);
+        uint256 payloadLength = encodedSizeAt(data, offset) - 1; // subtract 1 byte for the variant
+        wildAsset.payload = BytesUtils.copy(data, offset + 1, payloadLength);
         bytesRead = 1 + payloadLength;
     }
 
@@ -108,9 +107,7 @@ library WildAssetCodec {
     function asAllOf(
         WildAsset memory wildAsset
     ) internal pure returns (AllOfParams memory params) {
-        if (wildAsset.waType != WildAssetType.AllOf) {
-            revert InvalidWildAssetType(uint8(wildAsset.waType));
-        }
+        _assertVariant(wildAsset, WildAssetVariant.AllOf);
         uint256 bytesRead;
         (params.id, bytesRead) = AssetIdCodec.decode(wildAsset.payload);
         (params.fun, ) = WildFungibilityCodec.decodeAt(
@@ -121,16 +118,14 @@ library WildAssetCodec {
 
     /// @notice Decodes the parameters of a `WildAsset` with the `AllCounted` variant from its payload.
     /// @param wildAsset The `WildAsset` struct. Must have the `AllCounted` variant.
-    /// @return count The `count` parameter decoded from the payload, representing the limit of assets to match against.
+    /// @return params An `AllCountedParams` struct containing the decoded parameters from the payload, including the count limit.
     function asAllCounted(
         WildAsset memory wildAsset
-    ) internal pure returns (uint32 count) {
-        if (wildAsset.waType != WildAssetType.AllCounted) {
-            revert InvalidWildAssetType(uint8(wildAsset.waType));
-        }
+    ) internal pure returns (AllCountedParams memory params) {
+        _assertVariant(wildAsset, WildAssetVariant.AllCounted);
         uint256 decodedCount;
         (decodedCount, ) = Compact.decode(wildAsset.payload);
-        count = uint32(decodedCount);
+        params.count = UnsignedUtils.toU32(decodedCount);
     }
 
     /// @notice Decodes the parameters of a `WildAsset` with the `AllOfCounted` variant from its payload.
@@ -139,9 +134,7 @@ library WildAssetCodec {
     function asAllOfCounted(
         WildAsset memory wildAsset
     ) internal pure returns (AllOfCountedParams memory params) {
-        if (wildAsset.waType != WildAssetType.AllOfCounted) {
-            revert InvalidWildAssetType(uint8(wildAsset.waType));
-        }
+        _assertVariant(wildAsset, WildAssetVariant.AllOfCounted);
         uint256 offset = 0;
         uint256 bytesRead;
         (params.id, bytesRead) = AssetIdCodec.decodeAt(
@@ -156,6 +149,15 @@ library WildAssetCodec {
         offset += bytesRead;
         uint256 decodedCount;
         (decodedCount, ) = Compact.decodeAt(wildAsset.payload, offset);
-        params.count = uint32(decodedCount);
+        params.count = UnsignedUtils.toU32(decodedCount);
+    }
+
+    function _assertVariant(
+        WildAsset memory wildAsset,
+        WildAssetVariant expected
+    ) internal pure {
+        if (wildAsset.variant != expected) {
+            revert InvalidWildAssetVariant(uint8(wildAsset.variant));
+        }
     }
 }
