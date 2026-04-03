@@ -13,7 +13,7 @@ using Bytes16 for bytes16;
 using Bytes32 for bytes32;
 
 /// @dev Discriminant for the different types of AssetInstances in XCM v5.
-enum AssetInstanceType {
+enum AssetInstanceVariant {
     /// @custom:variant Used if the non-fungible asset class has only one instance.
     Undefined,
     /// @custom:variant A compact index up to 2^128 - 1.
@@ -30,9 +30,9 @@ enum AssetInstanceType {
 
 /// @notice A general identifier for an instance of a non-fungible asset class.
 struct AssetInstance {
-    /// @custom:property The type of asset instance, determining how to interpret the payload. See `AssetInstanceType` enum for possible values.
-    AssetInstanceType iType;
-    /// @custom:property The encoded payload containing the asset instance data, whose structure depends on the `iType`.
+    /// @custom:property The type of asset instance, determining how to interpret the payload. See `AssetInstanceVariant` enum for possible values.
+    AssetInstanceVariant variant;
+    /// @custom:property The encoded payload containing the asset instance data, whose structure depends on the `variant`.
     bytes payload;
 }
 
@@ -73,7 +73,7 @@ struct Array32Params {
 function undefined() pure returns (AssetInstance memory) {
     return
         AssetInstance({
-            iType: AssetInstanceType.Undefined,
+            variant: AssetInstanceVariant.Undefined,
             payload: new bytes(0)
         });
 }
@@ -83,7 +83,8 @@ function undefined() pure returns (AssetInstance memory) {
 /// @return An `AssetInstance` struct with type `Index` and the provided index value encoded in the payload.
 function index(IndexParams memory params) pure returns (AssetInstance memory) {
     bytes memory payload = Compact.encode(params.idx);
-    return AssetInstance({iType: AssetInstanceType.Index, payload: payload});
+    return
+        AssetInstance({variant: AssetInstanceVariant.Index, payload: payload});
 }
 
 /// @notice Creates an `Array4` asset instance with the given 4-byte data.
@@ -94,7 +95,7 @@ function array4(
 ) pure returns (AssetInstance memory) {
     return
         AssetInstance({
-            iType: AssetInstanceType.Array4,
+            variant: AssetInstanceVariant.Array4,
             payload: params.data.encode()
         });
 }
@@ -107,7 +108,7 @@ function array8(
 ) pure returns (AssetInstance memory) {
     return
         AssetInstance({
-            iType: AssetInstanceType.Array8,
+            variant: AssetInstanceVariant.Array8,
             payload: params.data.encode()
         });
 }
@@ -120,7 +121,7 @@ function array16(
 ) pure returns (AssetInstance memory) {
     return
         AssetInstance({
-            iType: AssetInstanceType.Array16,
+            variant: AssetInstanceVariant.Array16,
             payload: params.data.encode()
         });
 }
@@ -133,7 +134,7 @@ function array32(
 ) pure returns (AssetInstance memory) {
     return
         AssetInstance({
-            iType: AssetInstanceType.Array32,
+            variant: AssetInstanceVariant.Array32,
             payload: params.data.encode()
         });
 }

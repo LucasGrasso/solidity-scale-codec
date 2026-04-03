@@ -6,7 +6,7 @@ import {Bytes4} from "../../../Scale/Bytes/Bytes4.sol";
 import {Bytes8} from "../../../Scale/Bytes/Bytes8.sol";
 import {Bytes16} from "../../../Scale/Bytes/Bytes16.sol";
 import {Bytes32} from "../../../Scale/Bytes/Bytes32.sol";
-import {AssetInstance, AssetInstanceType} from "./AssetInstance.sol";
+import {AssetInstance, AssetInstanceVariant} from "./AssetInstance.sol";
 
 /// @title SCALE Codec for XCM v5 `AssetInstance`
 /// @notice SCALE-compliant encoder/decoder for the `AssetInstance` type.
@@ -14,7 +14,7 @@ import {AssetInstance, AssetInstanceType} from "./AssetInstance.sol";
 /// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
 library AssetInstanceCodec {
     error InvalidAssetInstanceLength();
-    error InvalidAssetInstanceType(uint8 iType);
+    error InvalidAssetInstanceVariant(uint8 variant);
     error InvalidAssetInstancePayload();
 
     /// @notice Encodes an `AssetInstance` struct into bytes.
@@ -23,7 +23,7 @@ library AssetInstanceCodec {
     function encode(
         AssetInstance memory assetInstance
     ) internal pure returns (bytes memory) {
-        return abi.encodePacked(assetInstance.iType, assetInstance.payload);
+        return abi.encodePacked(assetInstance.variant, assetInstance.payload);
     }
 
     /// @notice Returns the total number of bytes that an `AssetInstance` would occupy when encoded, based on the type and payload.
@@ -37,22 +37,22 @@ library AssetInstanceCodec {
         if (data.length < offset + 1) {
             revert InvalidAssetInstanceLength();
         }
-        uint8 iType = uint8(data[offset]);
+        uint8 variant = uint8(data[offset]);
         uint256 payloadLength;
-        if (iType == uint8(AssetInstanceType.Index)) {
+        if (variant == uint8(AssetInstanceVariant.Index)) {
             payloadLength = Compact.encodedSizeAt(data, offset + 1);
-        } else if (iType == uint8(AssetInstanceType.Array4)) {
+        } else if (variant == uint8(AssetInstanceVariant.Array4)) {
             payloadLength = 4;
-        } else if (iType == uint8(AssetInstanceType.Array8)) {
+        } else if (variant == uint8(AssetInstanceVariant.Array8)) {
             payloadLength = 8;
-        } else if (iType == uint8(AssetInstanceType.Array16)) {
+        } else if (variant == uint8(AssetInstanceVariant.Array16)) {
             payloadLength = 16;
-        } else if (iType == uint8(AssetInstanceType.Array32)) {
+        } else if (variant == uint8(AssetInstanceVariant.Array32)) {
             payloadLength = 32;
-        } else if (iType == uint8(AssetInstanceType.Undefined)) {
+        } else if (variant == uint8(AssetInstanceVariant.Undefined)) {
             payloadLength = 0;
         } else {
-            revert InvalidAssetInstanceType(iType);
+            revert InvalidAssetInstanceVariant(variant);
         }
 
         if (data.length < offset + 1 + payloadLength) {
@@ -92,15 +92,15 @@ library AssetInstanceCodec {
         if (data.length < offset + 1) {
             revert InvalidAssetInstanceLength();
         }
-        uint8 iType = uint8(data[offset]);
-        uint256 payloadLength = encodedSizeAt(data, offset) - 1; // subtract 1 byte for the iType
+        uint8 variant = uint8(data[offset]);
+        uint256 payloadLength = encodedSizeAt(data, offset) - 1; // subtract 1 byte for the variant
         bytes memory payload = new bytes(payloadLength);
         for (uint256 i = 0; i < payloadLength; i++) {
             payload[i] = data[offset + 1 + i];
         }
 
         assetInstance = AssetInstance({
-            iType: AssetInstanceType(iType),
+            variant: AssetInstanceVariant(variant),
             payload: payload
         });
         bytesRead = 1 + payloadLength;
@@ -112,9 +112,7 @@ library AssetInstanceCodec {
     function asIndex(
         AssetInstance memory assetInstance
     ) internal pure returns (uint128 idx) {
-        if (assetInstance.iType != AssetInstanceType.Index) {
-            revert InvalidAssetInstanceType(uint8(assetInstance.iType));
-        }
+        _assertVariant(assetInstance, AssetInstanceVariant.Index);
         (uint256 decodedIndex, ) = Compact.decode(assetInstance.payload);
         if (decodedIndex > type(uint128).max) {
             revert InvalidAssetInstancePayload();
@@ -130,9 +128,7 @@ library AssetInstanceCodec {
     function asArray4(
         AssetInstance memory assetInstance
     ) internal pure returns (bytes4 data) {
-        if (assetInstance.iType != AssetInstanceType.Array4) {
-            revert InvalidAssetInstanceType(uint8(assetInstance.iType));
-        }
+        _assertVariant(assetInstance, AssetInstanceVariant.Array4);
         return Bytes4.decode(assetInstance.payload);
     }
 
@@ -142,9 +138,7 @@ library AssetInstanceCodec {
     function asArray8(
         AssetInstance memory assetInstance
     ) internal pure returns (bytes8 data) {
-        if (assetInstance.iType != AssetInstanceType.Array8) {
-            revert InvalidAssetInstanceType(uint8(assetInstance.iType));
-        }
+        _assertVariant(assetInstance, AssetInstanceVariant.Array8);
         return Bytes8.decode(assetInstance.payload);
     }
 
@@ -154,9 +148,7 @@ library AssetInstanceCodec {
     function asArray16(
         AssetInstance memory assetInstance
     ) internal pure returns (bytes16 data) {
-        if (assetInstance.iType != AssetInstanceType.Array16) {
-            revert InvalidAssetInstanceType(uint8(assetInstance.iType));
-        }
+        _assertVariant(assetInstance, AssetInstanceVariant.Array16);
         return Bytes16.decode(assetInstance.payload);
     }
 
@@ -166,9 +158,16 @@ library AssetInstanceCodec {
     function asArray32(
         AssetInstance memory assetInstance
     ) internal pure returns (bytes32 data) {
-        if (assetInstance.iType != AssetInstanceType.Array32) {
-            revert InvalidAssetInstanceType(uint8(assetInstance.iType));
-        }
+        _assertVariant(assetInstance, AssetInstanceVariant.Array32);
         return Bytes32.decode(assetInstance.payload);
+    }
+
+    function _assertVariant(
+        AssetInstance memory assetInstance,
+        AssetInstanceVariant expected
+    ) private pure {
+        if (assetInstance.variant != expected) {
+            revert InvalidAssetInstanceVariant(uint8(assetInstance.variant));
+        }
     }
 }
