@@ -5,7 +5,7 @@ import {AssetFilter} from "../AssetFilter/AssetFilter.sol";
 import {AssetFilterCodec} from "../AssetFilter/AssetFilterCodec.sol";
 
 /// @notice Discriminant for the `AssetTransferFilter` enum.
-enum AssetTransferFilterType {
+enum AssetTransferFilterVariant {
     /// @custom:variant Teleport assets matching `AssetFilter` to a specific destination.
     Teleport,
     /// @custom:variant Reserve-transfer assets matching `AssetFilter` to a specific destination, using the local chain as reserve.
@@ -16,8 +16,8 @@ enum AssetTransferFilterType {
 
 /// @notice Matches assets based on inner `AssetFilter` and tags them for a specific type of asset transfer.
 struct AssetTransferFilter {
-    /// @custom:property The type of asset transfer. See `AssetTransferFilterType` enum for possible values.
-    AssetTransferFilterType atfType;
+    /// @custom:property The type of asset transfer. See `AssetTransferFilterVariant` enum for possible values.
+    AssetTransferFilterVariant variant;
     /// @custom:property The SCALE-encoded `AssetFilter` payload.
     bytes payload;
 }
@@ -50,7 +50,7 @@ function teleport(
 ) pure returns (AssetTransferFilter memory) {
     return
         AssetTransferFilter({
-            atfType: AssetTransferFilterType.Teleport,
+            variant: AssetTransferFilterVariant.Teleport,
             payload: AssetFilterCodec.encode(params.filter)
         });
 }
@@ -63,7 +63,7 @@ function reserveDeposit(
 ) pure returns (AssetTransferFilter memory) {
     return
         AssetTransferFilter({
-            atfType: AssetTransferFilterType.ReserveDeposit,
+            variant: AssetTransferFilterVariant.ReserveDeposit,
             payload: AssetFilterCodec.encode(params.filter)
         });
 }
@@ -76,7 +76,7 @@ function reserveWithdraw(
 ) pure returns (AssetTransferFilter memory) {
     return
         AssetTransferFilter({
-            atfType: AssetTransferFilterType.ReserveWithdraw,
+            variant: AssetTransferFilterVariant.ReserveWithdraw,
             payload: AssetFilterCodec.encode(params.filter)
         });
 }

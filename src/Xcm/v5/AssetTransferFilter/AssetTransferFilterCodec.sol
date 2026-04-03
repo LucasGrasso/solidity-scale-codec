@@ -3,7 +3,8 @@ pragma solidity ^0.8.28;
 
 import {AssetFilter} from "../AssetFilter/AssetFilter.sol";
 import {AssetFilterCodec} from "../AssetFilter/AssetFilterCodec.sol";
-import {AssetTransferFilter, AssetTransferFilterType} from "./AssetTransferFilter.sol";
+import {AssetTransferFilter, AssetTransferFilterVariant} from "./AssetTransferFilter.sol";
+import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `AssetTransferFilter`
 /// @notice SCALE-compliant encoder/decoder for the `AssetTransferFilter` type.
@@ -11,7 +12,7 @@ import {AssetTransferFilter, AssetTransferFilterType} from "./AssetTransferFilte
 /// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/enum.AssetTransferFilter.html
 library AssetTransferFilterCodec {
     error InvalidAssetTransferFilterLength();
-    error InvalidAssetTransferFilterType(uint8 atfType);
+    error InvalidAssetTransferFilterVariant(uint8 variant);
 
     /// @notice Encodes an `AssetTransferFilter` struct into SCALE bytes.
     /// @param atf The `AssetTransferFilter` struct to encode.
@@ -19,7 +20,7 @@ library AssetTransferFilterCodec {
     function encode(
         AssetTransferFilter memory atf
     ) internal pure returns (bytes memory) {
-        return abi.encodePacked(uint8(atf.atfType), atf.payload);
+        return abi.encodePacked(uint8(atf.variant), atf.payload);
     }
 
     /// @notice Returns the number of bytes that an `AssetTransferFilter` would occupy when SCALE-encoded.
@@ -31,9 +32,9 @@ library AssetTransferFilterCodec {
         uint256 offset
     ) internal pure returns (uint256) {
         if (data.length < offset + 1) revert InvalidAssetTransferFilterLength();
-        uint8 atfType = uint8(data[offset]);
-        if (atfType > uint8(AssetTransferFilterType.ReserveWithdraw))
-            revert InvalidAssetTransferFilterType(atfType);
+        uint8 variant = uint8(data[offset]);
+        if (variant > uint8(AssetTransferFilterVariant.ReserveWithdraw))
+            revert InvalidAssetTransferFilterVariant(variant);
         return 1 + AssetFilterCodec.encodedSizeAt(data, offset + 1);
     }
 
@@ -65,28 +66,55 @@ library AssetTransferFilterCodec {
         returns (AssetTransferFilter memory atf, uint256 bytesRead)
     {
         if (data.length < offset + 1) revert InvalidAssetTransferFilterLength();
-        uint8 atfType = uint8(data[offset]);
-        if (atfType > uint8(AssetTransferFilterType.ReserveWithdraw))
-            revert InvalidAssetTransferFilterType(atfType);
+        uint8 variant = uint8(data[offset]);
+        if (variant > uint8(AssetTransferFilterVariant.ReserveWithdraw))
+            revert InvalidAssetTransferFilterVariant(variant);
         uint256 size = encodedSizeAt(data, offset);
         uint256 payloadLength = size - 1;
-        bytes memory payload = new bytes(payloadLength);
-        for (uint256 i = 0; i < payloadLength; ++i) {
-            payload[i] = data[offset + 1 + i];
-        }
+        bytes memory payload = BytesUtils.copy(data, offset + 1, payloadLength);
         atf = AssetTransferFilter({
-            atfType: AssetTransferFilterType(atfType),
+            variant: AssetTransferFilterVariant(variant),
             payload: payload
         });
         bytesRead = size;
     }
 
-    /// @notice Extracts the inner `AssetFilter` from an `AssetTransferFilter`.
+    /// @notice Extracts the inner `AssetFilter` from an `AssetTransferFilter` with `Teleport` variant
     /// @param atf The `AssetTransferFilter` struct to decode.
-    /// @return The inner `AssetFilter`.
-    function asInner(
+    /// @return assetFilter The inner `AssetFilter`.
+    function asTeleport(
         AssetTransferFilter memory atf
-    ) internal pure returns (AssetFilter memory) {
-        return AssetFilterCodec.decode(atf.payload);
+    ) internal pure returns (AssetFilter memory assetFilter) {
+        _assertVariant(atf, AssetTransferFilterVariant.Teleport);
+        (assetFilter, ) = AssetFilterCodec.decode(atf.payload);
+    }
+
+    /// @notice Extracts the inner `AssetFilter` from an `AssetTransferFilter` with `ReserveDeposit` variant
+    /// @param atf The `AssetTransferFilter` struct to decode.
+    /// @return assetFilter The inner `AssetFilter`.
+    function asReserveDeposit(
+        AssetTransferFilter memory atf
+    ) internal pure returns (AssetFilter memory assetFilter) {
+        _assertVariant(atf, AssetTransferFilterVariant.ReserveDeposit);
+        (assetFilter, ) = AssetFilterCodec.decode(atf.payload);
+    }
+
+    /// @notice Extracts the inner `AssetFilter` from an `AssetTransferFilter` with `ReserveWithdraw` variant
+    /// @param atf The `AssetTransferFilter` struct to decode.
+    /// @return assetFilter The inner `AssetFilter`.
+    function asReserveWithdraw(
+        AssetTransferFilter memory atf
+    ) internal pure returns (AssetFilter memory assetFilter) {
+        _assertVariant(atf, AssetTransferFilterVariant.ReserveWithdraw);
+        (assetFilter, ) = AssetFilterCodec.decode(atf.payload);
+    }
+
+    function _assertVariant(
+        AssetTransferFilter memory atf,
+        AssetTransferFilterVariant expected
+    ) internal pure {
+        if (atf.variant != expected) {
+            revert InvalidAssetTransferFilterVariant(uint8(atf.variant));
+        }
     }
 }
