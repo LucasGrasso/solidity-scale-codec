@@ -41,7 +41,7 @@ contract VersionedXcmTest is Test {
                 "   - Instruction ",
                 i,
                 ": ",
-                uint256(xcmV5.instructions[i].iType)
+                uint256(xcmV5.instructions[i].variant)
             );
             // Decode each instruction
         }
