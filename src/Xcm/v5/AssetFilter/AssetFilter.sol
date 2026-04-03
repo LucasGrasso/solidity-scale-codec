@@ -7,7 +7,7 @@ import {WildAsset} from "../WildAsset/WildAsset.sol";
 import {WildAssetCodec} from "../WildAsset/WildAssetCodec.sol";
 
 /// @notice Discriminant for the type of asset filter being specified in an `AssetFilter`.
-enum AssetFilterType {
+enum AssetFilterVariant {
     /// @custom:variant Specify the filter as being everything contained by the given `Assets` inner.
     Definite,
     /// @custom:variant Specify the filter as the given `WildAsset` wildcard.
@@ -16,9 +16,9 @@ enum AssetFilterType {
 
 /// @notice `Asset` collection, defined either by a number of `Assets` or a single wildcard.
 struct AssetFilter {
-    /// @custom:property The type of asset filter, determining how to interpret the payload. See `AssetFilterType` enum for possible values.
-    AssetFilterType afType;
-    /// @custom:property The encoded payload containing the asset filter data, whose structure depends on the `afType`.
+    /// @custom:property The type of asset filter, determining how to interpret the payload. See `AssetFilterVariant` enum for possible values.
+    AssetFilterVariant variant;
+    /// @custom:property The encoded payload containing the asset filter data, whose structure depends on the `variant`.
     bytes payload;
 }
 
@@ -44,7 +44,7 @@ function definite(
 ) pure returns (AssetFilter memory) {
     return
         AssetFilter({
-            afType: AssetFilterType.Definite,
+            variant: AssetFilterVariant.Definite,
             payload: AssetsCodec.encode(params.assets)
         });
 }
@@ -55,7 +55,7 @@ function definite(
 function wild(WildParams memory params) pure returns (AssetFilter memory) {
     return
         AssetFilter({
-            afType: AssetFilterType.Wild,
+            variant: AssetFilterVariant.Wild,
             payload: WildAssetCodec.encode(params.wA)
         });
 }
