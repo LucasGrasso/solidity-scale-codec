@@ -3,7 +3,7 @@ pragma solidity ^0.8.28;
 
 import {Bytes4} from "../../../Scale/Bytes.sol";
 import {Compact} from "../../../Scale/Compact.sol";
-import {BodyId, BodyIdVariant} from "./BodyId.sol";
+import {BodyId, BodyIdVariant, MonikerParams, IndexParams} from "./BodyId.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 
@@ -97,21 +97,23 @@ library BodyIdCodec {
 
     /// @notice Helper function to decode a `BodyId` and extract the moniker name if the type is `Moniker`.
     /// @param bodyId The `BodyId` to extract the moniker name from.
-    /// @return name The 4-byte name of the moniker if the `variant` is `Moniker`.
+    /// @return params A `MonikerParams` struct containing the moniker name if the `variant` is `Moniker`.
     function asMoniker(
         BodyId memory bodyId
-    ) internal pure returns (bytes4 name) {
+    ) internal pure returns (MonikerParams memory params) {
         _assertVariant(bodyId, BodyIdVariant.Moniker);
-        return Bytes4.decode(bodyId.payload);
+        params.name = Bytes4.decode(bodyId.payload);
     }
 
     /// @notice Helper function to decode a `BodyId` and extract the index if the type is `Index`.
     /// @param bodyId The `BodyId` to extract the index from.
-    /// @return idx The index of the body if the `variant` is `Index`.
-    function asIndex(BodyId memory bodyId) internal pure returns (uint32 idx) {
+    /// @return params An `IndexParams` struct containing the index if the `variant` is `Index`.
+    function asIndex(
+        BodyId memory bodyId
+    ) internal pure returns (IndexParams memory params) {
         _assertVariant(bodyId, BodyIdVariant.Index);
         (uint256 decodedIndex, ) = Compact.decode(bodyId.payload);
-        idx = UnsignedUtils.toU32(decodedIndex);
+        params.index = UnsignedUtils.toU32(decodedIndex);
     }
 
     function _assertVariant(

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.28;
 
 import {Compact} from "../../../Scale/Compact.sol";
-import {BodyPart, BodyPartVariant} from "./BodyPart.sol";
+import {BodyPart, BodyPartVariant, MembersParams, FractionParams, AtLeastProportionParams, MoreThanProportionParams} from "./BodyPart.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 
@@ -97,46 +97,43 @@ library BodyPartCodec {
 
     /// @notice Decodes a `Members` body part to extract the member count.
     /// @param bodyPart The `BodyPart` struct to decode, which must be of type `Members`.
-    /// @return count The number of members encoded in the body part's payload.
+    /// @return params A `MembersParams` struct containing the member count encoded in the body part's payload.
     function asMembers(
         BodyPart memory bodyPart
-    ) internal pure returns (uint32 count) {
+    ) internal pure returns (MembersParams memory params) {
         _assertVariant(bodyPart, BodyPartVariant.Members);
         (uint256 decodedCount, ) = Compact.decode(bodyPart.payload);
-        count = UnsignedUtils.toU32(decodedCount);
+        params.count = UnsignedUtils.toU32(decodedCount);
     }
 
     /// @notice Decodes a `Fraction` body part to extract the nominator and denominator.
     /// @param bodyPart The `BodyPart` struct to decode, which must be of type `Fraction`.
-    /// @return nominator The numerator of the fraction encoded in the body part's payload.
-    /// @return denominator The denominator of the fraction encoded in the body part's payload.
+    /// @return params A `FractionParams` struct containing the nominator and denominator encoded in the body part's payload.
     function asFraction(
         BodyPart memory bodyPart
-    ) internal pure returns (uint32 nominator, uint32 denominator) {
+    ) internal pure returns (FractionParams memory params) {
         _assertVariant(bodyPart, BodyPartVariant.Fraction);
-        (nominator, denominator) = _asProportion(bodyPart);
+        (params.nominator, params.denominator) = _asProportion(bodyPart);
     }
 
     /// @notice Decodes a `AtLeastProportion` body part to extract the nominator and denominator.
     /// @param bodyPart The `BodyPart` struct to decode, which must be of type `AtLeastProportion`.
-    /// @return nominator The numerator of the fraction encoded in the body part's payload.
-    /// @return denominator The denominator of the fraction encoded in the body part's payload.
+    /// @return params An `AtLeastProportionParams` struct containing the nominator and denominator encoded in the body part's payload.
     function asAtLeastProportion(
         BodyPart memory bodyPart
-    ) internal pure returns (uint32 nominator, uint32 denominator) {
+    ) internal pure returns (AtLeastProportionParams memory params) {
         _assertVariant(bodyPart, BodyPartVariant.AtLeastProportion);
-        (nominator, denominator) = _asProportion(bodyPart);
+        (params.nominator, params.denominator) = _asProportion(bodyPart);
     }
 
     /// @notice Decodes a `MoreThanProportion` body part to extract the nominator and denominator.
     /// @param bodyPart The `BodyPart` struct to decode, which must be of type `MoreThanProportion`.
-    /// @return nominator The numerator of the fraction encoded in the body part's payload.
-    /// @return denominator The denominator of the fraction encoded in the body part's payload.
+    /// @return params A `MoreThanProportionParams` struct containing the nominator and denominator encoded in the body part's payload.
     function asMoreThanProportion(
         BodyPart memory bodyPart
-    ) internal pure returns (uint32 nominator, uint32 denominator) {
+    ) internal pure returns (MoreThanProportionParams memory params) {
         _assertVariant(bodyPart, BodyPartVariant.MoreThanProportion);
-        (nominator, denominator) = _asProportion(bodyPart);
+        (params.nominator, params.denominator) = _asProportion(bodyPart);
     }
 
     /// @notice Decodes a `Fraction`, `AtLeastProportion`, or `MoreThanProportion` body part to extract the nominator and denominator.

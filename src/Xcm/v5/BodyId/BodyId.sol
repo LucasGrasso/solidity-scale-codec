@@ -45,7 +45,7 @@ struct MonikerParams {
 /// @notice Parameters for the `Index` variant.
 struct IndexParams {
     /// @custom:property The index of the body.
-    uint32 idx;
+    uint32 index;
 }
 
 // ============ Factory Functions ============
@@ -74,7 +74,7 @@ function index(IndexParams memory params) pure returns (BodyId memory) {
     return
         BodyId({
             variant: BodyIdVariant.Index,
-            payload: Compact.encode(params.idx)
+            payload: Compact.encode(params.index)
         });
 }
 
