@@ -57,7 +57,7 @@ library OriginKindCodec {
             revert InvalidOriginKindLength();
         }
         uint8 originKindValue = uint8(data[offset]);
-        if (originKindValue > uint8(type(OriginKind).max) + 1) {
+        if (originKindValue > uint8(type(OriginKind).max)) {
             revert InvalidOriginKind(originKindValue);
         }
         originKind = OriginKind(originKindValue);

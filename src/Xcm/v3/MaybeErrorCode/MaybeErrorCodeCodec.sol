@@ -65,7 +65,7 @@ library MaybeErrorCodeCodec {
     ) internal pure returns (MaybeErrorCode memory me, uint256 bytesRead) {
         if (data.length < offset + 1) revert InvalidMaybeErrorCodeLength();
         uint8 variant = uint8(data[offset]);
-        if (variant > uint8(type(MaybeErrorCodeVariant).max) + 1) {
+        if (variant > uint8(type(MaybeErrorCodeVariant).max)) {
             revert InvalidMaybeErrorCodeVariant(variant);
         }
         uint256 size = encodedSizeAt(data, offset);

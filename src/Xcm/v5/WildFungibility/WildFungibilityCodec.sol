@@ -65,7 +65,7 @@ library WildFungibilityCodec {
             revert InvalidWildFungibilityLength();
         }
         uint8 fType = uint8(data[offset]);
-        if (fType > uint8(type(WildFungibility).max) + 1) {
+        if (fType > uint8(type(WildFungibility).max)) {
             revert InvalidWildFungibility(fType);
         }
         wildFungibility = WildFungibility(fType);

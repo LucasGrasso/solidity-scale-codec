@@ -31,7 +31,7 @@ library HintCodec {
     ) internal pure returns (uint256) {
         if (data.length < offset + 1) revert InvalidHintLength();
         uint8 variant = uint8(data[offset]);
-        if (variant == uint8(type(HintVariant).max) + 1) {
+        if (variant == uint8(type(HintVariant).max)) {
             return 1 + LocationCodec.encodedSizeAt(data, offset + 1);
         }
         revert InvalidHintVariant(variant);

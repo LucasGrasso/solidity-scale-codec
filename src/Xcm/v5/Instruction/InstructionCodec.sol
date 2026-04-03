@@ -61,7 +61,7 @@ library InstructionCodec {
         if (data.length < offset + 1) revert InvalidInstructionLength();
 
         uint8 variantRaw = uint8(data[offset]);
-        if (variantRaw > uint8(type(InstructionVariant).max) + 1) {
+        if (variantRaw > uint8(type(InstructionVariant).max)) {
             revert InvalidInstructionVariant(variantRaw);
         }
 
@@ -293,14 +293,8 @@ library InstructionCodec {
         pure
         returns (Instruction memory instruction, uint256 bytesRead)
     {
-        if (data.length < offset + 1) revert InvalidInstructionLength();
-
-        uint8 variantRaw = uint8(data[offset]);
-        if (variantRaw > uint8(type(InstructionVariant).max) + 1) {
-            revert InvalidInstructionVariant(variantRaw);
-        }
-
         uint256 size = encodedSizeAt(data, offset);
+        uint8 variantRaw = uint8(data[offset]);
         uint256 payloadLength = size - 1;
         bytes memory payload = BytesUtils.copy(data, offset + 1, payloadLength);
         instruction = Instruction({

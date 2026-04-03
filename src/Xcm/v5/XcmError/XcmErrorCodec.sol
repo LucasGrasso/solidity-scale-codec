@@ -32,7 +32,7 @@ library XcmErrorCodec {
     ) internal pure returns (uint256) {
         if (data.length < offset + 1) revert InvalidXcmErrorLength();
         uint8 raw = uint8(data[offset]);
-        if (raw > uint8(type(XcmErrorVariant).max) + 1)
+        if (raw > uint8(type(XcmErrorVariant).max))
             revert InvalidXcmErrorVariant(raw);
         if (raw == uint8(XcmErrorVariant.Trap)) {
             if (data.length < offset + 9) revert InvalidXcmErrorLength();
