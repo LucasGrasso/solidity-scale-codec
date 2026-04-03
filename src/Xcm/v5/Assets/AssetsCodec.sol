@@ -75,6 +75,9 @@ library AssetsCodec {
             data,
             offset
         );
+        if (length > MAX_ITEMS_IN_ASSETS) {
+            revert InvalidAssetsPayload();
+        }
         Asset[] memory items = new Asset[](length);
         uint256 currentOffset = offset + compactBytesRead;
         for (uint256 i = 0; i < length; i++) {
