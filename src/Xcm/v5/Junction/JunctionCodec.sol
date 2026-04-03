@@ -10,7 +10,7 @@ import {NetworkIdCodec} from "../NetworkId/NetworkIdCodec.sol";
 import {Bytes32} from "../../../Scale/Bytes.sol";
 import {Address} from "../../../Scale/Address.sol";
 import {Compact} from "../../../Scale/Compact.sol";
-import {Junction, JunctionVariant, AccountId32Params, PluralityParams, AccountIndex64Params, AccountKey20Params, GeneralKeyParams} from "./Junction.sol";
+import {Junction, JunctionVariant, ParachainParams, AccountId32Params, PluralityParams, AccountIndex64Params, AccountKey20Params, GeneralKeyParams, PalletInstanceParams, GeneralIndexParams} from "./Junction.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 
@@ -116,14 +116,13 @@ library JunctionCodec {
 
     /// @notice Decodes a `Parachain` junction from a given `Junction` struct, extracting the parachain ID.
     /// @param junction The `Junction` struct to decode, which should represent a `Parachain` junction.
-    /// @return parachainId The ID of the parachain extracted from the junction's payload.
+    /// @return params A `ParachainParams` struct containing the decoded parachain ID.
     function asParachain(
         Junction memory junction
-    ) internal pure returns (uint32 parachainId) {
-        if (junction.variant != JunctionVariant.Parachain)
-            revert InvalidJunctionVariant(uint8(junction.variant));
+    ) internal pure returns (ParachainParams memory params) {
+        _assertVariant(junction, JunctionVariant.Parachain);
         (uint256 decodedParachain, ) = Compact.decode(junction.payload);
-        parachainId = UnsignedUtils.toU32(decodedParachain);
+        params.parachainId = UnsignedUtils.toU32(decodedParachain);
     }
 
     /// @notice Decodes an `AccountId32` junction from a given `Junction` struct, extracting the network information and account ID.
@@ -132,28 +131,18 @@ library JunctionCodec {
     function asAccountId32(
         Junction memory junction
     ) internal pure returns (AccountId32Params memory params) {
-        if (junction.variant != JunctionVariant.AccountId32)
-            revert InvalidJunctionVariant(uint8(junction.variant));
-        if (junction.payload.length != 33 && junction.payload.length != 34)
-            revert InvalidJunctionPayload();
-        bool hasNetwork = junction.payload[0] != 0;
+        _assertVariant(junction, JunctionVariant.AccountId32);
+        params.hasNetwork = junction.payload[0] != 0;
         uint256 offset = 1;
-        NetworkId memory network;
         uint256 bytesRead;
-        if (hasNetwork) {
-            (network, bytesRead) = NetworkIdCodec.decodeAt(
+        if (params.hasNetwork) {
+            (params.network, bytesRead) = NetworkIdCodec.decodeAt(
                 junction.payload,
                 offset
             );
             offset += bytesRead;
         }
-        bytes32 id = Bytes32.decodeAt(junction.payload, offset);
-        return
-            AccountId32Params({
-                hasNetwork: hasNetwork,
-                network: network,
-                id: id
-            });
+        params.id = Bytes32.decodeAt(junction.payload, offset);
     }
 
     /// @notice Decodes an `AccountIndex64` junction from a given `Junction` struct, extracting the network information and account index.
@@ -162,35 +151,19 @@ library JunctionCodec {
     function asAccountIndex64(
         Junction memory junction
     ) internal pure returns (AccountIndex64Params memory params) {
-        if (junction.variant != JunctionVariant.AccountIndex64)
-            revert InvalidJunctionVariant(uint8(junction.variant));
-        if (junction.payload.length != 9 && junction.payload.length != 10)
-            revert InvalidJunctionPayload();
-        bool hasNetwork = junction.payload[0] != 0;
+        _assertVariant(junction, JunctionVariant.AccountIndex64);
+        params.hasNetwork = junction.payload[0] != 0;
         uint256 offset = 1;
-        NetworkId memory network;
         uint256 bytesRead;
-        if (hasNetwork) {
-            (network, bytesRead) = NetworkIdCodec.decodeAt(
+        if (params.hasNetwork) {
+            (params.network, bytesRead) = NetworkIdCodec.decodeAt(
                 junction.payload,
                 offset
             );
             offset += bytesRead;
         }
         (uint256 decodedIndex, ) = Compact.decodeAt(junction.payload, offset);
-        if (decodedIndex > type(uint64).max) {
-            revert InvalidJunctionPayload();
-        }
-        uint64 index;
-        unchecked {
-            index = uint64(decodedIndex);
-        }
-        return
-            AccountIndex64Params({
-                hasNetwork: hasNetwork,
-                network: network,
-                index: index
-            });
+        params.index = UnsignedUtils.toU64(decodedIndex);
     }
 
     /// @notice Decodes an `AccountKey20` junction from a given `Junction` struct, extracting the network information and account key.
@@ -199,58 +172,39 @@ library JunctionCodec {
     function asAccountKey20(
         Junction memory junction
     ) internal pure returns (AccountKey20Params memory params) {
-        if (junction.variant != JunctionVariant.AccountKey20)
-            revert InvalidJunctionVariant(uint8(junction.variant));
-        if (junction.payload.length != 21 && junction.payload.length != 22)
-            revert InvalidJunctionPayload();
-        bool hasNetwork = junction.payload[0] != 0;
+        _assertVariant(junction, JunctionVariant.AccountKey20);
+        params.hasNetwork = junction.payload[0] != 0;
         uint256 offset = 1;
-        NetworkId memory network;
         uint256 bytesRead;
-        if (hasNetwork) {
-            (network, bytesRead) = NetworkIdCodec.decodeAt(
+        if (params.hasNetwork) {
+            (params.network, bytesRead) = NetworkIdCodec.decodeAt(
                 junction.payload,
                 offset
             );
             offset += bytesRead;
         }
-        address key = Address.decodeAt(junction.payload, offset);
-        return
-            AccountKey20Params({
-                hasNetwork: hasNetwork,
-                network: network,
-                key: key
-            });
+        params.key = Address.decodeAt(junction.payload, offset);
     }
 
     /// @notice Decodes a `PalletInstance` junction from a given `Junction` struct, extracting the pallet instance index.
     /// @param junction The `Junction` struct to decode, which should represent a `PalletInstance` junction.
-    /// @return instance The index of the pallet instance extracted from the junction's payload.
+    /// @return params A `PalletInstanceParams` struct containing the decoded pallet instance index.
     function asPalletInstance(
         Junction memory junction
-    ) internal pure returns (uint8 instance) {
-        if (junction.variant != JunctionVariant.PalletInstance)
-            revert InvalidJunctionVariant(uint8(junction.variant));
-        if (junction.payload.length != 1) revert InvalidJunctionPayload();
-        return uint8(junction.payload[0]);
+    ) internal pure returns (PalletInstanceParams memory params) {
+        _assertVariant(junction, JunctionVariant.PalletInstance);
+        params.instance = uint8(junction.payload[0]);
     }
 
     /// @notice Decodes a `GeneralIndex` junction from a given `Junction` struct, extracting the general index.
     /// @param junction The `Junction` struct to decode, which should represent a `GeneralIndex` junction.
-    /// @return index The general index extracted from the junction's payload.
+    /// @return params A `GeneralIndexParams` struct containing the decoded general index.
     function asGeneralIndex(
         Junction memory junction
-    ) internal pure returns (uint128 index) {
-        if (junction.variant != JunctionVariant.GeneralIndex)
-            revert InvalidJunctionVariant(uint8(junction.variant));
-        if (junction.payload.length == 0) revert InvalidJunctionPayload();
+    ) internal pure returns (GeneralIndexParams memory params) {
+        _assertVariant(junction, JunctionVariant.GeneralIndex);
         (uint256 decodedIndex, ) = Compact.decode(junction.payload);
-        if (decodedIndex > type(uint128).max) {
-            revert InvalidJunctionPayload();
-        }
-        unchecked {
-            index = uint128(decodedIndex);
-        }
+        params.index = UnsignedUtils.toU128(decodedIndex);
     }
 
     /// @notice Decodes a `GeneralKey` junction from a given `Junction` struct, extracting the key.
@@ -259,14 +213,9 @@ library JunctionCodec {
     function asGeneralKey(
         Junction memory junction
     ) internal pure returns (GeneralKeyParams memory params) {
-        if (junction.variant != JunctionVariant.GeneralKey)
-            revert InvalidJunctionVariant(uint8(junction.variant));
-        if (junction.payload.length == 0) revert InvalidJunctionPayload();
-        uint8 length = uint8(junction.payload[0]);
-        if (length == 0 || length > 32 || junction.payload.length != length + 1)
-            revert InvalidJunctionPayload();
-        bytes32 key = Bytes32.decodeAt(junction.payload, 1);
-        return GeneralKeyParams({length: length, key: key});
+        _assertVariant(junction, JunctionVariant.GeneralKey);
+        params.length = uint8(junction.payload[0]);
+        params.key = Bytes32.decodeAt(junction.payload, 1);
     }
 
     /// @notice Decodes a `Plurality` junction from a given `Junction` struct, extracting the body ID and body part.
@@ -275,28 +224,15 @@ library JunctionCodec {
     function asPlurality(
         Junction memory junction
     ) internal pure returns (PluralityParams memory params) {
-        if (junction.variant != JunctionVariant.Plurality)
-            revert InvalidJunctionVariant(uint8(junction.variant));
-        if (junction.payload.length == 0) revert InvalidJunctionPayload();
+        _assertVariant(junction, JunctionVariant.Plurality);
         uint256 offset = 0;
-        BodyId memory id;
         uint256 bytesRead;
-        (id, bytesRead) = BodyIdCodec.decodeAt(junction.payload, offset);
+        (params.id, bytesRead) = BodyIdCodec.decodeAt(junction.payload, offset);
         offset += bytesRead;
-        BodyPart memory part;
-        (part, bytesRead) = BodyPartCodec.decodeAt(junction.payload, offset);
-        return PluralityParams({id: id, part: part});
-    }
-
-    /// @notice Decodes an `GlobalConsensus` junction from a given `Junction` struct and extracts the `NetworkId`.
-    /// @param junction The `Junction` struct to decode, which should represent a `GlobalConsensus` junction.
-    /// @return networkId The `NetworkId` extracted from the junction's payload, representing the global network's consensus.
-    function asGlobalConsensus(
-        Junction memory junction
-    ) internal pure returns (NetworkId memory networkId) {
-        if (junction.variant != JunctionVariant.GlobalConsensus)
-            revert InvalidJunctionVariant(uint8(junction.variant));
-        (networkId, ) = NetworkIdCodec.decode(junction.payload);
+        (params.part, bytesRead) = BodyPartCodec.decodeAt(
+            junction.payload,
+            offset
+        );
     }
 
     function _innerNetworkIdSize(

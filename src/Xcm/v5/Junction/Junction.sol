@@ -35,6 +35,12 @@ enum JunctionVariant {
     GlobalConsensus
 }
 
+/// @notice Parameters for a `Parachain` junction.
+struct ParachainParams {
+    /// @custom:property The parachain identifier.
+    uint32 parachainId;
+}
+
 /// @notice Parameters for an `AccountId32` junction, containing optional network information and a 32-byte account identifier.
 struct AccountId32Params {
     /// @custom:property Indicates whether the junction includes network information. If true, the `network` field contains valid data; if false, the `network` field should be ignored.
@@ -79,12 +85,6 @@ struct GeneralKeyParams {
     uint8 length;
     /// @custom:property The byte array acting as a key within the context location.
     bytes32 key;
-}
-
-/// @notice Parameters for a `Parachain` junction.
-struct ParachainParams {
-    /// @custom:property The parachain identifier.
-    uint32 parachainId;
 }
 
 /// @notice Parameters for a `PalletInstance` junction.
