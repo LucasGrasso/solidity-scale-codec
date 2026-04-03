@@ -3,6 +3,7 @@ pragma solidity ^0.8.28;
 
 import {Compact} from "../../../Scale/Compact.sol";
 import {Weight} from "./Weight.sol";
+import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `Weight`
 /// @notice SCALE-compliant encoder/decoder for the `Weight` type.
@@ -79,8 +80,8 @@ library WeightCodec {
         offset += proofSizeBytes;
 
         weight = Weight({
-            refTime: uint64(refTime),
-            proofSize: uint64(proofSize)
+            refTime: UnsignedUtils.toU64(refTime),
+            proofSize: UnsignedUtils.toU64(proofSize)
         });
         bytesRead = refTimeBytes + proofSizeBytes;
     }
