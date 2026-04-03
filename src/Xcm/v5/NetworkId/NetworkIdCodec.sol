@@ -92,7 +92,7 @@ library NetworkIdCodec {
         NetworkId memory networkId
     ) internal pure returns (ByGenesisParams memory params) {
         _assertVariant(networkId, NetworkIdVariant.ByGenesis);
-        params.genesisHash = bytes32(networkId.payload);
+        params.genesisHash = Bytes32.decode(networkId.payload);
     }
 
     /// @notice Decodes a `Ethereum` network ID, returning the chain ID.
