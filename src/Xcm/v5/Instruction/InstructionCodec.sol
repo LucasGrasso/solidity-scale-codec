@@ -61,7 +61,7 @@ library InstructionCodec {
         if (data.length < offset + 1) revert InvalidInstructionLength();
 
         uint8 variantRaw = uint8(data[offset]);
-        if (variantRaw > uint8(InstructionVariant.SetHints)) {
+        if (variantRaw > uint8(type(InstructionVariant).max) + 1) {
             revert InvalidInstructionVariant(variantRaw);
         }
 
@@ -129,6 +129,7 @@ library InstructionCodec {
             variant == InstructionVariant.ClearTopic
         ) {
             // no payload
+            return pos - offset;
         } else if (variant == InstructionVariant.DescendOrigin) {
             pos += JunctionsCodec.encodedSizeAt(data, pos);
         } else if (
