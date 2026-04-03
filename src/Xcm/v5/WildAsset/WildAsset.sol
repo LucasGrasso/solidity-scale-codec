@@ -60,19 +60,15 @@ function all() pure returns (WildAsset memory) {
 }
 
 /// @notice Creates a `WildAsset` struct representing the `AllOf` variant, which matches all assets in Holding of a given fungibility and ID.
-/// @param id The `AssetId` struct specifying the asset class to match against.
-/// @param fun The `WildFungibility` struct specifying the fungibility to match against.
+/// @param params Parameters for the all-of variant.
 /// @return A `WildAsset` with the `AllOf` variant and the encoded parameters in the payload.
-function allOf(
-    AssetId memory id,
-    WildFungibility fun
-) pure returns (WildAsset memory) {
+function allOf(AllOfParams memory params) pure returns (WildAsset memory) {
     return
         WildAsset({
             variant: WildAssetVariant.AllOf,
             payload: abi.encodePacked(
-                AssetIdCodec.encode(id),
-                WildFungibilityCodec.encode(fun)
+                AssetIdCodec.encode(params.id),
+                WildFungibilityCodec.encode(params.fun)
             )
         });
 }
@@ -91,22 +87,18 @@ function allCounted(
 }
 
 /// @notice Creates a `WildAsset` struct representing the `AllOfCounted` variant, which matches all assets in Holding of a given fungibility and ID up to `count` individual assets (different instances of non-fungibles are separate assets).
-/// @param id The `AssetId` struct specifying the asset class to match against.
-/// @param fun The `WildFungibility` struct specifying the fungibility to match against.
-/// @param count The limit of assets  against.
+/// @param params Parameters for the all-of-counted variant.
 /// @return A `WildAsset` with the `AllOfCounted` variant and the encoded parameters in the payload.
 function allOfCounted(
-    AssetId memory id,
-    WildFungibility fun,
-    uint32 count
+    AllOfCountedParams memory params
 ) pure returns (WildAsset memory) {
     return
         WildAsset({
             variant: WildAssetVariant.AllOfCounted,
             payload: abi.encodePacked(
-                AssetIdCodec.encode(id),
-                WildFungibilityCodec.encode(fun),
-                Compact.encode(count)
+                AssetIdCodec.encode(params.id),
+                WildFungibilityCodec.encode(params.fun),
+                Compact.encode(params.count)
             )
         });
 }

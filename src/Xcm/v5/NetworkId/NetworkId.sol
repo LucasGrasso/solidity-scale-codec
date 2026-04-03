@@ -76,17 +76,16 @@ function byGenesis(
 }
 
 /// @notice Creates a `ByFork` network ID.
-/// @param blockNumber The block number of the fork point.
-/// @param blockHash The 32-byte hash of the block at the fork point.
+/// @param params Parameters for the by-fork variant.
 /// @return A `NetworkId` struct with type `ByFork` and the provided block number and hash encoded in the payload.
-function byFork(
-    uint64 blockNumber,
-    bytes32 blockHash
-) pure returns (NetworkId memory) {
+function byFork(ByForkParams memory params) pure returns (NetworkId memory) {
     return
         NetworkId({
             variant: NetworkIdVariant.ByFork,
-            payload: abi.encodePacked(blockNumber.toLittleEndian(), blockHash)
+            payload: abi.encodePacked(
+                params.blockNumber.toLittleEndian(),
+                params.blockHash
+            )
         });
 }
 
