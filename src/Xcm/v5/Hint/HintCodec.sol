@@ -31,10 +31,11 @@ library HintCodec {
     ) internal pure returns (uint256) {
         if (data.length < offset + 1) revert InvalidHintLength();
         uint8 variant = uint8(data[offset]);
-        if (variant == uint8(type(HintVariant).max)) {
+        if (variant == uint8(HintVariant.AssetClaimer)) {
             return 1 + LocationCodec.encodedSizeAt(data, offset + 1);
+        } else {
+            revert InvalidHintVariant(variant);
         }
-        revert InvalidHintVariant(variant);
     }
 
     /// @notice Decodes a `Hint` from SCALE bytes starting at the beginning.
