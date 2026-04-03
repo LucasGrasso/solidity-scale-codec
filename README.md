@@ -26,6 +26,8 @@ See the [Definitions](https://lucasgrasso.github.io/solidity-scale-codec/Definit
 
 ## Usage
 
+Check out the examples section of the documentation for how to use the library to encode and decode different types, and how to build XCM messages in Solidity.
+
 ### Encode Structs
 
 See this [example](https://github.com/LucasGrasso/solidity-scale-codec/blob/main/contracts/examples/Foo.sol).
@@ -99,34 +101,9 @@ Implementation notes:
 - Enum-like XCM types are represented as structs with a type discriminator plus `bytes payload`.
 - Each type has a codec library with `encode`, `encodedSizeAt`, `decode`, and `decodeAt`.
 - `VersionedXcm` currently supports v5 payloads.
+- The `XcmBuilder` library provides an ergonomic API to build XCM messages in Solidity, with functions for building various XCM instructions.
 
-Minimal usage example:
-
-```solidity
-import {Instruction} from "../src/Xcm/v5/Instruction/Instruction.sol";
-import {Xcm, fromInstructions} from "../src/Xcm/v5/Xcm/Xcm.sol";
-import {v5} from "../src/Xcm/VersionedXcm/VersionedXcm.sol";
-import {VersionedXcmCodec} from "../src/Xcm/VersionedXcm/VersionedXcmCodec.sol";
-import {Weight} from "../src/Xcm/v5/Weight/Weight.sol";
-import {WeightCodec} from "../src/Xcm/v5/Weight/WeightCodec.sol";
-
-address constant XCM_PRECOMPILE_ADDRESS = 0x00000000000000000000000000000000000a0000;
-
-contract XcmWeightEstimator {
-  function weighMessage(
-    Instruction[] memory instructions
-  ) external view returns (Weight memory) {
-    Xcm memory xcm = fromInstructions(instructions);
-    (bool success, bytes memory result) = XCM_PRECOMPILE_ADDRESS.staticcall(
-      VersionedXcmCodec.encode(v5(xcm))
-    );
-    require(success, "XCM precompile call failed");
-    (Weight memory weight, ) = WeightCodec.decode(result);
-    return weight;
-  }
-}
-
-```
+````
 
 ### Running Tests
 
@@ -148,3 +125,4 @@ npx hardhat test nodejs
 Copyright 2025 Lucas Grasso
 
 This project is licensed under the the [Apache License, Version 2.0](LICENSE).
+````
