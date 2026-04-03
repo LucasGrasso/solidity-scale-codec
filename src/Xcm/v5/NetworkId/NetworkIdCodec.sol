@@ -2,7 +2,11 @@
 pragma solidity ^0.8.28;
 
 import {Compact} from "../../../Scale/Compact.sol";
-import {NetworkId, NetworkIdType} from "./NetworkId.sol";
+import {NetworkId, NetworkIdVariant, ByForkParams, ByGenesisParams, EthereumParams} from "./NetworkId.sol";
+import {LittleEndianU64} from "../../../LittleEndian/LittleEndianU64.sol";
+import {Bytes32} from "../../../Scale/Bytes.sol";
+import {BytesUtils} from "../../../Utils/BytesUtils.sol";
+import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `NetworkId`
 /// @notice SCALE-compliant encoder/decoder for the `NetworkId` type.
@@ -10,14 +14,13 @@ import {NetworkId, NetworkIdType} from "./NetworkId.sol";
 /// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
 library NetworkIdCodec {
     error InvalidNetworkIdLength();
-    error InvalidNetworkIdType(uint8 nType);
-    error InvalidNetworkIdPayload();
+    error InvalidNetworkIdVariant(uint8 variant);
 
     /// @notice Encodes a `NetworkId` struct into SCALE format.
     function encode(
         NetworkId memory networkId
     ) internal pure returns (bytes memory) {
-        return abi.encodePacked(uint8(networkId.nType), networkId.payload);
+        return abi.encodePacked(uint8(networkId.variant), networkId.payload);
     }
 
     /// @notice Returns the number of bytes that a `NetworkId` struct would occupy when SCALE-encoded.
@@ -30,21 +33,21 @@ library NetworkIdCodec {
     ) internal pure returns (uint256) {
         if (offset >= data.length) revert InvalidNetworkIdLength();
 
-        uint8 nType = uint8(data[offset]);
+        uint8 variant = uint8(data[offset]);
         uint256 payloadLen;
 
         // Determine payload length based on type to ensure we don't over-read
-        if (nType == uint8(NetworkIdType.ByGenesis)) {
+        if (variant == uint8(NetworkIdVariant.ByGenesis)) {
             payloadLen = 32;
-        } else if (nType == uint8(NetworkIdType.ByFork)) {
+        } else if (variant == uint8(NetworkIdVariant.ByFork)) {
             payloadLen = 40; // 8 (u64) + 32 (bytes32)
-        } else if (nType == uint8(NetworkIdType.Ethereum)) {
+        } else if (variant == uint8(NetworkIdVariant.Ethereum)) {
             payloadLen = Compact.encodedSizeAt(data, offset + 1);
-        } else if (nType < 4) {
+        } else if (variant < 4) {
             payloadLen = 0; // Static variants
         } else {
             // Reserved or unknown types are invalid
-            revert InvalidNetworkIdType(nType);
+            revert InvalidNetworkIdVariant(variant);
         }
 
         if (offset + 1 + payloadLen > data.length)
@@ -72,43 +75,59 @@ library NetworkIdCodec {
     ) internal pure returns (NetworkId memory networkId, uint256 bytesRead) {
         if (offset >= data.length) revert InvalidNetworkIdLength();
 
-        uint8 nType = uint8(data[offset]);
-        uint256 payloadLen = encodedSizeAt(data, offset) - 1; // Subtract 1 byte for the nType
-        bytes memory payload = new bytes(payloadLen);
-        for (uint256 i = 0; i < payloadLen; i++) {
-            payload[i] = data[offset + 1 + i];
-        }
+        uint8 variant = uint8(data[offset]);
+        uint256 payloadLen = encodedSizeAt(data, offset) - 1; // Subtract 1 byte for the variant
+        bytes memory payload = BytesUtils.copy(data, offset + 1, payloadLen);
 
-        networkId = NetworkId({nType: NetworkIdType(nType), payload: payload});
+        networkId = NetworkId({
+            variant: NetworkIdVariant(variant),
+            payload: payload
+        });
 
         bytesRead = 1 + payloadLen;
     }
 
     /// @notice Decodes a `ByGenesis` network ID, returning the genesis hash.
     /// @param networkId The `NetworkId` struct to decode.
-    /// @return genesisHash The genesis hash extracted from the network ID.
+    /// @return params A `ByGenesisParams` struct containing the genesis hash extracted from the network ID.
     function asByGenesis(
         NetworkId memory networkId
-    ) internal pure returns (bytes32 genesisHash) {
-        if (networkId.nType != NetworkIdType.ByGenesis)
-            revert InvalidNetworkIdType(uint8(networkId.nType));
-        if (networkId.payload.length != 32) revert InvalidNetworkIdPayload();
-        return bytes32(networkId.payload);
+    ) internal pure returns (ByGenesisParams memory params) {
+        _assertVariant(networkId, NetworkIdVariant.ByGenesis);
+        params.genesisHash = bytes32(networkId.payload);
     }
 
-    /// @notice Decodes a `ByFork` network ID, returning the block number and hash.
+    /// @notice Decodes a `Ethereum` network ID, returning the chain ID.
     /// @param networkId The `NetworkId` struct to decode.
-    /// @return chainId The chain ID extracted from the network ID.
+    /// @return params An `EthereumParams` struct containing the chain ID extracted from the network ID.
     function asEthereum(
         NetworkId memory networkId
-    ) internal pure returns (uint64 chainId) {
-        if (networkId.nType != NetworkIdType.Ethereum)
-            revert InvalidNetworkIdType(uint8(networkId.nType));
-        if (networkId.payload.length != 8) revert InvalidNetworkIdPayload();
+    ) internal pure returns (EthereumParams memory params) {
+        _assertVariant(networkId, NetworkIdVariant.Ethereum);
         (uint256 decodedChainId, ) = Compact.decode(networkId.payload);
-        if (decodedChainId > type(uint64).max) revert InvalidNetworkIdPayload();
-        unchecked {
-            chainId = uint64(decodedChainId);
+        params.chainId = UnsignedUtils.toU64(decodedChainId);
+    }
+
+    /// @notice Decodes a `ByFork` network ID, returning the block number and block hash of the fork point.
+    /// @param networkId The `NetworkId` struct to decode.
+    /// @return params A `ByForkParams` struct containing the block number and block hash extracted from the network ID.
+    function asFork(
+        NetworkId memory networkId
+    ) internal pure returns (ByForkParams memory params) {
+        _assertVariant(networkId, NetworkIdVariant.ByFork);
+        params.blockNumber = LittleEndianU64.fromLittleEndian(
+            networkId.payload,
+            0
+        );
+        params.blockHash = Bytes32.decodeAt(networkId.payload, 8);
+    }
+
+    function _assertVariant(
+        NetworkId memory networkId,
+        NetworkIdVariant expected
+    ) private pure {
+        if (networkId.variant != expected) {
+            revert InvalidNetworkIdVariant(uint8(networkId.variant));
         }
     }
 }

@@ -5,7 +5,7 @@ import {Compact} from "../../../Scale/Compact.sol";
 import {LittleEndianU64} from "../../../LittleEndian/LittleEndianU64.sol";
 
 /// @dev Discriminant for the different types of NetworkIds in XCM v5.
-enum NetworkIdType {
+enum NetworkIdVariant {
     /// @custom:variant Network specified by the first 32 bytes of its genesis block.
     ByGenesis,
     /// @custom:variant Network defined by the first 32-bytes of the hash and number of some block it contains.
@@ -52,9 +52,9 @@ struct ByGenesisParams {
 
 /// @dev Notice A global identifier of a data structure existing within consensus.
 struct NetworkId {
-    /// @custom:property The type of network ID, determining how to interpret the payload. See `NetworkIdType` enum for possible values.
-    NetworkIdType nType;
-    /// @custom:property The encoded payload containing the network identifier data, whose structure depends on the `nType`.
+    /// @custom:property The type of network ID, determining how to interpret the payload. See `NetworkIdVariant` enum for possible values.
+    NetworkIdVariant variant;
+    /// @custom:property The encoded payload containing the network identifier data, whose structure depends on the `variant`.
     bytes payload;
 }
 
@@ -70,7 +70,7 @@ function byGenesis(
 ) pure returns (NetworkId memory) {
     return
         NetworkId({
-            nType: NetworkIdType.ByGenesis,
+            variant: NetworkIdVariant.ByGenesis,
             payload: abi.encodePacked(params.genesisHash)
         });
 }
@@ -85,7 +85,7 @@ function byFork(
 ) pure returns (NetworkId memory) {
     return
         NetworkId({
-            nType: NetworkIdType.ByFork,
+            variant: NetworkIdVariant.ByFork,
             payload: abi.encodePacked(blockNumber.toLittleEndian(), blockHash)
         });
 }
@@ -93,13 +93,13 @@ function byFork(
 /// @notice Creates a `Polkadot` network ID.
 /// @return A `NetworkId` struct with type `Polkadot` and an empty payload.
 function polkadot() pure returns (NetworkId memory) {
-    return NetworkId({nType: NetworkIdType.Polkadot, payload: ""});
+    return NetworkId({variant: NetworkIdVariant.Polkadot, payload: ""});
 }
 
 /// @notice Creates a `Kusama` network ID.
 /// @return A `NetworkId` struct with type `Kusama` and an empty payload.
 function kusama() pure returns (NetworkId memory) {
-    return NetworkId({nType: NetworkIdType.Kusama, payload: ""});
+    return NetworkId({variant: NetworkIdVariant.Kusama, payload: ""});
 }
 
 /// @notice Creates an `Ethereum` network ID.
@@ -109,7 +109,7 @@ function ethereum(
 ) pure returns (NetworkId memory) {
     return
         NetworkId({
-            nType: NetworkIdType.Ethereum,
+            variant: NetworkIdVariant.Ethereum,
             payload: Compact.encode(params.chainId)
         });
 }
