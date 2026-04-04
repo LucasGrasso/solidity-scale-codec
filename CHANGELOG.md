@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]
 
+## Version 2.0.0
+
+### Added
+
+- Add `Bytes.sol` to barrel import - [#2dbc1ab](https://github.com/LucasGrasso/solidity-scale-codec/commit/2dbc1ab)
+
+### Changed
+
+- Change all `uint8[]` to `bytes` for better ergonomics and consistency with typical byte handling in Solidity. - [#ab6c226](https://github.com/LucasGrasso/solidity-scale-codec/commit/ab6c226)
+
 ## Version 1.0.1
 
 ### Added
