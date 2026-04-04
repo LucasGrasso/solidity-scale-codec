@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {U8Arr} from "../../../Scale/Array.sol";
+import {Bytes} from "../../../Scale/Bytes.sol";
 import {MAX_DISPATCH_ERROR_LEN} from "../Constants.sol";
 
 /// @notice Discriminant for the `MaybeErrorCode` enum.
@@ -25,13 +25,13 @@ struct MaybeErrorCode {
 /// @notice Parameters for the `Error` variant.
 struct ErrorParams {
     /// @custom:property Dispatch error bytes.
-    uint8[] errorBytes;
+    bytes errorBytes;
 }
 
 /// @notice Parameters for the `TruncatedError` variant.
 struct TruncatedErrorParams {
     /// @custom:property Truncated dispatch error bytes.
-    uint8[] errorBytes;
+    bytes errorBytes;
 }
 
 // ============ Factory Functions ============
@@ -52,7 +52,7 @@ function error(ErrorParams memory params) pure returns (MaybeErrorCode memory) {
     return
         MaybeErrorCode({
             variant: MaybeErrorCodeVariant.Error,
-            payload: U8Arr.encode(params.errorBytes)
+            payload: Bytes.encode(params.errorBytes)
         });
 }
 
@@ -67,7 +67,7 @@ function truncatedError(
     return
         MaybeErrorCode({
             variant: MaybeErrorCodeVariant.TruncatedError,
-            payload: U8Arr.encode(params.errorBytes)
+            payload: Bytes.encode(params.errorBytes)
         });
 }
 

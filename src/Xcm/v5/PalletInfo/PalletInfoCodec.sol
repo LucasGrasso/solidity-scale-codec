@@ -2,7 +2,7 @@
 pragma solidity ^0.8.28;
 
 import {Compact} from "../../../Scale/Compact.sol";
-import {U8Arr} from "../../../Scale/Array.sol";
+import {Bytes} from "../../../Scale/Bytes.sol";
 import {MAX_PALLET_NAME_LEN} from "../Constants.sol";
 import {PalletInfo} from "./PalletInfo.sol";
 
@@ -27,8 +27,8 @@ library PalletInfoCodec {
         return
             abi.encodePacked(
                 Compact.encode(info.index),
-                U8Arr.encode(info.name),
-                U8Arr.encode(info.moduleName),
+                Bytes.encode(info.name),
+                Bytes.encode(info.moduleName),
                 Compact.encode(info.major),
                 Compact.encode(info.minor),
                 Compact.encode(info.patch)
@@ -46,8 +46,8 @@ library PalletInfoCodec {
         if (data.length < offset + 1) revert InvalidPalletInfoLength();
         uint256 pos = offset;
         pos += Compact.encodedSizeAt(data, pos); // index
-        pos += U8Arr.encodedSizeAt(data, pos); // name
-        pos += U8Arr.encodedSizeAt(data, pos); // moduleName
+        pos += Bytes.encodedSizeAt(data, pos); // name
+        pos += Bytes.encodedSizeAt(data, pos); // moduleName
         pos += Compact.encodedSizeAt(data, pos); // major
         pos += Compact.encodedSizeAt(data, pos); // minor
         pos += Compact.encodedSizeAt(data, pos); // patch
@@ -80,12 +80,12 @@ library PalletInfoCodec {
         (index, read) = Compact.decodeAt(data, pos);
         pos += read;
 
-        uint8[] memory name;
-        (name, read) = U8Arr.decodeAt(data, pos);
+        bytes memory name;
+        (name, read) = Bytes.decodeAt(data, pos);
         pos += read;
 
-        uint8[] memory moduleName;
-        (moduleName, read) = U8Arr.decodeAt(data, pos);
+        bytes memory moduleName;
+        (moduleName, read) = Bytes.decodeAt(data, pos);
         pos += read;
 
         uint256 major;

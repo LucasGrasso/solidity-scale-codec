@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {U8Arr} from "../../../Scale/Array.sol";
-import {MaybeErrorCode, MaybeErrorCodeVariant} from "./MaybeErrorCode.sol";
+import {Bytes} from "../../../Scale/Bytes.sol";
+import {MaybeErrorCode, MaybeErrorCodeVariant, ErrorParams, TruncatedErrorParams} from "./MaybeErrorCode.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 
 /// @title SCALE Codec for XCM v3 `MaybeErrorCode`
@@ -38,7 +38,7 @@ library MaybeErrorCodeCodec {
             variant == uint8(MaybeErrorCodeVariant.Error) ||
             variant == uint8(MaybeErrorCodeVariant.TruncatedError)
         ) {
-            return 1 + U8Arr.encodedSizeAt(data, offset + 1);
+            return 1 + Bytes.encodedSizeAt(data, offset + 1);
         } else {
             revert InvalidMaybeErrorCodeVariant(variant);
         }
@@ -78,16 +78,32 @@ library MaybeErrorCodeCodec {
         bytesRead = size;
     }
 
-    /// @notice Decodes the dispatch error bytes from an `Error` or `TruncatedError` MaybeErrorCode.
-    /// @param me The `MaybeErrorCode` struct to decode. Must be of type `Error` or `TruncatedError`.
-    /// @return errorBytes The decoded dispatch error bytes.
-    function decodeError(
+    /// @notice Extracts the `Error` parameters from a `MaybeErrorCode` struct. Reverts if the variant is not `Error`.
+    /// @param me The `MaybeErrorCode` struct to extract from. Must be of type `Error`.
+    /// @return params An `ErrorParams` struct containing the decoded dispatch error
+    function asError(
         MaybeErrorCode memory me
-    ) internal pure returns (uint8[] memory errorBytes) {
-        if (
-            me.variant != MaybeErrorCodeVariant.Error &&
-            me.variant != MaybeErrorCodeVariant.TruncatedError
-        ) revert InvalidMaybeErrorCodeVariant(uint8(me.variant));
-        (errorBytes, ) = U8Arr.decode(me.payload);
+    ) internal pure returns (ErrorParams memory params) {
+        _assertVariant(me, MaybeErrorCodeVariant.Error);
+        (params.errorBytes, ) = Bytes.decode(me.payload);
+    }
+
+    /// @notice Extracts the `TruncatedError` parameters from a `MaybeErrorCode` struct. Reverts if the variant is not `TruncatedError`.
+    /// @param me The `MaybeErrorCode` struct to extract from. Must be of type `TruncatedError`.
+    /// @return params A `TruncatedErrorParams` struct containing the decoded truncated dispatch error
+    function asTruncatedError(
+        MaybeErrorCode memory me
+    ) internal pure returns (TruncatedErrorParams memory params) {
+        _assertVariant(me, MaybeErrorCodeVariant.TruncatedError);
+        (params.errorBytes, ) = Bytes.decode(me.payload);
+    }
+
+    function _assertVariant(
+        MaybeErrorCode memory me,
+        MaybeErrorCodeVariant expected
+    ) private pure {
+        if (me.variant != expected) {
+            revert InvalidMaybeErrorCodeVariant(uint8(me.variant));
+        }
     }
 }
