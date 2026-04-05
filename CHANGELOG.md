@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]
 
+## Version 2.1.0
+
 ### Added
 
 - Missing `GlobalConsensus` junction variant and related helper function in `Junction.sol` and `JunctionCodec.sol`. - [#5592427](https://github.com/LucasGrasso/solidity-scale-codec/commit/5592427)
