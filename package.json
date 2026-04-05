@@ -1,6 +1,6 @@
 {
   "name": "solidity-scale-codec",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Solidity implementation of scale-codec.",
   "keywords": [
     "solidity",
