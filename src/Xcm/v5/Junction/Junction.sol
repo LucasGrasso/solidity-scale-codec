@@ -209,11 +209,9 @@ function generalIndex(
 function generalKey(
     GeneralKeyParams memory params
 ) pure returns (Junction memory) {
-    if (
-        params.length == 0 ||
-        params.length > 32 ||
-        params.key.length != params.length
-    ) revert InvalidJunctionPayload();
+    if (params.length == 0 || params.length > 32) {
+        revert InvalidJunctionPayload();
+    }
     return
         Junction({
             variant: JunctionVariant.GeneralKey,

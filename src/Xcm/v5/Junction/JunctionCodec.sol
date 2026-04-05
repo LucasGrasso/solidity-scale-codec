@@ -63,7 +63,8 @@ library JunctionCodec {
         } else if (variant == uint8(JunctionVariant.GeneralKey)) {
             if (offset >= data.length) revert InvalidJunctionLength();
             uint8 length = uint8(data[offset]);
-            payloadLength = 1 + length; // 1 byte for the length + the key bytes
+            if (length == 0 || length > 32) revert InvalidJunctionPayload();
+            payloadLength = 1 + 32; // 1 byte for the length + the fixed key bytes
         } else if (variant == uint8(JunctionVariant.OnlyChild)) {
             payloadLength = 0;
         } else if (variant == uint8(JunctionVariant.GlobalConsensus)) {
