@@ -99,6 +99,12 @@ struct GeneralIndexParams {
     uint128 index;
 }
 
+/// @notice Parameters for a `GlobalConsensus` junction.
+struct GlobalConsensusParams {
+    /// @custom:property The `NetworkId` associated with the global consensus, See `NetworkId` struct for details.
+    NetworkId network;
+}
+
 /// @notice A single item in a path to describe the relative location of a consensus system. Each item assumes a pre-existing location as its context and is defined in terms of it.
 struct Junction {
     /// @custom:property variant The type of the junction, determining how to interpret the payload. See `JunctionVariant` enum for possible values.
@@ -219,6 +225,19 @@ function generalKey(
 /// @return A `Junction` struct representing the `OnlyChild` junction, with an empty payload.
 function onlyChild() pure returns (Junction memory) {
     return Junction({variant: JunctionVariant.OnlyChild, payload: ""});
+}
+
+/// @notice Creates a `GlobalConsensus` junction, which represents a global network capable of externalizing its own consensus.
+/// @param params Parameters for the global consensus variant.
+/// @return A `Junction` struct representing the `GlobalConsensus` junction, with the encoded network payload.
+function globalConsensus(
+    GlobalConsensusParams memory params
+) pure returns (Junction memory) {
+    return
+        Junction({
+            variant: JunctionVariant.GlobalConsensus,
+            payload: params.network.encode()
+        });
 }
 
 /// @notice Creates a `Plurality` junction with the specified body ID and body part.

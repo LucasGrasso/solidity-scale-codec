@@ -10,7 +10,7 @@ import {NetworkIdCodec} from "../NetworkId/NetworkIdCodec.sol";
 import {Bytes32} from "../../../Scale/Bytes.sol";
 import {Address} from "../../../Scale/Address.sol";
 import {Compact} from "../../../Scale/Compact.sol";
-import {Junction, JunctionVariant, ParachainParams, AccountId32Params, PluralityParams, AccountIndex64Params, AccountKey20Params, GeneralKeyParams, PalletInstanceParams, GeneralIndexParams} from "./Junction.sol";
+import {Junction, JunctionVariant, ParachainParams, AccountId32Params, PluralityParams, AccountIndex64Params, AccountKey20Params, GeneralKeyParams, PalletInstanceParams, GeneralIndexParams, GlobalConsensusParams} from "./Junction.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 
@@ -64,11 +64,10 @@ library JunctionCodec {
             if (offset >= data.length) revert InvalidJunctionLength();
             uint8 length = uint8(data[offset]);
             payloadLength = 1 + length; // 1 byte for the length + the key bytes
-        } else if (
-            variant == uint8(JunctionVariant.OnlyChild) ||
-            variant == uint8(JunctionVariant.GlobalConsensus)
-        ) {
+        } else if (variant == uint8(JunctionVariant.OnlyChild)) {
             payloadLength = 0;
+        } else if (variant == uint8(JunctionVariant.GlobalConsensus)) {
+            payloadLength = NetworkIdCodec.encodedSizeAt(data, offset);
         } else if (variant == uint8(JunctionVariant.Plurality)) {
             uint256 innerLength = BodyIdCodec.encodedSizeAt(data, offset);
             payloadLength =
@@ -229,6 +228,16 @@ library JunctionCodec {
             junction.payload,
             offset
         );
+    }
+
+    /// @notice Decodes a `GlobalConsensus` junction from a given `Junction` struct, extracting the network information.
+    /// @param junction The `Junction` struct to decode, which should represent a `GlobalConsensus` junction.
+    /// @return params A `GlobalConsensusParams` struct containing the decoded
+    function asGlobalConsensus(
+        Junction memory junction
+    ) internal pure returns (GlobalConsensusParams memory params) {
+        _assertVariant(junction, JunctionVariant.GlobalConsensus);
+        (params.network, ) = NetworkIdCodec.decode(junction.payload);
     }
 
     function _innerNetworkIdSize(
