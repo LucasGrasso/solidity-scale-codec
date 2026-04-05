@@ -43,7 +43,13 @@ library NetworkIdCodec {
             payloadLen = 40; // 8 (u64) + 32 (bytes32)
         } else if (variant == uint8(NetworkIdVariant.Ethereum)) {
             payloadLen = Compact.encodedSizeAt(data, offset + 1);
-        } else if (variant < 4) {
+        } else if (
+            variant == uint8(NetworkIdVariant.Polkadot) ||
+            variant == uint8(NetworkIdVariant.Kusama) ||
+            variant == uint8(NetworkIdVariant.BitcoinCore) ||
+            variant == uint8(NetworkIdVariant.BitcoinCash) ||
+            variant == uint8(NetworkIdVariant.PolkadotBulletin)
+        ) {
             payloadLen = 0; // Static variants
         } else {
             // Reserved or unknown types are invalid
