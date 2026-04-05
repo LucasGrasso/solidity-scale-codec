@@ -1,5 +1,18 @@
 > Note: These definitions were taken from https://github.com/w3f/polkadot-spec/blob/main/docs. They are provided here for reference. All credits to respective authors.
 
+# SCALE
+
+The Polkadot Host uses _Simple Concatenated Aggregate Little-Endian” (SCALE) codec_ to encode byte arrays as well as other data structures. SCALE provides a canonical encoding to produce consistent hash values across their implementation, including the Merkle hash proof for the State Storage.
+
+## Decoding
+
+$\text{Dec}_{{\text{SC}}}{\left({d}\right)}$ refers to the decoding of a blob of data. Since the SCALE codec is not self-describing, it’s up to the decoder to validate whether the blob of data can be deserialized into the given type or data structure.
+
+It’s accepted behavior for the decoder to partially decode the blob of data. This means any additional data that does not fit into a data structure can be ignored.
+
+> caution
+> Considering that the decoded data is never larger than the encoded message, this information can serve as a way to validate values that can vary in size, such as [sequences](#sequence). The decoder should strictly use the size of the encoded data as an upper bound when decoding in order to prevent denial of service attacks.
+
 # Notation
 
 - Let $\mathbb{{B}}$ be the set of all byte sequences.
@@ -32,6 +45,22 @@ $$
 ### Fixed Length Integers
 
 The SCALE codec, $\text{Enc}_{{\text{SC}}}$, for fixed length integers not defined here otherwise, is equal to the little-endian encoding of those values.
+
+### Tuple
+
+The **SCALE codec** for **Tuple**, ${T}$, such that:
+
+$$
+{T}\:={\left({A}_{{1}},\ldots{A}_{{n}}\right)}
+$$
+
+Where ${A}_{{i}}$’s are values of **different types**, is defined as:
+
+$$
+\text{Enc}_{{\text{SC}}}{\left({T}\right)}\:=\text{Enc}_{{\text{SC}}}{\left({A}_{{1}}\right)}\text{||}\text{Enc}_{{\text{SC}}}{\left({A}_{{2}}\right)}\text{||}\ldots\text{||}\text{Enc}_{{\text{SC}}}{\left({A}_{{n}}\right)}
+$$
+
+In the case of a tuple (or a structure), the knowledge of the shape of data is not encoded even though it is necessary for decoding. The decoder needs to derive that information from the context where the encoding/decoding is happening.
 
 ### Varying Data Type
 
@@ -129,4 +158,29 @@ In some cases, the length indicator ${\text{Enc}_{{\text{SC}}}^{{\text{Len}}}}{\
 
 The SCALE codec for a **string value** is an [encoded sequence](#sequence) consisting of UTF-8 encoded bytes.
 
-> This can be achieved via encoding the UTF-8 sequence as a `uint8[]` array, which is supported by this library.
+> This can be achieved via encoding the UTF-8 sequence as a `uint8[]` or `bytes`, which is supported by this library.
+
+### Option Type
+
+The **Option** type is a varying data type of ${\left\lbrace\text{None},{T}_{{2}}\right\rbrace}$ which indicates if data of ${T}_{{2}}$ type is available (referred to as _some_ state) or not (referred to as _empty_, _none_ or _null_ state). The presence of type _none_, indicated by $\text{idx}{\left({T}_{{\text{None}}}\right)}={0}$, implies that the data corresponding to ${T}_{{2}}$ type is not available and contains no additional data. Where as the presence of type ${T}_{{2}}$ indicated by $\text{idx}{\left({T}_{{2}}\right)}={1}$ implies that the data is available.
+
+### Result Type
+
+The **Result** type is a varying data type of ${\left\lbrace{T}_{{1}},{T}_{{2}}\right\rbrace}$ which is used to indicate if a certain operation or function was executed successfully (referred to as "ok" state) or not (referred to as "error" state). ${T}_{{1}}$ implies success, ${T}_{{2}}$ implies failure. Both types can either contain additional data or are defined as empty types otherwise.
+
+### Dictionaries, Hashtables, Maps
+
+SCALE codec for **dictionary** or **hashtable** D with key-value pairs
+$({k}_{{i}},{v}_{{i}})$, such that:
+
+$$
+{D}\:={\left\lbrace{\left({k}_{{1}},{v}_{{1}}\right)},\ldots{\left({k}_{{n}},{v}_{{n}}\right)}\right\rbrace}
+$$
+
+is defined as the SCALE codec of ${D}$ as a sequence of key-value pairs (as tuples):
+
+$$
+\text{Enc}_{{\text{SC}}}{\left({D}\right)}\:={\text{Enc}_{{\text{SC}}}^{{\text{Size}}}}{\left({\left|{{D}}\right|}\right)}\text{||}\text{Enc}_{{\text{SC}}}{\left({k}_{{1}},{v}_{{1}}\right)}\text{||}\ldots\text{||}\text{Enc}_{{\text{SC}}}{\left({k}_{{n}},{v}_{{n}}\right)}
+$$
+
+where ${\text{Enc}_{{\text{SC}}}^{{\text{Size}}}}$ is encoded the same way as ${\text{Enc}_{{\text{SC}}}^{{\text{Len}}}}$ but argument $\text{Size}$ refers to the number of key-value pairs rather than the length.

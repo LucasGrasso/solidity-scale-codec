@@ -21,7 +21,7 @@
     "README.md",
     "LICENSE",
     "CHANGELOG.md",
-    "DEFINITIONS.md"
+    "guides/Definitions.md"
   ],
   "license": "Apache-2.0",
   "author": "LucasGrasso",
