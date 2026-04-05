@@ -1,25 +1,25 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {VersionedXcmCodec} from "../src/Xcm/VersionedXcm/VersionedXcmCodec.sol";
-import {VersionedXcm, v5} from "../src/Xcm/VersionedXcm/VersionedXcm.sol";
-import {XcmCodec} from "../src/Xcm/v5/Xcm/XcmCodec.sol";
-import {Xcm} from "../src/Xcm/v5/Xcm/Xcm.sol";
-import {XcmBuilder} from "../src/Xcm/v5/Xcm/XcmBuilder.sol";
-import {Instruction, WithdrawAssetParams, BuyExecutionParams, DepositAssetParams} from "../src/Xcm/v5/Instruction/Instruction.sol";
-import {InstructionCodec} from "../src/Xcm/v5/Instruction/InstructionCodec.sol";
-import {Asset} from "../src/Xcm/v5/Asset/Asset.sol";
-import {fromAsset} from "../src/Xcm/v5/Assets/Assets.sol";
-import {Location, parent} from "../src/Xcm/v5/Location/Location.sol";
-import {AssetId} from "../src/Xcm/v5/AssetId/AssetId.sol";
-import {fungible, FungibleParams} from "../src/Xcm/v5/Fungibility/Fungibility.sol";
-import {unlimited} from "../src/Xcm/v5/WeightLimit/WeightLimit.sol";
-import {AssetFilter, wild, WildParams} from "../src/Xcm/v5/AssetFilter/AssetFilter.sol";
-import {allOf, AllOfParams} from "../src/Xcm/v5/WildAsset/WildAsset.sol";
-import {WildFungibility} from "../src/Xcm/v5/WildFungibility/WildFungibility.sol";
-import {accountId32, AccountId32Params} from "../src/Xcm/v5/Junction/Junction.sol";
-import {fromJunction} from "../src/Xcm/v5/Junctions/Junctions.sol";
-import {polkadot} from "../src/Xcm/v5/NetworkId/NetworkId.sol";
+import {VersionedXcmCodec} from "../../src/Xcm/VersionedXcm/VersionedXcmCodec.sol";
+import {VersionedXcm, v5} from "../../src/Xcm/VersionedXcm/VersionedXcm.sol";
+import {XcmCodec} from "../../src/Xcm/v5/Xcm/XcmCodec.sol";
+import {Xcm} from "../../src/Xcm/v5/Xcm/Xcm.sol";
+import {XcmBuilder} from "../../src/Xcm/v5/Xcm/XcmBuilder.sol";
+import {Instruction, WithdrawAssetParams, BuyExecutionParams, DepositAssetParams} from "../../src/Xcm/v5/Instruction/Instruction.sol";
+import {InstructionCodec} from "../../src/Xcm/v5/Instruction/InstructionCodec.sol";
+import {Asset} from "../../src/Xcm/v5/Asset/Asset.sol";
+import {fromAsset} from "../../src/Xcm/v5/Assets/Assets.sol";
+import {Location, parent} from "../../src/Xcm/v5/Location/Location.sol";
+import {AssetId} from "../../src/Xcm/v5/AssetId/AssetId.sol";
+import {fungible, FungibleParams} from "../../src/Xcm/v5/Fungibility/Fungibility.sol";
+import {unlimited} from "../../src/Xcm/v5/WeightLimit/WeightLimit.sol";
+import {AssetFilter, wild, WildParams} from "../../src/Xcm/v5/AssetFilter/AssetFilter.sol";
+import {allOf, AllOfParams} from "../../src/Xcm/v5/WildAsset/WildAsset.sol";
+import {WildFungibility} from "../../src/Xcm/v5/WildFungibility/WildFungibility.sol";
+import {accountId32, AccountId32Params} from "../../src/Xcm/v5/Junction/Junction.sol";
+import {fromJunction} from "../../src/Xcm/v5/Junctions/Junctions.sol";
+import {polkadot} from "../../src/Xcm/v5/NetworkId/NetworkId.sol";
 
 import {Test} from "forge-std/Test.sol";
 
