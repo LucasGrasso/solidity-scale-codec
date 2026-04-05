@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]
 
+### Added
+
+- Missing `GlobalConsensus` junction variant and related helper function in `Junction.sol` and `JunctionCodec.sol`. - [#5592427](https://github.com/LucasGrasso/solidity-scale-codec/commit/5592427)
+
+### Fixed
+
+- Variant checking in `NetworkId`. - [#7e9309d](https://github.com/LucasGrasso/solidity-scale-codec/commit/7e9309d)
+- Decoding of `Index` variant in `BodyId`. - [#75ead59](https://github.com/LucasGrasso/solidity-scale-codec/commit/75ead59)
+- Incorrect encoding/decoding of `GeneralKey` junction variant. - [#4e0f795](https://github.com/LucasGrasso/solidity-scale-codec/commit/4e0f795)
+
 ## Version 2.0.0
 
 ### Added
