@@ -51,4 +51,19 @@ contract FungibilityTest is Test {
             hex"010209080706"
         );
     }
+
+    function testDecodeRevertsOnInvalidVariant() public {
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Codec.InvalidFungibilityVariant.selector,
+                uint8(0xff)
+            )
+        );
+        wrapper.decode(hex"ff");
+    }
+
+    function testDecodeRevertsOnTruncatedNonFungiblePayload() public {
+        vm.expectRevert();
+        wrapper.decode(hex"01");
+    }
 }

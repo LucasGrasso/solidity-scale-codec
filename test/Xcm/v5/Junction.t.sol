@@ -14,6 +14,13 @@ contract JunctionWrapper {
     ) external pure returns (Junction memory junction) {
         (junction, ) = Codec.decode(data);
     }
+
+    function makeGeneralKey(
+        uint8 length,
+        bytes32 key
+    ) external pure returns (Junction memory) {
+        return generalKey(GeneralKeyParams({length: length, key: key}));
+    }
 }
 
 contract JunctionTest is Test {
@@ -124,5 +131,30 @@ contract JunctionTest is Test {
             globalConsensus(GlobalConsensusParams({network: polkadot()})),
             hex"0902"
         );
+    }
+
+    function testDecodeRevertsOnInvalidVariant() public {
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Codec.InvalidJunctionVariant.selector,
+                uint8(0xff)
+            )
+        );
+        wrapper.decode(hex"ff");
+    }
+
+    function testDecodeRevertsOnInvalidGeneralKeyPayload() public {
+        vm.expectRevert(Codec.InvalidJunctionPayload.selector);
+        wrapper.decode(hex"0600");
+    }
+
+    function testFactoryRevertsOnGeneralKeyLengthZero() public {
+        vm.expectRevert(Codec.InvalidJunctionPayload.selector);
+        wrapper.makeGeneralKey(0, bytes32(0));
+    }
+
+    function testFactoryRevertsOnGeneralKeyLengthTooLarge() public {
+        vm.expectRevert(Codec.InvalidJunctionPayload.selector);
+        wrapper.makeGeneralKey(33, bytes32(0));
     }
 }

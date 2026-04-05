@@ -30,4 +30,14 @@ contract AssetIdTest is Test {
             keccak256(abi.encode(value))
         );
     }
+
+    function testDecodeRevertsOnTruncatedPayload() public {
+        vm.expectRevert();
+        wrapper.decode(hex"01");
+    }
+
+    function testDecodeRevertsOnInvalidInteriorCount() public {
+        vm.expectRevert();
+        wrapper.decode(hex"0009");
+    }
 }

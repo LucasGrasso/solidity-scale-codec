@@ -76,4 +76,19 @@ contract AssetInstanceTest is Test {
             hex"050303030303030303030303030303030303030303030303030303030303030303"
         );
     }
+
+    function testDecodeRevertsOnInvalidVariant() public {
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Codec.InvalidAssetInstanceVariant.selector,
+                uint8(0xff)
+            )
+        );
+        wrapper.decode(hex"ff");
+    }
+
+    function testDecodeRevertsOnTruncatedArray32Payload() public {
+        vm.expectRevert(Codec.InvalidAssetInstanceLength.selector);
+        wrapper.decode(hex"05aa");
+    }
 }

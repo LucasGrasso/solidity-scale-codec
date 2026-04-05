@@ -12,6 +12,13 @@ contract JunctionsWrapper {
     ) external pure returns (Junctions memory junctions) {
         (junctions, ) = Codec.decode(data);
     }
+
+    function makeFromJunctionArray(
+        uint256 count
+    ) external pure returns (Junctions memory) {
+        Junction[] memory junctions = new Junction[](count);
+        return fromJunctionArr(junctions);
+    }
 }
 
 contract JunctionsTest is Test {
@@ -56,5 +63,25 @@ contract JunctionsTest is Test {
         junctions[1] = onlyChild();
         junctions[2] = generalIndex(GeneralIndexParams({index: 7}));
         _assertRoundTrip(fromJunctionArr(junctions), hex"0300a10f07051c");
+    }
+
+    function testDecodeRevertsOnInvalidCount() public {
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Codec.InvalidJunctionsCount.selector,
+                uint8(9)
+            )
+        );
+        wrapper.decode(hex"09");
+    }
+
+    function testDecodeRevertsOnTruncatedInnerPayload() public {
+        vm.expectRevert();
+        wrapper.decode(hex"0100");
+    }
+
+    function testFactoryRevertsOnTooManyJunctions() public {
+        vm.expectRevert();
+        wrapper.makeFromJunctionArray(9);
     }
 }

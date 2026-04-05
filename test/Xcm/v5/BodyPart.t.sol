@@ -63,4 +63,19 @@ contract BodyPartTest is Test {
             hex"04080c"
         );
     }
+
+    function testDecodeRevertsOnInvalidVariant() public {
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Codec.InvalidBodyPartVariant.selector,
+                uint8(0xff)
+            )
+        );
+        wrapper.decode(hex"ff");
+    }
+
+    function testDecodeRevertsOnTruncatedFractionPayload() public {
+        vm.expectRevert();
+        wrapper.decode(hex"0204");
+    }
 }

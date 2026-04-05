@@ -60,4 +60,14 @@ contract LocationTest is Test {
             hex"020200a10f0101023333333333333333333333333333333333333333333333333333333333333333"
         );
     }
+
+    function testDecodeRevertsOnEmptyInput() public {
+        vm.expectRevert(Codec.InvalidLocationLength.selector);
+        wrapper.decode(hex"");
+    }
+
+    function testDecodeRevertsOnInvalidInteriorCount() public {
+        vm.expectRevert();
+        wrapper.decode(hex"0009");
+    }
 }

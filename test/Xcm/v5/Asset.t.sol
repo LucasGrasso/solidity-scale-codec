@@ -64,4 +64,14 @@ contract AssetTest is Test {
             hex"010001054444444444444444444444444444444444444444444444444444444444444444"
         );
     }
+
+    function testDecodeRevertsOnMissingFungibility() public {
+        vm.expectRevert();
+        wrapper.decode(hex"0100");
+    }
+
+    function testDecodeRevertsOnInvalidFungibilityVariant() public {
+        vm.expectRevert();
+        wrapper.decode(hex"0100ff");
+    }
 }

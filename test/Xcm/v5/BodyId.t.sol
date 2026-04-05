@@ -73,4 +73,14 @@ contract BodyIdTest is Test {
     function testEncodeDecodeTreasury() public view {
         _assertRoundTrip(treasury(), hex"09");
     }
+
+    function testDecodeRevertsOnInvalidVariant() public {
+        vm.expectRevert();
+        wrapper.decode(hex"ff");
+    }
+
+    function testDecodeRevertsOnTruncatedMonikerPayload() public {
+        vm.expectRevert(Codec.InvalidBodyIdLength.selector);
+        wrapper.decode(hex"01414243");
+    }
 }

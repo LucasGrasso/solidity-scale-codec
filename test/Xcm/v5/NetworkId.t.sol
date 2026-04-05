@@ -90,4 +90,19 @@ contract NetworkIdTest is Test {
             hex"0a"
         );
     }
+
+    function testDecodeRevertsOnInvalidVariant() public {
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Codec.InvalidNetworkIdVariant.selector,
+                uint8(0x04)
+            )
+        );
+        wrapper.decode(hex"04");
+    }
+
+    function testDecodeRevertsOnTruncatedByGenesisPayload() public {
+        vm.expectRevert(Codec.InvalidNetworkIdLength.selector);
+        wrapper.decode(hex"00");
+    }
 }
