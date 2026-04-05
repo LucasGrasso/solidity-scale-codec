@@ -8,3 +8,14 @@ struct Weight {
     /// @custom:property The size of the proof needed to execute some logic.
     uint64 proofSize;
 }
+
+/// @notice Constructs a `Weight` struct from its individual components.
+/// @param refTime The computational time used to execute some logic based on reference hardware.
+/// @param proofSize The size of the proof needed to execute some logic.
+/// @return A `Weight` struct with the specified `refTime` and `proofSize`.
+function fromParts(
+    uint64 refTime,
+    uint64 proofSize
+) pure returns (Weight memory) {
+    return Weight({refTime: refTime, proofSize: proofSize});
+}
