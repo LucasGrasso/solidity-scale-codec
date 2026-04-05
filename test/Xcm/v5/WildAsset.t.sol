@@ -1,7 +1,16 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {WildAsset, all, allOf, allCounted, allOfCounted, AllOfParams, AllCountedParams, AllOfCountedParams} from "../../../src/Xcm/v5/WildAsset/WildAsset.sol";
+import {
+    WildAsset,
+    all,
+    allOf,
+    allCounted,
+    allOfCounted,
+    AllOfParams,
+    AllCountedParams,
+    AllOfCountedParams
+} from "../../../src/Xcm/v5/WildAsset/WildAsset.sol";
 import {WildAssetCodec as Codec} from "../../../src/Xcm/v5/WildAsset/WildAssetCodec.sol";
 import {AssetId} from "../../../src/Xcm/v5/AssetId/AssetId.sol";
 import {parent} from "../../../src/Xcm/v5/Location/Location.sol";

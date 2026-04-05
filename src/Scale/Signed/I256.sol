@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import { U256 } from "../Unsigned/U256.sol";
+import {U256} from "../Unsigned/U256.sol";
 
 /// @title Scale Codec for the `int256` type.
 /// @notice SCALE-compliant encoder/decoder for the `int256` type.
@@ -9,7 +9,7 @@ import { U256 } from "../Unsigned/U256.sol";
 library I256 {
     error OffsetOutOfBounds();
 
-	/// @notice Encodes an `int256` into SCALE format (32-byte two's-complement little-endian).
+    /// @notice Encodes an `int256` into SCALE format (32-byte two's-complement little-endian).
     /// @param value The signed 256-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(int256 value) internal pure returns (bytes memory) {
@@ -17,10 +17,13 @@ library I256 {
     }
 
     /// @notice Returns the number of bytes that a `int256` would occupy when SCALE-encoded.
-	/// @param data The byte sequence containing the encoded `int256`.
-	/// @param offset The starting index in `data` from which to calculate the encoded size of the `int256`.
-	/// @return The number of bytes that the `int256` would occupy when SCALE-encoded.
-    function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
+    /// @param data The byte sequence containing the encoded `int256`.
+    /// @param offset The starting index in `data` from which to calculate the encoded size of the `int256`.
+    /// @return The number of bytes that the `int256` would occupy when SCALE-encoded.
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256) {
         return U256.encodedSizeAt(data, offset);
     }
 
@@ -43,10 +46,12 @@ library I256 {
         return int256(U256.decodeAt(data, offset));
     }
 
-	/// @notice Converts an int256 to little-endian bytes32 (two's complement)
+    /// @notice Converts an int256 to little-endian bytes32 (two's complement)
     /// @param value The signed 256-bit integer to convert.
     /// @return result Little-endian byte representation of the input value.
-    function toLittleEndian(int256 value) internal pure returns (bytes32 result) {
+    function toLittleEndian(
+        int256 value
+    ) internal pure returns (bytes32 result) {
         return U256.toLittleEndian(uint256(value));
     }
 }

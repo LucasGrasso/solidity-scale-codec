@@ -1,7 +1,20 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {AssetInstance, undefined, index, array4, array8, array16, array32, IndexParams, Array4Params, Array8Params, Array16Params, Array32Params} from "../../../src/Xcm/v5/AssetInstance/AssetInstance.sol";
+import {
+    AssetInstance,
+    undefined,
+    index,
+    array4,
+    array8,
+    array16,
+    array32,
+    IndexParams,
+    Array4Params,
+    Array8Params,
+    Array16Params,
+    Array32Params
+} from "../../../src/Xcm/v5/AssetInstance/AssetInstance.sol";
 import {AssetInstanceCodec as Codec} from "../../../src/Xcm/v5/AssetInstance/AssetInstanceCodec.sol";
 import {Test} from "forge-std/Test.sol";
 

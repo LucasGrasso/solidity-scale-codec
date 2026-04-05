@@ -7,7 +7,10 @@ import {AssetsCodec as Codec} from "../../../src/Xcm/v5/Assets/AssetsCodec.sol";
 import {Asset} from "../../../src/Xcm/v5/Asset/Asset.sol";
 import {Test} from "forge-std/Test.sol";
 import {parent} from "../../../src/Xcm/v5/Location/Location.sol";
-import {fungible, FungibleParams} from "../../../src/Xcm/v5/Fungibility/Fungibility.sol";
+import {
+    fungible,
+    FungibleParams
+} from "../../../src/Xcm/v5/Fungibility/Fungibility.sol";
 
 contract AssetsWrapper {
     function decode(bytes memory data) external pure returns (Assets memory) {

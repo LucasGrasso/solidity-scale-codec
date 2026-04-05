@@ -5,7 +5,12 @@ import {Assets} from "../Assets/Assets.sol";
 import {AssetsCodec} from "../Assets/AssetsCodec.sol";
 import {WildAsset} from "../WildAsset/WildAsset.sol";
 import {WildAssetCodec} from "../WildAsset/WildAssetCodec.sol";
-import {AssetFilter, AssetFilterVariant, DefiniteParams, WildParams} from "./AssetFilter.sol";
+import {
+    AssetFilter,
+    AssetFilterVariant,
+    DefiniteParams,
+    WildParams
+} from "./AssetFilter.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `AssetFilter`

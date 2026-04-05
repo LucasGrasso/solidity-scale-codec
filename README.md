@@ -45,10 +45,10 @@ The `LittleEndian` library provides functions to encode and decode unsigned inte
 All libraries here provide the following functions:
 
 ```solidity
-function toLittleEndian(uintN value) internal pure returns (bytesM){}
+function toLittleEndian(uintN value) internal pure returns (bytesM) {}
 function fromLittleEndian(
-	bytes memory data,
-	uint256 offset
+  bytes memory data,
+  uint256 offset
 ) internal pure returns (uintN value) {}
 ```
 
@@ -59,15 +59,21 @@ The `Scale` library provides functions to encode and decode various types in the
 - All Codec libraries provide the following encoding functions:
 
   ```solidity
-  function encode(T value) internal pure returns (bytes memory){}
-  function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256 size){}
+  function encode(T value) internal pure returns (bytes memory) {}
+  function encodedSizeAt(
+    bytes memory data,
+    uint256 offset
+  ) internal pure returns (uint256 size) {}
   ```
 
 - Libraries for fixed length types provide the following functions for encoding:
 
   ```solidity
-  function decode(bytes memory data) internal pure returns (T value){}
-  function decodeAt(bytes memory data, uint256 offset) internal pure returns (T value){}
+  function decode(bytes memory data) internal pure returns (T value) {}
+  function decodeAt(
+    bytes memory data,
+    uint256 offset
+  ) internal pure returns (T value) {}
   ```
 
   > Note: `decode(data)` = `decodeAt(data, 0)`
@@ -75,14 +81,19 @@ The `Scale` library provides functions to encode and decode various types in the
   Integer libraries also provide Little-Endian encoding functions, using the `LittleEndian` library:
 
   ```solidity
-  function toLittleEndian(T value) internal pure returns (bytesM){}
+  function toLittleEndian(T value) internal pure returns (bytesM) {}
   ```
 
 - Variable length types libraries provide the same encoding functions, but the decoding functions also return the number of bytes read from the input data. This is useful for decoding from a larger byte array where the encoded value is not at the beginning.
 
   ```solidity
-  function decode(bytes memory data) internal pure returns (T value, uint256 bytesRead){}
-  function decodeAt(bytes memory data, uint256 offset) internal pure returns (T value, uint256 bytesRead){}
+  function decode(
+    bytes memory data
+  ) internal pure returns (T value, uint256 bytesRead) {}
+  function decodeAt(
+    bytes memory data,
+    uint256 offset
+  ) internal pure returns (T value, uint256 bytesRead) {}
   ```
 
   > Note: `decode(data)` = `decodeAt(data, 0)`

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import { U32 } from "../Unsigned/U32.sol";
+import {U32} from "../Unsigned/U32.sol";
 
 /// @title Scale Codec for the `int32` type.
 /// @notice SCALE-compliant encoder/decoder for the `int32` type.
@@ -9,7 +9,7 @@ import { U32 } from "../Unsigned/U32.sol";
 library I32 {
     error OffsetOutOfBounds();
 
-	/// @notice Encodes an `int32` into SCALE format (4-byte two's-complement little-endian).
+    /// @notice Encodes an `int32` into SCALE format (4-byte two's-complement little-endian).
     /// @param value The signed 32-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(int32 value) internal pure returns (bytes memory) {
@@ -17,10 +17,13 @@ library I32 {
     }
 
     /// @notice Returns the number of bytes that a `int32` would occupy when SCALE-encoded.
-	/// @param data The byte sequence containing the encoded `int32`.
-	/// @param offset The starting index in `data` from which to calculate the encoded size of the `int32`.
-	/// @return The number of bytes that the `int32` would occupy when SCALE-encoded.
-    function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
+    /// @param data The byte sequence containing the encoded `int32`.
+    /// @param offset The starting index in `data` from which to calculate the encoded size of the `int32`.
+    /// @return The number of bytes that the `int32` would occupy when SCALE-encoded.
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256) {
         return U32.encodedSizeAt(data, offset);
     }
 
@@ -43,7 +46,7 @@ library I32 {
         return int32(U32.decodeAt(data, offset));
     }
 
-	/// @notice Converts an int32 to little-endian bytes4 (two's complement)
+    /// @notice Converts an int32 to little-endian bytes4 (two's complement)
     /// @param value The signed 32-bit integer to convert.
     /// @return result Little-endian byte representation of the input value.
     function toLittleEndian(int32 value) internal pure returns (bytes4 result) {

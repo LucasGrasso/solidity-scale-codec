@@ -3,10 +3,19 @@ pragma solidity ^0.8.28;
 
 import {Asset} from "../../../src/Xcm/v5/Asset/Asset.sol";
 import {AssetId} from "../../../src/Xcm/v5/AssetId/AssetId.sol";
-import {array32, Array32Params} from "../../../src/Xcm/v5/AssetInstance/AssetInstance.sol";
+import {
+    array32,
+    Array32Params
+} from "../../../src/Xcm/v5/AssetInstance/AssetInstance.sol";
 import {parent} from "../../../src/Xcm/v5/Location/Location.sol";
 import {AssetCodec as Codec} from "../../../src/Xcm/v5/Asset/AssetCodec.sol";
-import {Fungibility, fungible, FungibleParams, nonFungible, NonFungibleParams} from "../../../src/Xcm/v5/Fungibility/Fungibility.sol";
+import {
+    Fungibility,
+    fungible,
+    FungibleParams,
+    nonFungible,
+    NonFungibleParams
+} from "../../../src/Xcm/v5/Fungibility/Fungibility.sol";
 import {Test} from "forge-std/Test.sol";
 
 contract AssetWrapper {

@@ -2,8 +2,18 @@
 pragma solidity ^0.8.28;
 
 import {Location, parent} from "../../../src/Xcm/v5/Location/Location.sol";
-import {Junction, accountId32, parachain, AccountId32Params, ParachainParams} from "../../../src/Xcm/v5/Junction/Junction.sol";
-import {Junctions, here, fromJunctionArr} from "../../../src/Xcm/v5/Junctions/Junctions.sol";
+import {
+    Junction,
+    accountId32,
+    parachain,
+    AccountId32Params,
+    ParachainParams
+} from "../../../src/Xcm/v5/Junction/Junction.sol";
+import {
+    Junctions,
+    here,
+    fromJunctionArr
+} from "../../../src/Xcm/v5/Junctions/Junctions.sol";
 import {LocationCodec as Codec} from "../../../src/Xcm/v5/Location/LocationCodec.sol";
 import {NetworkId, polkadot} from "../../../src/Xcm/v5/NetworkId/NetworkId.sol";
 import {Test} from "forge-std/Test.sol";

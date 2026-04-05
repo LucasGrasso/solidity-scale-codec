@@ -7,7 +7,7 @@ const __dirname = dirname(__filename);
 
 const template = readFileSync(
   path.join(__dirname, "Bytes.sol.template"),
-  "utf-8"
+  "utf-8",
 );
 
 const output_dir = "src/Scale/Bytes/";

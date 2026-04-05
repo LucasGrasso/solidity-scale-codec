@@ -10,7 +10,9 @@ import {QueryId} from "../../../src/Xcm/v5/Types/QueryId.sol";
 import {Test} from "forge-std/Test.sol";
 
 contract QueryResponseInfoWrapper {
-    function decode(bytes memory data) external pure returns (QueryResponseInfo memory) {
+    function decode(
+        bytes memory data
+    ) external pure returns (QueryResponseInfo memory) {
         (QueryResponseInfo memory result, ) = Codec.decode(data);
         return result;
     }
@@ -23,10 +25,16 @@ contract QueryResponseInfoTest is Test {
         wrapper = new QueryResponseInfoWrapper();
     }
 
-    function _assertRoundTrip(QueryResponseInfo memory value, bytes memory expected) internal view {
+    function _assertRoundTrip(
+        QueryResponseInfo memory value,
+        bytes memory expected
+    ) internal view {
         assertEq(Codec.encode(value), expected);
         QueryResponseInfo memory decoded = wrapper.decode(expected);
-        assertEq(QueryId.unwrap(decoded.queryId), QueryId.unwrap(value.queryId));
+        assertEq(
+            QueryId.unwrap(decoded.queryId),
+            QueryId.unwrap(value.queryId)
+        );
         assertEq(decoded.maxWeight.refTime, value.maxWeight.refTime);
         assertEq(decoded.maxWeight.proofSize, value.maxWeight.proofSize);
     }
@@ -39,10 +47,7 @@ contract QueryResponseInfoTest is Test {
             queryId: QueryId.wrap(7),
             maxWeight: Weight({refTime: 5, proofSize: 11})
         });
-        _assertRoundTrip(
-            info,
-            hex"01001c142c"
-        );
+        _assertRoundTrip(info, hex"01001c142c");
     }
 
     // Negative tests

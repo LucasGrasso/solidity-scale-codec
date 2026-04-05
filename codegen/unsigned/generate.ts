@@ -6,11 +6,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const config = JSON.parse(
-  readFileSync(path.join(__dirname, "config.json"), "utf-8")
+  readFileSync(path.join(__dirname, "config.json"), "utf-8"),
 );
 const template = readFileSync(
   path.join(__dirname, "Unsigned.sol.template"),
-  "utf-8"
+  "utf-8",
 );
 
 const output_dir = "src/Scale/Unsigned/";

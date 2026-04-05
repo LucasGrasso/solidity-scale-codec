@@ -4,7 +4,12 @@ pragma solidity ^0.8.28;
 import {Compact} from "../../../Scale/Compact.sol";
 import {AssetInstance} from "../AssetInstance/AssetInstance.sol";
 import {AssetInstanceCodec} from "../AssetInstance/AssetInstanceCodec.sol";
-import {Fungibility, FungibilityVariant, FungibleParams, NonFungibleParams} from "./Fungibility.sol";
+import {
+    Fungibility,
+    FungibilityVariant,
+    FungibleParams,
+    NonFungibleParams
+} from "./Fungibility.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 

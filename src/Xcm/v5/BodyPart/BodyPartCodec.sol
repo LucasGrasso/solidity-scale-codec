@@ -2,7 +2,14 @@
 pragma solidity ^0.8.28;
 
 import {Compact} from "../../../Scale/Compact.sol";
-import {BodyPart, BodyPartVariant, MembersParams, FractionParams, AtLeastProportionParams, MoreThanProportionParams} from "./BodyPart.sol";
+import {
+    BodyPart,
+    BodyPartVariant,
+    MembersParams,
+    FractionParams,
+    AtLeastProportionParams,
+    MoreThanProportionParams
+} from "./BodyPart.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 

@@ -1,8 +1,18 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {AssetInstance, array4, Array4Params} from "../../../src/Xcm/v5/AssetInstance/AssetInstance.sol";
-import {Fungibility, fungible, nonFungible, FungibleParams, NonFungibleParams} from "../../../src/Xcm/v5/Fungibility/Fungibility.sol";
+import {
+    AssetInstance,
+    array4,
+    Array4Params
+} from "../../../src/Xcm/v5/AssetInstance/AssetInstance.sol";
+import {
+    Fungibility,
+    fungible,
+    nonFungible,
+    FungibleParams,
+    NonFungibleParams
+} from "../../../src/Xcm/v5/Fungibility/Fungibility.sol";
 import {FungibilityCodec as Codec} from "../../../src/Xcm/v5/Fungibility/FungibilityCodec.sol";
 import {Test} from "forge-std/Test.sol";
 

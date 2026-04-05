@@ -1,8 +1,20 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {Junction, parachain, onlyChild, generalIndex, ParachainParams, GeneralIndexParams} from "../../../src/Xcm/v5/Junction/Junction.sol";
-import {Junctions, here, fromJunction, fromJunctionArr} from "../../../src/Xcm/v5/Junctions/Junctions.sol";
+import {
+    Junction,
+    parachain,
+    onlyChild,
+    generalIndex,
+    ParachainParams,
+    GeneralIndexParams
+} from "../../../src/Xcm/v5/Junction/Junction.sol";
+import {
+    Junctions,
+    here,
+    fromJunction,
+    fromJunctionArr
+} from "../../../src/Xcm/v5/Junctions/Junctions.sol";
 import {JunctionsCodec as Codec} from "../../../src/Xcm/v5/Junctions/JunctionsCodec.sol";
 import {Test} from "forge-std/Test.sol";
 

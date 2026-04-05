@@ -1,7 +1,18 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {NetworkId, NetworkIdVariant, byGenesis, byFork, polkadot, kusama, ethereum, ByGenesisParams, ByForkParams, EthereumParams} from "../../../src/Xcm/v5/NetworkId/NetworkId.sol";
+import {
+    NetworkId,
+    NetworkIdVariant,
+    byGenesis,
+    byFork,
+    polkadot,
+    kusama,
+    ethereum,
+    ByGenesisParams,
+    ByForkParams,
+    EthereumParams
+} from "../../../src/Xcm/v5/NetworkId/NetworkId.sol";
 import {NetworkIdCodec as Codec} from "../../../src/Xcm/v5/NetworkId/NetworkIdCodec.sol";
 import {Test} from "forge-std/Test.sol";
 
@@ -86,7 +97,10 @@ contract NetworkIdTest is Test {
 
     function testEncodeDecodePolkadotBulletin() public view {
         _assertRoundTrip(
-            NetworkId({variant: NetworkIdVariant.PolkadotBulletin, payload: ""}),
+            NetworkId({
+                variant: NetworkIdVariant.PolkadotBulletin,
+                payload: ""
+            }),
             hex"0a"
         );
     }

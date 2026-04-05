@@ -6,9 +6,6 @@
     "no-unused-vars": ["error"],
     "no-inline-assembly": "off",
     "no-unused-import": "off",
-    "function-max-lines": [
-      "warn",
-      80
-    ]
+    "function-max-lines": ["warn", 80]
   }
 }

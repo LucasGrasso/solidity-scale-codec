@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import { U8 } from "../Unsigned/U8.sol";
+import {U8} from "../Unsigned/U8.sol";
 
 /// @title Scale Codec for the `int8` type.
 /// @notice SCALE-compliant encoder/decoder for the `int8` type.
@@ -9,7 +9,7 @@ import { U8 } from "../Unsigned/U8.sol";
 library I8 {
     error OffsetOutOfBounds();
 
-	/// @notice Encodes an `int8` into SCALE format (1-byte two's-complement little-endian).
+    /// @notice Encodes an `int8` into SCALE format (1-byte two's-complement little-endian).
     /// @param value The signed 8-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(int8 value) internal pure returns (bytes memory) {
@@ -17,10 +17,13 @@ library I8 {
     }
 
     /// @notice Returns the number of bytes that a `int8` would occupy when SCALE-encoded.
-	/// @param data The byte sequence containing the encoded `int8`.
-	/// @param offset The starting index in `data` from which to calculate the encoded size of the `int8`.
-	/// @return The number of bytes that the `int8` would occupy when SCALE-encoded.
-    function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
+    /// @param data The byte sequence containing the encoded `int8`.
+    /// @param offset The starting index in `data` from which to calculate the encoded size of the `int8`.
+    /// @return The number of bytes that the `int8` would occupy when SCALE-encoded.
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256) {
         return U8.encodedSizeAt(data, offset);
     }
 
@@ -43,7 +46,7 @@ library I8 {
         return int8(U8.decodeAt(data, offset));
     }
 
-	/// @notice Converts an int8 to little-endian bytes1 (two's complement)
+    /// @notice Converts an int8 to little-endian bytes1 (two's complement)
     /// @param value The signed 8-bit integer to convert.
     /// @return result Little-endian byte representation of the input value.
     function toLittleEndian(int8 value) internal pure returns (bytes1 result) {

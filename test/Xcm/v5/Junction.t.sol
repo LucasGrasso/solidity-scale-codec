@@ -3,9 +3,34 @@ pragma solidity ^0.8.28;
 
 import {BodyId, executive} from "../../../src/Xcm/v5/BodyId/BodyId.sol";
 import {BodyPart, voice} from "../../../src/Xcm/v5/BodyPart/BodyPart.sol";
-import {Junction, parachain, accountId32, accountIndex64, accountKey20, palletInstance, generalIndex, generalKey, onlyChild, plurality, globalConsensus, ParachainParams, AccountId32Params, AccountIndex64Params, AccountKey20Params, PalletInstanceParams, GeneralIndexParams, GeneralKeyParams, PluralityParams, GlobalConsensusParams} from "../../../src/Xcm/v5/Junction/Junction.sol";
+import {
+    Junction,
+    parachain,
+    accountId32,
+    accountIndex64,
+    accountKey20,
+    palletInstance,
+    generalIndex,
+    generalKey,
+    onlyChild,
+    plurality,
+    globalConsensus,
+    ParachainParams,
+    AccountId32Params,
+    AccountIndex64Params,
+    AccountKey20Params,
+    PalletInstanceParams,
+    GeneralIndexParams,
+    GeneralKeyParams,
+    PluralityParams,
+    GlobalConsensusParams
+} from "../../../src/Xcm/v5/Junction/Junction.sol";
 import {JunctionCodec as Codec} from "../../../src/Xcm/v5/Junction/JunctionCodec.sol";
-import {NetworkId, polkadot, kusama} from "../../../src/Xcm/v5/NetworkId/NetworkId.sol";
+import {
+    NetworkId,
+    polkadot,
+    kusama
+} from "../../../src/Xcm/v5/NetworkId/NetworkId.sol";
 import {Test} from "forge-std/Test.sol";
 
 contract JunctionWrapper {

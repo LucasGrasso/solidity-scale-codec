@@ -1,7 +1,18 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {BodyPart, voice, members, fraction, atLeastProportion, moreThanProportion, MembersParams, FractionParams, AtLeastProportionParams, MoreThanProportionParams} from "../../../src/Xcm/v5/BodyPart/BodyPart.sol";
+import {
+    BodyPart,
+    voice,
+    members,
+    fraction,
+    atLeastProportion,
+    moreThanProportion,
+    MembersParams,
+    FractionParams,
+    AtLeastProportionParams,
+    MoreThanProportionParams
+} from "../../../src/Xcm/v5/BodyPart/BodyPart.sol";
 import {BodyPartCodec as Codec} from "../../../src/Xcm/v5/BodyPart/BodyPartCodec.sol";
 import {Test} from "forge-std/Test.sol";
 

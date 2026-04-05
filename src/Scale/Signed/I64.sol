@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import { U64 } from "../Unsigned/U64.sol";
+import {U64} from "../Unsigned/U64.sol";
 
 /// @title Scale Codec for the `int64` type.
 /// @notice SCALE-compliant encoder/decoder for the `int64` type.
@@ -9,7 +9,7 @@ import { U64 } from "../Unsigned/U64.sol";
 library I64 {
     error OffsetOutOfBounds();
 
-	/// @notice Encodes an `int64` into SCALE format (8-byte two's-complement little-endian).
+    /// @notice Encodes an `int64` into SCALE format (8-byte two's-complement little-endian).
     /// @param value The signed 64-bit integer to encode.
     /// @return SCALE-encoded byte sequence.
     function encode(int64 value) internal pure returns (bytes memory) {
@@ -17,10 +17,13 @@ library I64 {
     }
 
     /// @notice Returns the number of bytes that a `int64` would occupy when SCALE-encoded.
-	/// @param data The byte sequence containing the encoded `int64`.
-	/// @param offset The starting index in `data` from which to calculate the encoded size of the `int64`.
-	/// @return The number of bytes that the `int64` would occupy when SCALE-encoded.
-    function encodedSizeAt(bytes memory data, uint256 offset) internal pure returns (uint256) {
+    /// @param data The byte sequence containing the encoded `int64`.
+    /// @param offset The starting index in `data` from which to calculate the encoded size of the `int64`.
+    /// @return The number of bytes that the `int64` would occupy when SCALE-encoded.
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) internal pure returns (uint256) {
         return U64.encodedSizeAt(data, offset);
     }
 
@@ -43,7 +46,7 @@ library I64 {
         return int64(U64.decodeAt(data, offset));
     }
 
-	/// @notice Converts an int64 to little-endian bytes8 (two's complement)
+    /// @notice Converts an int64 to little-endian bytes8 (two's complement)
     /// @param value The signed 64-bit integer to convert.
     /// @return result Little-endian byte representation of the input value.
     function toLittleEndian(int64 value) internal pure returns (bytes8 result) {
