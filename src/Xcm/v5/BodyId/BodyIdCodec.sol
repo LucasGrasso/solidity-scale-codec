@@ -50,7 +50,7 @@ library BodyIdCodec {
         } else if (variant == BodyIdVariant.Moniker) {
             payloadLength = 4;
         } else if (variant == BodyIdVariant.Index) {
-            payloadLength = 4;
+            payloadLength = Compact.encodedSizeAt(data, offset);
         } else {
             revert InvalidBodyIdVariant(variantValue);
         }
