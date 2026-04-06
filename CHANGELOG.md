@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]
 
+## Version 3.0.3
+
+- Fix Typos in README and more - [#8fbd4d8](https://github.com/LucasGrasso/solidity-scale-codec/commit/8fbd4d8)
+
 ## Version 3.0.2
 
 ### Fixed
