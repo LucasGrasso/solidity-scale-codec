@@ -5,7 +5,7 @@ pragma solidity ^0.8.28;
 /// @notice SCALE-compliant encoder/decoder for `bool`.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
 library Bool {
-    error InvalidLength();
+    error InvalidBoolLength();
 
     /// @notice Encodes a `bool` into SCALE format (1-byte).
     /// @param value The boolean to encode.
@@ -22,7 +22,7 @@ library Bool {
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint256) {
-        if (data.length < offset + 1) revert InvalidLength();
+        if (data.length < offset + 1) revert InvalidBoolLength();
         return 1;
     }
 
@@ -30,8 +30,7 @@ library Bool {
     /// @param data The SCALE-encoded byte sequence.
     /// @return The decoded boolean.
     function decode(bytes memory data) internal pure returns (bool) {
-        if (data.length < 1) revert InvalidLength();
-        return data[0] != 0x00;
+        return decodeAt(data, 0);
     }
 
     /// @notice Decodes a boolean at the specified offset.
@@ -42,11 +41,7 @@ library Bool {
         bytes memory data,
         uint256 offset
     ) internal pure returns (bool value) {
-        if (data.length < offset + 1) revert InvalidLength();
-        assembly {
-            value := iszero(
-                iszero(and(mload(add(add(data, 32), offset)), 0xFF))
-            )
-        }
+        if (data.length < offset + 1) revert InvalidBoolLength();
+        return data[offset] != 0x00;
     }
 }
