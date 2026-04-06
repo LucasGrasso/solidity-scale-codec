@@ -2,7 +2,7 @@
 
 # SCALE
 
-The Polkadot Host uses _Simple Concatenated Aggregate Little-Endian” (SCALE) codec_ to encode byte arrays as well as other data structures. SCALE provides a canonical encoding to produce consistent hash values across their implementation, including the Merkle hash proof for the State Storage.
+The Polkadot Host uses "_Simple Concatenated Aggregate Little-Endian” (SCALE) codec_ to encode byte arrays as well as other data structures. SCALE provides a canonical encoding to produce consistent hash values across their implementation, including the Merkle hash proof for the State Storage.
 
 ## Decoding
 
