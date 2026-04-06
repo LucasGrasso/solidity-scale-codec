@@ -6,13 +6,7 @@ import {AssetIdCodec} from "../AssetId/AssetIdCodec.sol";
 import {WildFungibilityCodec} from "../WildFungibility/WildFungibilityCodec.sol";
 import {AssetId} from "../AssetId/AssetId.sol";
 import {WildFungibility} from "../WildFungibility/WildFungibility.sol";
-import {
-    WildAsset,
-    WildAssetVariant,
-    AllOfParams,
-    AllCountedParams,
-    AllOfCountedParams
-} from "./WildAsset.sol";
+import {WildAsset, WildAssetVariant, AllOfParams, AllCountedParams, AllOfCountedParams} from "./WildAsset.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 
@@ -155,7 +149,7 @@ library WildAssetCodec {
     function _assertVariant(
         WildAsset memory wildAsset,
         WildAssetVariant expected
-    ) internal pure {
+    ) private pure {
         if (wildAsset.variant != expected) {
             revert InvalidWildAssetVariant(uint8(wildAsset.variant));
         }

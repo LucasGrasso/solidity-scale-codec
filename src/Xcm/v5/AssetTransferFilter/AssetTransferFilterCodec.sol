@@ -3,13 +3,7 @@ pragma solidity ^0.8.28;
 
 import {AssetFilter} from "../AssetFilter/AssetFilter.sol";
 import {AssetFilterCodec} from "../AssetFilter/AssetFilterCodec.sol";
-import {
-    AssetTransferFilter,
-    AssetTransferFilterVariant,
-    TeleportParams,
-    ReserveDepositParams,
-    ReserveWithdrawParams
-} from "./AssetTransferFilter.sol";
+import {AssetTransferFilter, AssetTransferFilterVariant, TeleportParams, ReserveDepositParams, ReserveWithdrawParams} from "./AssetTransferFilter.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `AssetTransferFilter`
@@ -115,7 +109,7 @@ library AssetTransferFilterCodec {
     function _assertVariant(
         AssetTransferFilter memory atf,
         AssetTransferFilterVariant expected
-    ) internal pure {
+    ) private pure {
         if (atf.variant != expected) {
             revert InvalidAssetTransferFilterVariant(uint8(atf.variant));
         }

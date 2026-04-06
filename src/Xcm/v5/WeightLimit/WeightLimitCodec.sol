@@ -3,11 +3,7 @@ pragma solidity ^0.8.28;
 
 import {Weight} from "../Weight/Weight.sol";
 import {WeightCodec} from "../Weight/WeightCodec.sol";
-import {
-    WeightLimit,
-    WeightLimitVariant,
-    LimitedParams
-} from "./WeightLimit.sol";
+import {WeightLimit, WeightLimitVariant, LimitedParams} from "./WeightLimit.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `WeightLimit`
@@ -89,7 +85,7 @@ library WeightLimitCodec {
     function _assertVariant(
         WeightLimit memory wl,
         WeightLimitVariant expected
-    ) internal pure {
+    ) private pure {
         if (wl.variant != expected) {
             revert InvalidWeightLimitVariant(uint8(wl.variant));
         }

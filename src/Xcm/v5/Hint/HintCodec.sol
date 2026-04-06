@@ -78,7 +78,7 @@ library HintCodec {
     function _assertVariant(
         Hint memory hint,
         HintVariant expected
-    ) internal pure {
+    ) private pure {
         if (hint.variant != expected) {
             revert InvalidHintVariant(uint8(hint.variant));
         }

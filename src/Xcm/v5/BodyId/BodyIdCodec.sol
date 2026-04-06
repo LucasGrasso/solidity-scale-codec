@@ -113,7 +113,7 @@ library BodyIdCodec {
     function _assertVariant(
         BodyId memory bodyId,
         BodyIdVariant expected
-    ) internal pure {
+    ) private pure {
         if (bodyId.variant != expected) {
             revert InvalidBodyIdVariant(uint8(bodyId.variant));
         }

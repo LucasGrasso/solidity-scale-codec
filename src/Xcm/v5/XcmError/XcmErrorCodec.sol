@@ -80,7 +80,7 @@ library XcmErrorCodec {
     function _assertVariant(
         XcmError memory e,
         XcmErrorVariant expected
-    ) internal pure {
+    ) private pure {
         if (e.variant != expected) {
             revert InvalidXcmErrorVariant(uint8(e.variant));
         }
