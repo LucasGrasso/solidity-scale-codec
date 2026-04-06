@@ -47,7 +47,7 @@ High-level SCALE codec for various data types:
 
 - **Address** — Ethereum Address encoding
 - **Arrays** — Bool, Int, and Uint arrays
-- **Bytes** — Fixed-size and Variable-syze byte arrays
+- **Bytes** — Fixed-size and Variable-size byte arrays
 - **Compact** — Compact integer Encoding or Scale length encoding.
 - **Signed** — Two's complement signed integers
 - **Unsigned** — Standard unsigned integers

@@ -2,7 +2,7 @@
 
 # SCALE
 
-The Polkadot Host uses "_Simple Concatenated Aggregate Little-Endian” (SCALE) codec_ to encode byte arrays as well as other data structures. SCALE provides a canonical encoding to produce consistent hash values across their implementation, including the Merkle hash proof for the State Storage.
+The Polkadot Host uses the _"Simple Concatenated Aggregate Little-Endian"_ (SCALE) codec to encode byte arrays as well as other data structures. SCALE provides a canonical encoding to produce consistent hash values across their implementation, including the Merkle hash proof for the State Storage.
 
 ## Decoding
 
@@ -162,7 +162,7 @@ The SCALE codec for a **string value** is an [encoded sequence](#sequence) consi
 
 ### Option Type
 
-The **Option** type is a varying data type of ${\left\lbrace\text{None},{T}_{{2}}\right\rbrace}$ which indicates if data of ${T}_{{2}}$ type is available (referred to as _some_ state) or not (referred to as _empty_, _none_ or _null_ state). The presence of type _none_, indicated by $\text{idx}{\left({T}_{{\text{None}}}\right)}={0}$, implies that the data corresponding to ${T}_{{2}}$ type is not available and contains no additional data. Where as the presence of type ${T}_{{2}}$ indicated by $\text{idx}{\left({T}_{{2}}\right)}={1}$ implies that the data is available.
+The **Option** type is a varying data type of ${\left\lbrace\text{None},{T}_{{2}}\right\rbrace}$ which indicates if data of ${T}_{{2}}$ type is available (referred to as _some_ state) or not (referred to as _empty_, _none_ or _null_ state). The presence of type _none_, indicated by $\text{idx}{\left({T}_{{\text{None}}}\right)}={0}$, implies that the data corresponding to ${T}_{{2}}$ type is not available and contains no additional data. Whereas the presence of type ${T}_{{2}}$ indicated by $\text{idx}{\left({T}_{{2}}\right)}={1}$ implies that the data is available.
 
 ### Result Type
 

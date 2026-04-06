@@ -30,7 +30,7 @@ for (const { type, Type, size, asmDecodeAt, LE } of config.unsigned) {
 
   const filename = `${Type}.sol`;
   writeFileSync(path.join(output_dir, filename), output);
-  console.log(`• Succesfully Generated ${filename}`);
+  console.log(`• Successfully Generated ${filename}`);
 }
 
 const barrel_output_dir = "src/Scale/";
@@ -44,4 +44,4 @@ for (const { Type } of config.unsigned) {
 
 const filename = `Unsigned.sol`;
 writeFileSync(path.join(barrel_output_dir, filename), output);
-console.log(`• Succesfully Generated ${filename}`);
+console.log(`• Successfully Generated ${filename}`);

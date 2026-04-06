@@ -23,7 +23,7 @@ for (const size of sizes) {
 
   const filename = `Bytes${size}.sol`;
   writeFileSync(path.join(output_dir, filename), output);
-  console.log(`• Succesfully Generated ${filename}`);
+  console.log(`• Successfully Generated ${filename}`);
 }
 
 const barrel_output_dir = "src/Scale/";
@@ -37,4 +37,4 @@ for (const size of sizes) {
 
 const filename = `Bytes.sol`;
 writeFileSync(path.join(barrel_output_dir, filename), output);
-console.log(`• Succesfully Generated ${filename}`);
+console.log(`• Successfully Generated ${filename}`);
