@@ -22,7 +22,7 @@ This library provides a Highly-Modular implementation of SCALE in solidity.
 | `Compact` | A "compact" or general integer encoding is sufficient for encoding large integers (up to 2\*\*536) and is more efficient at encoding most values than the fixed-width version. (Though for single-byte values, the fixed-width integer is never worse.) | `0`     | `0x00`     |
 | `Arrays`  | A collection of same-typed values is encoded, prefixed with a compact encoding of the number of items, followed by each item's encoding concatenated in turn. Currently `[uintN]`,`[intN]`, `[bool]` are supported.                                     | `[1,0]` | `0x080100` |
 
-See the [Definitions](https://lucasgrasso.github.io/solidity-scale-codec/Definitions.html) for more details on the encoding of different types.
+See the [Definitions](https://lucasgrasso.github.io/solidity-scale-codec/guides/Definitions.html) for more details on the encoding of different types.
 
 ## Usage
 
@@ -30,11 +30,11 @@ Check out the examples section of the documentation for how to use the library t
 
 ### Encode Structs
 
-See this [example](https://github.com/LucasGrasso/solidity-scale-codec/blob/main/contracts/examples/Foo.sol).
+See this [example](https://lucasgrasso.github.io/solidity-scale-codec/guides/examples/Structs.html).
 
 ### Encode XCM messages
 
-Check out the [Xcm Builder](https://lucasgrasso.github.io/solidity-scale-codec/Xcm/v5/Xcm/XcmBuilder.html) for an ergonomic API to build XCM messages in Solidity, and how you can use it in this [example](https://github.com/LucasGrasso/solidity-scale-codec/blob/main/test/VersionedXcm.t.sol#L120)
+Check out the [Xcm Builder](https://lucasgrasso.github.io/solidity-scale-codec/Xcm/v5/Xcm/xcmbuilder.html) for an ergonomic API to build XCM messages in Solidity, and how you can use it in this [example](https://lucasgrasso.github.io/solidity-scale-codec/guides/examples/XcmCaller.html)
 
 ## About the libraries
 
@@ -110,7 +110,7 @@ Current support includes:
 Implementation notes:
 
 - Enum-like XCM types are represented as structs with a type discriminator plus `bytes payload`.
-- Each type has a codec library with `encode`, `encodedSizeAt`, `decode`, and `decodeAt`.
+- Each type has a codec library with `encode`, `encodedSizeAt`, `decode`, and `decodeAt`, as well as helper functions to decode specific variants of the type. For example, `InstructionCodec` has helper functions like `asTransact`, `asWithdrawAsset`, etc. that attempt to decode the instruction as a specific variant and revert if the type discriminator does not match.
 - `VersionedXcm` currently supports v5 payloads.
 - The `XcmBuilder` library provides an ergonomic API to build XCM messages in Solidity, with functions for building various XCM instructions.
 
