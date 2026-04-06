@@ -699,4 +699,188 @@ contract InstructionTest is Test {
         Hint[] memory hints;
         _assertRoundTrip(setHints(SetHintsParams({hints: hints})), hex"3300");
     }
+
+    // Malformed data tests
+
+    function testMalformed_EmptyData() public {
+        bytes memory empty = hex"";
+        vm.expectRevert();
+        wrapper.decode(empty);
+    }
+
+    function testMalformed_InvalidVariant() public {
+        // Variant 0xFF is beyond max (0x33)
+        bytes memory data = hex"ff";
+        vm.expectRevert();
+        wrapper.decode(data);
+    }
+
+    function testMalformed_TruncatedWithdrawAsset() public {
+        // WithdrawAsset needs at least variant + Assets length
+        // Just variant byte, missing payload
+        bytes memory data = hex"00";
+        vm.expectRevert();
+        wrapper.decode(data);
+    }
+
+    function testMalformed_TruncatedTransferAsset() public {
+        // TransferAsset needs: variant + Assets + Location
+        // Only variant byte
+        bytes memory data = hex"04";
+        vm.expectRevert();
+        wrapper.decode(data);
+    }
+
+    function testMalformed_TruncatedLocation() public {
+        // TransferAsset with incomplete Location
+        // Valid: 04 00 00 00 (variant + empty Assets + Location with parents + count)
+        // Missing: Location interior count
+        bytes memory data = hex"040000";
+        vm.expectRevert();
+        wrapper.decode(data);
+    }
+
+    function testMalformed_InvalidCompactInWeight() public {
+        // Transact with invalid compact in fallbackMaxWeight
+        // 06 = variant, 00 = OriginKind.Native, 01 = hasFallbackMaxWeight = true
+        // Next should be Weight but we provide truncated data
+        bytes memory data = hex"06000100";
+        vm.expectRevert();
+        wrapper.decode(data);
+    }
+
+    function testMalformed_TruncatedBytes() public {
+        // Transact with Bytes claiming 7 bytes but only 2 provided
+        // 06 = Transact, 00 = OriginKind.Native, 01 = hasFallbackMaxWeight true
+        // 50 28 = Weight (20, 10), 1c = compact 7 (length), 0001 = only 2 bytes
+        bytes memory data = hex"060001502825010100";
+        vm.expectRevert();
+        wrapper.decode(data);
+    }
+
+    function testMalformed_InvalidCompactLength() public {
+        // BurnAsset (1c) with Assets claiming multiple bytes but truncated
+        // 1c = BurnAsset variant, 0c = compact 3 (Assets count)
+        // but only 1 byte of asset data follows
+        bytes memory data = hex"1c0c00";
+        vm.expectRevert();
+        wrapper.decode(data);
+    }
+
+    function testMalformed_ExpectOriginMissingLocation() public {
+        // ExpectOrigin with hasOrigin=true but no Location data
+        // 1e = variant, 01 = hasOrigin true
+        // Missing Location (parents byte + junctions count)
+        bytes memory data = hex"1e01";
+        vm.expectRevert();
+        wrapper.decode(data);
+    }
+
+    function testMalformed_ExpectOriginTruncatedLocation() public {
+        // ExpectOrigin with hasOrigin=true but Location is incomplete
+        // 1e = variant, 01 = hasOrigin true
+        // 00 = Location parents, but missing Junctions count
+        bytes memory data = hex"1e0100";
+        vm.expectRevert();
+        wrapper.decode(data);
+    }
+
+    function testMalformed_QueryResponseMissingQuerier() public {
+        // QueryResponse with hasQuerier=true but no Location
+        // 03 = variant, 00 = queryId compact
+        // 00 = response (Null), 00 00 = weight
+        // 01 = hasQuerier true, missing Location
+        bytes memory data = hex"030000000001";
+        vm.expectRevert();
+        wrapper.decode(data);
+    }
+
+    function testMalformed_SetTopicWrongLength() public {
+        // SetTopic requires exactly 32 bytes
+        // 2c = variant, only 31 bytes follow
+        bytes
+            memory data = hex"2c000000000000000000000000000000000000000000000000000000000000";
+        vm.expectRevert();
+        wrapper.decode(data);
+    }
+
+    function testMalformed_SetTopicMissingBytes() public {
+        // SetTopic requires exactly 32 bytes for topic
+        // 2c = variant, but only 30 bytes follow (missing 2)
+        bytes
+            memory data = hex"2c0000000000000000000000000000000000000000000000000000000000";
+        vm.expectRevert();
+        wrapper.decode(data);
+    }
+
+    function testMalformed_HrmpChannelAcceptedTruncated() public {
+        // HrmpChannelAccepted needs compact, but only variant
+        bytes memory data = hex"08";
+        vm.expectRevert();
+        wrapper.decode(data);
+    }
+
+    function testMalformed_UnpaidExecutionMissingCheckOrigin() public {
+        // UnpaidExecution with hasCheckOrigin=true but no Location
+        // 2f = variant, 00 = weightLimit (Unlimited)
+        // 01 = hasCheckOrigin true, missing Location data
+        bytes memory data = hex"2f0001";
+        vm.expectRevert();
+        wrapper.decode(data);
+    }
+
+    function testMalformed_InitiateTransferInvalidCompact() public {
+        // InitiateTransfer with invalid compact for asset count
+        // Field structure: Location, hasRemoteFees bool, (optional) AssetTransferFilter,
+        // preserveOrigin bool, assetsCount compact
+        // 31 00 00 00 00 01 01 = variant, Location, hasRemoteFees, preserveOrigin
+        // Missing/invalid assetsCount and remoteXcmLen
+        bytes memory data = hex"31000000000101";
+        vm.expectRevert();
+        wrapper.decode(data);
+    }
+
+    function testMalformed_DepositAssetMissingBeneficiary() public {
+        // DepositAsset needs AssetFilter + Location
+        // 0d = variant, 01 = AssetFilter (WildAll)
+        // Missing Location (parents + count)
+        bytes memory data = hex"0d01";
+        vm.expectRevert();
+        wrapper.decode(data);
+    }
+
+    function testMalformed_ExchangeAssetTruncated() public {
+        // ExchangeAsset needs: AssetFilter + Assets + bool
+        // 0f = variant, 01 = AssetFilter (WildAll)
+        // 00 = Assets count, missing bool
+        bytes memory data = hex"0f0100";
+        vm.expectRevert();
+        wrapper.decode(data);
+    }
+
+    function testMalformed_LockAssetMissingLocation() public {
+        // LockAsset needs Asset + Location
+        // 27 = variant, 01 00 00 02 09 3d 00 = Asset
+        // Missing Location data
+        bytes memory data = hex"2701000002093d00";
+        vm.expectRevert();
+        wrapper.decode(data);
+    }
+
+    function testMalformed_ValidVariantWithNoPayload() public {
+        // Some instructions have no payload - test with wrong variant
+        // ClearOrigin (0a) is no-payload, but QueryResponse (03) requires payload
+        bytes memory data = hex"03";
+        vm.expectRevert();
+        wrapper.decode(data);
+    }
+
+    function testMalformed_ExcessiveJunctionsCount() public {
+        // Junctions with count byte larger than data available
+        // 0b = DescendOrigin variant, ff = count (255 junctions)
+        // but no actual junction data
+        bytes memory data = hex"0bff";
+        vm.expectRevert();
+        wrapper.decode(data);
+    }
 }
