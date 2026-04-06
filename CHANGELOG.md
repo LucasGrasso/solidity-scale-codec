@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]
 
+## Version 2.2.1
+
+### Added
+
+- `fromParts` function in `Weight` struct for easier construction from refTime and proofSize. - [#cc27ee5](https://github.com/LucasGrasso/solidity-scale-codec/commit/cc27ee5)
+
+### Fixed
+
+- `Bool` encoding - [#7cd440a](https://github.com/LucasGrasso/solidity-scale-codec/commit/7cd440a)
+
 ## Version 2.1.1
 
 ### Added
