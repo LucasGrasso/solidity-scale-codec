@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]
 
+## Version 3.0.0
+
+### Changed
+
+- Make `_assertVariant` functions private since they are only used internally within the codec and not intended for external use. - [#509f6a3](https://github.com/LucasGrasso/solidity-scale-codec/commit/509f6a3)
+
 ## Version 2.2.1
 
 ### Added
