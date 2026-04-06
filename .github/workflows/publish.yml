@@ -1,4 +1,4 @@
-name: Publish Package to NPM
+name: Publish Package to NPM and Create GitHub Release
 
 on:
   push:
@@ -6,8 +6,8 @@ on:
       - "v*"
 
 permissions:
-  id-token: write # Required for OIDC
-  contents: read
+  id-token: write
+  contents: write
 
 jobs:
   publish:
@@ -21,7 +21,6 @@ jobs:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
 
-      # Ensure npm 11.5.1 or later is installed
       - name: Update npm
         run: npm install -g npm@latest
 
@@ -32,3 +31,19 @@ jobs:
         run: npx prettier --write --plugin=prettier-plugin-solidity 'src/**/*.sol'
 
       - run: npm publish
+
+      - name: Extract release notes
+        id: changelog
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          NOTES=$(awk "/^## Version $VERSION$/,/^## Version /" CHANGELOG.md \
+            | head -n -1 \
+            | tail -n +2)
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          echo "$NOTES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body: ${{ steps.changelog.outputs.notes }}
