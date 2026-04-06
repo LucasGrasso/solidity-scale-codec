@@ -1,0 +1,10 @@
+[package]
+name = "encoder"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+staging-xcm = "22.0.0"
+parity-scale-codec = "3.7.5"
+hex = "0.4.3"
+bounded-collections = "0.3.2"
