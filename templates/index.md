@@ -18,7 +18,7 @@ hero:
 
 {{siteTitle}} provides a Solidity implementation of the [SCALE codec](https://docs.polkadot.com/polkadot-protocol/parachain-basics/data-encoding/#data-encoding), the encoding protocol used by Substrate to optimize data serialization over the network.
 
-Check the [Formal definitions](https://github.com/LucasGrasso/solidity-scale-codec/blob/main/DEFINITIONS.md) if you have further doubts.
+Check the [Formal definitions](https://lucasgrasso.github.io/solidity-scale-codec/guides/Definitions.html) if you have further doubts.
 
 ## Library Categories
 
