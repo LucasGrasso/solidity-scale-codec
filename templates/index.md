@@ -14,6 +14,19 @@ hero:
 
 # Solidity Scale Codec
 
+[![GitHub License](https://img.shields.io/github/license/LucasGrasso/solidity-scale-codec)](https://github.com/LucasGrasso/solidity-scale-codec/blob/main/LICENSE)
+
+```bash
+# Install with npm
+npm install solidity-scale-codec
+
+# Or with yarn
+yarn add solidity-scale-codec
+
+# Or with pnpm
+pnpm add solidity-scale-codec
+```
+
 ## Overview
 
 {{siteTitle}} provides a Solidity implementation of the [SCALE codec](https://docs.polkadot.com/polkadot-protocol/parachain-basics/data-encoding/#data-encoding), the encoding protocol used by Substrate to optimize data serialization over the network.

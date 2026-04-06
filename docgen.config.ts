@@ -17,4 +17,7 @@ export default {
     author: "LucasGrasso",
     license: "Apache-2.0",
   },
+  // Markdown Template Rendering (OpenZeppelin-style)
+  templateDir: "./templates",
+  useMarkdownTemplate: true,
 } satisfies DocgenConfig;
