@@ -114,7 +114,7 @@ Implementation notes:
 - `VersionedXcm` currently supports v5 payloads.
 - The `XcmBuilder` library provides an ergonomic API to build XCM messages in Solidity, with functions for building various XCM instructions.
 
-### Running Tests
+## Running Tests
 
 To run all the tests in the project, execute the following command:
 
@@ -128,6 +128,10 @@ You can also selectively run the Solidity or `node:test` tests:
 npx hardhat test solidity
 npx hardhat test nodejs
 ```
+
+## Contributing
+
+Contributions are welcome! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines on how to contribute to this project, including how to write changesets for versioning and changelog management.
 
 ## License
 
