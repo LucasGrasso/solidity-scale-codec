@@ -1,13 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {Assets} from "../Assets/Assets.sol";
 import {AssetsCodec} from "../Assets/AssetsCodec.sol";
-import {XcmError} from "../XcmError/XcmError.sol";
 import {XcmErrorCodec} from "../XcmError/XcmErrorCodec.sol";
 import {PalletInfo} from "../PalletInfo/PalletInfo.sol";
 import {PalletInfoCodec} from "../PalletInfo/PalletInfoCodec.sol";
-import {MaybeErrorCode} from "../../v3/MaybeErrorCode/MaybeErrorCode.sol";
 import {MaybeErrorCodeCodec} from "../../v3/MaybeErrorCode/MaybeErrorCodeCodec.sol";
 import {Compact} from "../../../Scale/Compact.sol";
 import {LittleEndianU32} from "../../../LittleEndian/LittleEndianU32.sol";

@@ -40,8 +40,6 @@ import {MAX_ASSET_TRANSFER_FILTERS, HINT_NUM_VARIANTS} from "../Constants.sol";
 import {Compact} from "../../../Scale/Compact.sol";
 import {Bool} from "../../../Scale/Bool/Bool.sol";
 import {Bytes32} from "../../../Scale/Bytes/Bytes32.sol";
-import {LittleEndianU32} from "../../../LittleEndian/LittleEndianU32.sol";
-import {LittleEndianU64} from "../../../LittleEndian/LittleEndianU64.sol";
 import {Bytes} from "../../../Scale/Bytes/Bytes.sol";
 
 /// @notice An error indicating that an instruction was invalid in some way, such as having malformed parameters or parameters that violate expected bounds.

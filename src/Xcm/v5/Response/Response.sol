@@ -9,10 +9,8 @@ import {PalletInfo} from "../PalletInfo/PalletInfo.sol";
 import {PalletInfoCodec} from "../PalletInfo/PalletInfoCodec.sol";
 import {MaybeErrorCode} from "../../v3/MaybeErrorCode/MaybeErrorCode.sol";
 import {MaybeErrorCodeCodec} from "../../v3/MaybeErrorCode/MaybeErrorCodeCodec.sol";
-import {Version} from "../../Types/Version.sol";
 import {Compact} from "../../../Scale/Compact.sol";
 import {LittleEndianU32} from "../../../LittleEndian/LittleEndianU32.sol";
-import {MAX_PALLETS_INFO} from "../Constants.sol";
 
 /// @notice Discriminant for the `Response` enum.
 enum ResponseVariant {

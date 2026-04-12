@@ -4,8 +4,6 @@ pragma solidity ^0.8.28;
 import {Compact} from "../../../Scale/Compact.sol";
 import {AssetIdCodec} from "../AssetId/AssetIdCodec.sol";
 import {WildFungibilityCodec} from "../WildFungibility/WildFungibilityCodec.sol";
-import {AssetId} from "../AssetId/AssetId.sol";
-import {WildFungibility} from "../WildFungibility/WildFungibility.sol";
 import {WildAsset, WildAssetVariant, AllOfParams, AllCountedParams, AllOfCountedParams} from "./WildAsset.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";

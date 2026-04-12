@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {Location} from "../Location/Location.sol";
 import {LocationCodec} from "../Location/LocationCodec.sol";
 import {Hint, HintVariant, AssetClaimerParams} from "./Hint.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";

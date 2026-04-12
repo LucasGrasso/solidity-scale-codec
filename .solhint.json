@@ -5,7 +5,7 @@
     "quotes": ["error", "double"],
     "no-unused-vars": ["error"],
     "no-inline-assembly": "off",
-    "no-unused-import": "off",
+    "no-unused-import": ["error"],
     "function-max-lines": ["warn", 80]
   }
 }

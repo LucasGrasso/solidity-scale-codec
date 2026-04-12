@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {AssetFilter} from "../AssetFilter/AssetFilter.sol";
 import {AssetFilterCodec} from "../AssetFilter/AssetFilterCodec.sol";
 import {AssetTransferFilter, AssetTransferFilterVariant, TeleportParams, ReserveDepositParams, ReserveWithdrawParams} from "./AssetTransferFilter.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";

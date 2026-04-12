@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {Assets} from "../Assets/Assets.sol";
 import {AssetsCodec} from "../Assets/AssetsCodec.sol";
-import {WildAsset} from "../WildAsset/WildAsset.sol";
 import {WildAssetCodec} from "../WildAsset/WildAssetCodec.sol";
 import {
     AssetFilter,

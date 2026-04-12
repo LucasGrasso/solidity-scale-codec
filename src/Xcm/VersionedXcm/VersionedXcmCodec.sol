@@ -5,6 +5,10 @@ import {VersionedXcm, XcmVersion} from "./VersionedXcm.sol";
 import {Xcm as XcmV5} from "../v5/Xcm/Xcm.sol";
 import {XcmCodec as XcmV5Codec} from "../v5/Xcm/XcmCodec.sol";
 
+/// @title SCALE Codec for XCM `VersionedXcm`
+/// @notice SCALE-compliant encoder/decoder for the `WildAsset` type.
+/// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
+/// @dev XCM reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/index.html
 library VersionedXcmCodec {
     error InvalidVersionedXcmLength();
     error UnsupportedXcmVersion(XcmVersion version);
