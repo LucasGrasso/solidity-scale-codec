@@ -28,6 +28,7 @@
   "scripts": {
     "compile": "hardhat compile",
     "test": "hardhat test",
+    "test:gas": "npx hardhat test --gas-stats",
     "gas-report": "env ENABLE_GAS_REPORT=true npm run test",
     "codegen-signed": "npx hardhat run codegen/signed/generate.ts",
     "codegen-unsigned": "npx hardhat run codegen/unsigned/generate.ts",
@@ -38,7 +39,8 @@
     "docs:build": "npm run docs:gen && vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "lint:solhint": "solhint 'src/**/*.sol' --config .solhint.json",
-    "format:prettier": "npx prettier --write --plugin=prettier-plugin-solidity ."
+    "format:prettier": "npx prettier --write --plugin=prettier-plugin-solidity .",
+    "format:prettier:check": "npx prettier --check --plugin=prettier-plugin-solidity ."
   },
   "type": "module",
   "devDependencies": {
