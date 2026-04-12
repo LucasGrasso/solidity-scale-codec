@@ -2,8 +2,12 @@ name: Generate Documentation & Publish to GitHub Pages
 
 on:
   push:
-    tags:
-      - "v*"
+    branches: [main]
+    paths:
+      - "src/**/*.sol"
+      - "guides/**"
+      - "templates/**"
+      - "hardhat.config.ts"
 
 permissions:
   contents: read
