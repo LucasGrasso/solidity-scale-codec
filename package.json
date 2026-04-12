@@ -41,7 +41,9 @@
     "docs:preview": "vitepress preview docs",
     "lint:solhint": "solhint 'src/**/*.sol' --config .solhint.json",
     "format:prettier": "npx prettier --write --plugin=prettier-plugin-solidity .",
-    "format:prettier:check": "npx prettier --check --plugin=prettier-plugin-solidity ."
+    "format:prettier:check": "npx prettier --check --plugin=prettier-plugin-solidity .",
+    "publish": "changeset publish",
+    "version": "changeset version"
   },
   "type": "module",
   "devDependencies": {
