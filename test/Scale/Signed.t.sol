@@ -9,17 +9,79 @@ import {I64} from "../../src/Scale/Signed/I64.sol";
 import {I128} from "../../src/Scale/Signed/I128.sol";
 import {I256} from "../../src/Scale/Signed/I256.sol";
 
+contract I8Wrapper {
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) external pure returns (uint256) {
+        return I8.encodedSizeAt(data, offset);
+    }
+}
+
+contract I16Wrapper {
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) external pure returns (uint256) {
+        return I16.encodedSizeAt(data, offset);
+    }
+}
+
 contract I32Wrapper {
     function decode(bytes memory data) external pure returns (int32) {
         return I32.decode(data);
     }
+
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) external pure returns (uint256) {
+        return I32.encodedSizeAt(data, offset);
+    }
+}
+
+contract I64Wrapper {
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) external pure returns (uint256) {
+        return I64.encodedSizeAt(data, offset);
+    }
+}
+
+contract I128Wrapper {
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) external pure returns (uint256) {
+        return I128.encodedSizeAt(data, offset);
+    }
+}
+
+contract I256Wrapper {
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) external pure returns (uint256) {
+        return I256.encodedSizeAt(data, offset);
+    }
 }
 
 contract SignedTest is Test {
+    I8Wrapper i8Wrapper;
+    I16Wrapper i16Wrapper;
     I32Wrapper i32Wrapper;
+    I64Wrapper i64Wrapper;
+    I128Wrapper i128Wrapper;
+    I256Wrapper i256Wrapper;
 
     function setUp() public {
+        i8Wrapper = new I8Wrapper();
+        i16Wrapper = new I16Wrapper();
         i32Wrapper = new I32Wrapper();
+        i64Wrapper = new I64Wrapper();
+        i128Wrapper = new I128Wrapper();
+        i256Wrapper = new I256Wrapper();
     }
 
     // ============ I8 FUZZ TESTS ============
@@ -28,6 +90,12 @@ contract SignedTest is Test {
         bytes memory encoded = I8.encode(value);
         assertEq(encoded.length, 1);
         assertEq(I8.decode(encoded), value);
+    }
+
+    function testMalformedEmpty_I8EncodedSize() public {
+        bytes memory data = hex"";
+        vm.expectRevert();
+        i8Wrapper.encodedSizeAt(data, 0);
     }
 
     // ============ I16 FUZZ TESTS ============
@@ -43,6 +111,12 @@ contract SignedTest is Test {
         uint16 asUint = uint16(value);
         assertEq(uint8(encoded[0]), uint8(asUint));
         assertEq(uint8(encoded[1]), uint8(asUint >> 8));
+    }
+
+    function testMalformedEmpty_I16EncodedSize() public {
+        bytes memory data = hex"";
+        vm.expectRevert();
+        i16Wrapper.encodedSizeAt(data, 0);
     }
 
     // ============ I32 FUZZ TESTS ============
@@ -69,6 +143,12 @@ contract SignedTest is Test {
         assertEq(size, 4);
     }
 
+    function testMalformedEmpty_I32EncodedSize() public {
+        bytes memory data = hex"";
+        vm.expectRevert();
+        i32Wrapper.encodedSizeAt(data, 0);
+    }
+
     function testMalformedEmpty_I32() public {
         bytes memory data = hex"";
         vm.expectRevert();
@@ -89,12 +169,24 @@ contract SignedTest is Test {
         assertEq(I64.decode(encoded), value);
     }
 
+    function testMalformedEmpty_I64EncodedSize() public {
+        bytes memory data = hex"";
+        vm.expectRevert();
+        i64Wrapper.encodedSizeAt(data, 0);
+    }
+
     // ============ I128 FUZZ TESTS ============
 
     function testFuzz_I128_RoundTrip(int128 value) public pure {
         bytes memory encoded = I128.encode(value);
         assertEq(encoded.length, 16);
         assertEq(I128.decode(encoded), value);
+    }
+
+    function testMalformedEmpty_I128EncodedSize() public {
+        bytes memory data = hex"";
+        vm.expectRevert();
+        i128Wrapper.encodedSizeAt(data, 0);
     }
 
     // ============ I256 FUZZ TESTS ============
@@ -109,5 +201,11 @@ contract SignedTest is Test {
         bytes memory encoded = I256.encode(value);
         uint256 size = I256.encodedSizeAt(encoded, 0);
         assertEq(size, 32);
+    }
+
+    function testMalformedEmpty_I256EncodedSize() public {
+        bytes memory data = hex"";
+        vm.expectRevert();
+        i256Wrapper.encodedSizeAt(data, 0);
     }
 }
