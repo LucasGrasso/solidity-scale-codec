@@ -15,6 +15,46 @@ contract U32Wrapper {
     }
 }
 
+contract U64Wrapper {
+    function decode(bytes memory data) external pure returns (uint64) {
+        return U64.decode(data);
+    }
+
+    function decodeAt(
+        bytes memory data,
+        uint256 offset
+    ) external pure returns (uint64) {
+        return U64.decodeAt(data, offset);
+    }
+
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) external pure returns (uint256) {
+        return U64.encodedSizeAt(data, offset);
+    }
+}
+
+contract U128Wrapper {
+    function decode(bytes memory data) external pure returns (uint128) {
+        return U128.decode(data);
+    }
+
+    function decodeAt(
+        bytes memory data,
+        uint256 offset
+    ) external pure returns (uint128) {
+        return U128.decodeAt(data, offset);
+    }
+
+    function encodedSizeAt(
+        bytes memory data,
+        uint256 offset
+    ) external pure returns (uint256) {
+        return U128.encodedSizeAt(data, offset);
+    }
+}
+
 contract U256Wrapper {
     function decode(bytes memory data) external pure returns (uint256) {
         return U256.decode(data);
@@ -23,10 +63,14 @@ contract U256Wrapper {
 
 contract UnsignedTest is Test {
     U32Wrapper u32Wrapper;
+    U64Wrapper u64Wrapper;
+    U128Wrapper u128Wrapper;
     U256Wrapper u256Wrapper;
 
     function setUp() public {
         u32Wrapper = new U32Wrapper();
+        u64Wrapper = new U64Wrapper();
+        u128Wrapper = new U128Wrapper();
         u256Wrapper = new U256Wrapper();
     }
 
@@ -107,8 +151,87 @@ contract UnsignedTest is Test {
     function testFuzz_U64_LittleEndian(uint64 value) public pure {
         bytes memory encoded = U64.encode(value);
         assertEq(encoded.length, 8);
-        // Verify first byte is lower byte of value
-        assertEq(uint8(encoded[0]), uint8(value));
+        // Verify little-endian: each byte is correct position
+        for (uint256 i = 0; i < 8; i++) {
+            assertEq(uint8(encoded[i]), uint8(value >> (i * 8)));
+        }
+    }
+
+    function testFuzz_U64_EncodedSize(uint64 value) public view {
+        bytes memory encoded = U64.encode(value);
+        uint256 size = u64Wrapper.encodedSizeAt(encoded, 0);
+        assertEq(size, 8);
+    }
+
+    function testFuzz_U64_DecodeAt(uint64 value) public view {
+        bytes memory padded = new bytes(16);
+        bytes memory encoded = U64.encode(value);
+        for (uint256 i = 0; i < 8; i++) {
+            padded[i + 4] = encoded[i];
+        }
+        uint64 decoded = u64Wrapper.decodeAt(padded, 4);
+        assertEq(decoded, value);
+    }
+
+    function testFuzz_U64_EncodedSizeAt() public view {
+        bytes memory padded = new bytes(20);
+        uint256 size = u64Wrapper.encodedSizeAt(padded, 4);
+        assertEq(size, 8);
+    }
+
+    function test_U64_KnownValue_Zero() public pure {
+        bytes memory encoded = U64.encode(uint64(0));
+        assertEq(encoded, hex"0000000000000000");
+        assertEq(U64.decode(encoded), uint64(0));
+    }
+
+    function test_U64_KnownValue_One() public pure {
+        bytes memory encoded = U64.encode(uint64(1));
+        assertEq(encoded, hex"0100000000000000");
+        assertEq(U64.decode(encoded), uint64(1));
+    }
+
+    function test_U64_KnownValue_MaxValue() public pure {
+        uint64 maxVal = type(uint64).max;
+        bytes memory encoded = U64.encode(maxVal);
+        assertEq(encoded.length, 8);
+        assertEq(U64.decode(encoded), maxVal);
+    }
+
+    function test_U64_KnownValue_256() public pure {
+        bytes memory encoded = U64.encode(uint64(256));
+        assertEq(encoded, hex"0001000000000000");
+        assertEq(U64.decode(encoded), uint64(256));
+    }
+
+    function test_U64_KnownValue_65536() public pure {
+        bytes memory encoded = U64.encode(uint64(65536));
+        assertEq(encoded, hex"0000010000000000");
+        assertEq(U64.decode(encoded), uint64(65536));
+    }
+
+    function testMalformed_U64_Truncated() public {
+        bytes memory truncated = new bytes(4);
+        vm.expectRevert();
+        u64Wrapper.decode(truncated);
+    }
+
+    function testMalformed_U64_TruncatedAt() public {
+        bytes memory data = new bytes(10);
+        vm.expectRevert();
+        u64Wrapper.decodeAt(data, 4);
+    }
+
+    function testMalformed_U64_EncodedSizeAtTooShort() public {
+        bytes memory data = new bytes(6);
+        vm.expectRevert();
+        u64Wrapper.encodedSizeAt(data, 0);
+    }
+
+    function testMalformed_U64_Empty() public {
+        bytes memory data = hex"";
+        vm.expectRevert();
+        u64Wrapper.decode(data);
     }
 
     // ============ U128 FUZZ TESTS ============
@@ -117,6 +240,92 @@ contract UnsignedTest is Test {
         bytes memory encoded = U128.encode(value);
         assertEq(encoded.length, 16);
         assertEq(U128.decode(encoded), value);
+    }
+
+    function testFuzz_U128_LittleEndian(uint128 value) public pure {
+        bytes memory encoded = U128.encode(value);
+        assertEq(encoded.length, 16);
+        // Verify little-endian: each byte is correct position
+        for (uint256 i = 0; i < 16; i++) {
+            assertEq(uint8(encoded[i]), uint8(value >> (i * 8)));
+        }
+    }
+
+    function testFuzz_U128_EncodedSize(uint128 value) public view {
+        bytes memory encoded = U128.encode(value);
+        uint256 size = u128Wrapper.encodedSizeAt(encoded, 0);
+        assertEq(size, 16);
+    }
+
+    function testFuzz_U128_DecodeAt(uint128 value) public view {
+        bytes memory padded = new bytes(32);
+        bytes memory encoded = U128.encode(value);
+        for (uint256 i = 0; i < 16; i++) {
+            padded[i + 4] = encoded[i];
+        }
+        uint128 decoded = u128Wrapper.decodeAt(padded, 4);
+        assertEq(decoded, value);
+    }
+
+    function testFuzz_U128_EncodedSizeAt() public view {
+        bytes memory padded = new bytes(40);
+        uint256 size = u128Wrapper.encodedSizeAt(padded, 4);
+        assertEq(size, 16);
+    }
+
+    function test_U128_KnownValue_Zero() public pure {
+        bytes memory encoded = U128.encode(uint128(0));
+        assertEq(encoded, hex"00000000000000000000000000000000");
+        assertEq(U128.decode(encoded), uint128(0));
+    }
+
+    function test_U128_KnownValue_One() public pure {
+        bytes memory encoded = U128.encode(uint128(1));
+        assertEq(encoded, hex"01000000000000000000000000000000");
+        assertEq(U128.decode(encoded), uint128(1));
+    }
+
+    function test_U128_KnownValue_MaxValue() public pure {
+        uint128 maxVal = type(uint128).max;
+        bytes memory encoded = U128.encode(maxVal);
+        assertEq(encoded.length, 16);
+        assertEq(U128.decode(encoded), maxVal);
+    }
+
+    function test_U128_KnownValue_256() public pure {
+        bytes memory encoded = U128.encode(uint128(256));
+        assertEq(encoded, hex"00010000000000000000000000000000");
+        assertEq(U128.decode(encoded), uint128(256));
+    }
+
+    function test_U128_KnownValue_U64Max() public pure {
+        uint128 val = uint128(type(uint64).max);
+        bytes memory encoded = U128.encode(val);
+        assertEq(U128.decode(encoded), val);
+    }
+
+    function testMalformed_U128_Truncated() public {
+        bytes memory truncated = new bytes(8);
+        vm.expectRevert();
+        u128Wrapper.decode(truncated);
+    }
+
+    function testMalformed_U128_TruncatedAt() public {
+        bytes memory data = new bytes(12);
+        vm.expectRevert();
+        u128Wrapper.decodeAt(data, 4);
+    }
+
+    function testMalformed_U128_EncodedSizeAtTooShort() public {
+        bytes memory data = new bytes(10);
+        vm.expectRevert();
+        u128Wrapper.encodedSizeAt(data, 0);
+    }
+
+    function testMalformed_U128_Empty() public {
+        bytes memory data = hex"";
+        vm.expectRevert();
+        u128Wrapper.decode(data);
     }
 
     // ============ U256 FUZZ TESTS ============
