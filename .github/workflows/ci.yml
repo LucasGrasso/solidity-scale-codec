@@ -7,62 +7,37 @@ on:
     branches: [main]
 
 jobs:
-  install:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-
       - run: npm ci
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: node_modules
-          path: node_modules
-
-  test:
-    needs: install
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: node_modules
-          path: node_modules
-
       - run: npm test
 
   docs:
-    needs: install
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
+      - uses: actions/setup-node@v4
         with:
-          name: node_modules
-          path: node_modules
-
+          node-version: 22
+          cache: npm
+      - run: npm ci
       - run: npm run docs:build
 
   lint:
-    needs: install
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
+      - uses: actions/setup-node@v4
         with:
-          name: node_modules
-          path: node_modules
-
+          node-version: 22
+          cache: npm
+      - run: npm ci
       - run: npm run lint:solhint
