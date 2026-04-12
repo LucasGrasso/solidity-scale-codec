@@ -39,7 +39,7 @@
     "docs:dev": "npm run docs:gen && vitepress dev docs",
     "docs:build": "npm run docs:gen && vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "lint:solhint": "npx solhint 'src/**/*.sol' --config .solhint.json",
+    "lint:solhint": "npx solhint 'src/**/*' --config '.solhint.json' --ignore-path '.solhintignore'",
     "format:prettier": "npx prettier --write --plugin=prettier-plugin-solidity .",
     "format:prettier:check": "npx prettier --check --plugin=prettier-plugin-solidity .",
     "publish": "changeset publish",
