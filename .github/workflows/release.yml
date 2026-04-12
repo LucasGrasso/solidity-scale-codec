@@ -11,6 +11,7 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    environment: Deployment
     steps:
       - uses: actions/checkout@v4
 
@@ -18,12 +19,14 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          registry-url: "https://registry.npmjs.org"
 
       - run: npm ci
 
       - name: Create Release PR or Publish
         uses: changesets/action@v1
         with:
-          publish: npm run publish  # runs on Version PR merge
-          createGithubReleases: true  # creates GitHub Release on publish
-          token: ${{ secrets.GITHUB_TOKEN }}
+          publish: npm run publish
+          createGithubReleases: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
