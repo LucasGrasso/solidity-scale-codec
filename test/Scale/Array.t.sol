@@ -258,7 +258,9 @@ contract ArrayTest is Test {
         assertEq(bytesRead, encoded.length);
     }
 
-    function testFuzz_BoolArray_EncodedSize(bool[] calldata values) public pure {
+    function testFuzz_BoolArray_EncodedSize(
+        bool[] calldata values
+    ) public pure {
         bool[] memory memValues = new bool[](values.length);
         for (uint256 i = 0; i < values.length; i++) {
             memValues[i] = values[i];
@@ -376,7 +378,9 @@ contract ArrayTest is Test {
         assertEq(bytesRead, encoded.length);
     }
 
-    function testFuzz_U16Array_EncodedSize(uint16[] calldata values) public pure {
+    function testFuzz_U16Array_EncodedSize(
+        uint16[] calldata values
+    ) public pure {
         uint16[] memory memValues = new uint16[](values.length);
         for (uint256 i = 0; i < values.length; i++) {
             memValues[i] = values[i];
@@ -497,7 +501,9 @@ contract ArrayTest is Test {
         assertEq(bytesRead, encoded.length);
     }
 
-    function testFuzz_U64Array_EncodedSize(uint64[] calldata values) public pure {
+    function testFuzz_U64Array_EncodedSize(
+        uint64[] calldata values
+    ) public pure {
         uint64[] memory memValues = new uint64[](values.length);
         for (uint256 i = 0; i < values.length; i++) {
             memValues[i] = values[i];
@@ -643,15 +649,15 @@ contract ArrayTest is Test {
     }
 
     function testMalformedTruncated_U256Array() public {
-        bytes memory data =
-            hex"0411111111111111111111111111111111111111111111111111111111111111";
+        bytes
+            memory data = hex"0411111111111111111111111111111111111111111111111111111111111111";
         vm.expectRevert();
         u256ArrWrapper.decode(data);
     }
 
     function testMalformedIncompleteElement_U256Array() public {
-        bytes memory data =
-            hex"0411111111111111111111111111111111111111111111111111111111111111";
+        bytes
+            memory data = hex"0411111111111111111111111111111111111111111111111111111111111111";
         vm.expectRevert();
         u256ArrWrapper.decode(data);
     }
@@ -743,7 +749,9 @@ contract ArrayTest is Test {
         assertEq(bytesRead, encoded.length);
     }
 
-    function testFuzz_I16Array_EncodedSize(int16[] calldata values) public pure {
+    function testFuzz_I16Array_EncodedSize(
+        int16[] calldata values
+    ) public pure {
         int16[] memory memValues = new int16[](values.length);
         for (uint256 i = 0; i < values.length; i++) {
             memValues[i] = values[i];
@@ -802,7 +810,9 @@ contract ArrayTest is Test {
         assertEq(bytesRead, encoded.length);
     }
 
-    function testFuzz_I32Array_EncodedSize(int32[] calldata values) public pure {
+    function testFuzz_I32Array_EncodedSize(
+        int32[] calldata values
+    ) public pure {
         int32[] memory memValues = new int32[](values.length);
         for (uint256 i = 0; i < values.length; i++) {
             memValues[i] = values[i];
@@ -861,7 +871,9 @@ contract ArrayTest is Test {
         assertEq(bytesRead, encoded.length);
     }
 
-    function testFuzz_I64Array_EncodedSize(int64[] calldata values) public pure {
+    function testFuzz_I64Array_EncodedSize(
+        int64[] calldata values
+    ) public pure {
         int64[] memory memValues = new int64[](values.length);
         for (uint256 i = 0; i < values.length; i++) {
             memValues[i] = values[i];
@@ -1007,15 +1019,15 @@ contract ArrayTest is Test {
     }
 
     function testMalformedTruncated_I256Array() public {
-        bytes memory data =
-            hex"0411111111111111111111111111111111111111111111111111111111111111";
+        bytes
+            memory data = hex"0411111111111111111111111111111111111111111111111111111111111111";
         vm.expectRevert();
         i256ArrWrapper.decode(data);
     }
 
     function testMalformedIncompleteElement_I256Array() public {
-        bytes memory data =
-            hex"0411111111111111111111111111111111111111111111111111111111111111";
+        bytes
+            memory data = hex"0411111111111111111111111111111111111111111111111111111111111111";
         vm.expectRevert();
         i256ArrWrapper.decode(data);
     }
