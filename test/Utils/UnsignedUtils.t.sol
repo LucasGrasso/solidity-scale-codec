@@ -32,6 +32,7 @@ contract UnsignedUtilsTest is Test {
     function setUp() public {
         wrapper = new UnsignedUtilsWrapper();
     }
+
     // ─── toU8 ────────────────────────────────────────────────────────────────
 
     function test_toU8_zero() public pure {
