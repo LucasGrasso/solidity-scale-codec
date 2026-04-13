@@ -26,8 +26,13 @@ for (const { metaType, type, Type, size } of config.arrays) {
     .replaceAll("{{Type}}", Type)
     .replaceAll("{{size}}", size.toString());
 
+  const lines = output.split("\n");
+  if (size === 1) {
+    lines[62] = `\t\t\t++pos;`;
+  }
+
   const filename = `${Type}Arr.sol`;
-  writeFileSync(path.join(output_dir, filename), output);
+  writeFileSync(path.join(output_dir, filename), lines.join("\n"));
   console.log(`• Successfully Generated ${filename}`);
 }
 
