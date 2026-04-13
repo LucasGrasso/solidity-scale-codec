@@ -26,6 +26,9 @@
   ],
   "license": "Apache-2.0",
   "author": "LucasGrasso",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "compile": "hardhat compile",
     "test": "hardhat test",
