@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.0.4
+
+### Patch Changes
+
+- a913f16: Better Pack structs and convert non-strict inequalities to strict ones.
+- 680b51d: Add missing natspec
+- e57fa49: Improve gas usage in `U8Arr` and `BoolArr`
+- cbfb25c: Start using changeset, create and include `CONTRIBUTING.md` in README.md. Also remove unused dependencies on solidity files.
+- 4358615: Remove index.html from strings
+
 ## Version 3.0.3
 
 - Fix Typos in README and more - [#8fbd4d8](https://github.com/LucasGrasso/solidity-scale-codec/commit/8fbd4d8)
