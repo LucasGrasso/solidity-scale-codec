@@ -7,11 +7,14 @@
     "no-inline-assembly": "off",
     "no-unused-import": ["error"],
     "function-max-lines": ["warn", 80],
-    "use-natspec": ["warn", {
-      "author": {
+    "use-natspec": [
+      "warn",
+      {
+        "author": {
           "enabled": false,
           "ignore": {}
         }
-    }]
+      }
+    ]
   }
 }

@@ -105,14 +105,12 @@ library Compact {
         } else if (mode == MODE_TWO) {
             if (data.length < offset + 2) revert OffsetOutOfBounds();
             value =
-                uint256(LittleEndianU16.fromLittleEndian(data, offset)) >>
-                2;
+                uint256(LittleEndianU16.fromLittleEndian(data, offset)) >> 2;
             bytesRead = 2;
         } else if (mode == MODE_FOUR) {
             if (data.length < offset + 4) revert OffsetOutOfBounds();
             value =
-                uint256(LittleEndianU32.fromLittleEndian(data, offset)) >>
-                2;
+                uint256(LittleEndianU32.fromLittleEndian(data, offset)) >> 2;
             bytesRead = 4;
         } else {
             uint8 m = (header >> 2) + 4;

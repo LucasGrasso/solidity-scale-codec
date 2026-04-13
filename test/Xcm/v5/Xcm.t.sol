@@ -2,7 +2,13 @@
 pragma solidity ^0.8.28;
 
 import {Xcm, newXcm, fromInstructions} from "../../../src/Xcm/v5/Xcm/Xcm.sol";
-import {Instruction, InstructionVariant, clearOrigin, setFeesMode, SetFeesModeParams} from "../../../src/Xcm/v5/Instruction/Instruction.sol";
+import {
+    Instruction,
+    InstructionVariant,
+    clearOrigin,
+    setFeesMode,
+    SetFeesModeParams
+} from "../../../src/Xcm/v5/Instruction/Instruction.sol";
 import {XcmCodec as Codec} from "../../../src/Xcm/v5/Xcm/XcmCodec.sol";
 import {Test} from "forge-std/Test.sol";
 

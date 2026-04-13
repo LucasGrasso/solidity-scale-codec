@@ -1,7 +1,56 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {AliasOriginParams, BurnAssetParams, BuyExecutionParams, ClaimAssetParams, DepositAssetParams, DepositReserveAssetParams, DescendOriginParams, ExecuteWithOriginParams, ExchangeAssetParams, ExpectAssetParams, ExpectErrorParams, ExpectOriginParams, ExpectPalletParams, ExpectTransactStatusParams, ExportMessageParams, HrmpChannelAcceptedParams, HrmpChannelClosingParams, HrmpNewChannelOpenRequestParams, InitiateReserveWithdrawParams, InitiateTeleportParams, InitiateTransferParams, Instruction, InstructionVariant, LockAssetParams, NoteUnlockableParams, PayFeesParams, QueryPalletParams, QueryResponseParams, ReceiveTeleportedAssetParams, ReportErrorParams, ReportHoldingParams, ReportTransactStatusParams, RequestUnlockParams, ReserveAssetDepositedParams, SetAppendixParams, SetErrorHandlerParams, SetFeesModeParams, SetHintsParams, SetTopicParams, SubscribeVersionParams, TransactParams, TransferAssetParams, TransferReserveAssetParams, TrapParams, UnlockAssetParams, UniversalOriginParams, UnpaidExecutionParams, WithdrawAssetParams} from "./Instruction.sol";
+import {
+    AliasOriginParams,
+    BurnAssetParams,
+    BuyExecutionParams,
+    ClaimAssetParams,
+    DepositAssetParams,
+    DepositReserveAssetParams,
+    DescendOriginParams,
+    ExecuteWithOriginParams,
+    ExchangeAssetParams,
+    ExpectAssetParams,
+    ExpectErrorParams,
+    ExpectOriginParams,
+    ExpectPalletParams,
+    ExpectTransactStatusParams,
+    ExportMessageParams,
+    HrmpChannelAcceptedParams,
+    HrmpChannelClosingParams,
+    HrmpNewChannelOpenRequestParams,
+    InitiateReserveWithdrawParams,
+    InitiateTeleportParams,
+    InitiateTransferParams,
+    Instruction,
+    InstructionVariant,
+    LockAssetParams,
+    NoteUnlockableParams,
+    PayFeesParams,
+    QueryPalletParams,
+    QueryResponseParams,
+    ReceiveTeleportedAssetParams,
+    ReportErrorParams,
+    ReportHoldingParams,
+    ReportTransactStatusParams,
+    RequestUnlockParams,
+    ReserveAssetDepositedParams,
+    SetAppendixParams,
+    SetErrorHandlerParams,
+    SetFeesModeParams,
+    SetHintsParams,
+    SetTopicParams,
+    SubscribeVersionParams,
+    TransactParams,
+    TransferAssetParams,
+    TransferReserveAssetParams,
+    TrapParams,
+    UnlockAssetParams,
+    UniversalOriginParams,
+    UnpaidExecutionParams,
+    WithdrawAssetParams
+} from "./Instruction.sol";
 import {AssetTransferFilter} from "../AssetTransferFilter/AssetTransferFilter.sol";
 import {Hint} from "../Hint/Hint.sol";
 import {QueryId} from "../Types/QueryId.sol";
