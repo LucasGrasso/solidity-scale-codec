@@ -185,7 +185,7 @@ library Compact {
         uint256 tmp = value;
         while (tmp > 0) {
             tmp >>= 8;
-            n++;
+            ++n;
         }
     }
 

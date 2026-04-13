@@ -220,7 +220,7 @@ library InstructionCodec {
         } else if (variant == InstructionVariant.InitiateTransfer) {
             pos += LocationCodec.encodedSizeAt(data, pos);
             bool hasRemoteFees = Bool.decodeAt(data, pos);
-            pos += 1;
+            ++pos;
             if (hasRemoteFees) {
                 pos += AssetTransferFilterCodec.encodedSizeAt(data, pos);
             }
@@ -1092,7 +1092,7 @@ library InstructionCodec {
         pos += bytesRead;
 
         params.hasCheckOrigin = Bool.decodeAt(payload, pos);
-        pos += 1;
+        ++pos;
 
         if (params.hasCheckOrigin) {
             (params.checkOrigin, bytesRead) = LocationCodec.decodeAt(
@@ -1130,7 +1130,7 @@ library InstructionCodec {
         pos += bytesRead;
 
         params.hasRemoteFees = Bool.decodeAt(payload, pos);
-        pos += 1;
+        ++pos;
 
         if (params.hasRemoteFees) {
             (params.remoteFees, bytesRead) = AssetTransferFilterCodec.decodeAt(
@@ -1141,7 +1141,7 @@ library InstructionCodec {
         }
 
         params.preserveOrigin = Bool.decodeAt(payload, pos);
-        pos += 1;
+        ++pos;
 
         (assetsCount, bytesRead) = Compact.decodeAt(payload, pos);
         if (assetsCount > MAX_ASSET_TRANSFER_FILTERS) {
@@ -1174,7 +1174,7 @@ library InstructionCodec {
         uint256 bytesRead;
 
         params.hasDescendantOrigin = Bool.decodeAt(payload, pos);
-        pos += 1;
+        ++pos;
 
         if (params.hasDescendantOrigin) {
             (params.descendantOrigin, bytesRead) = JunctionsCodec.decodeAt(
