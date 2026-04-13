@@ -541,6 +541,7 @@ struct Instruction {
 // ============ Factory Functions ============
 
 /// @notice Creates an `Instruction` struct representing the `WithdrawAsset` variant with the provided `params`.
+/// @param params Parameters for the `WithdrawAsset` instruction.
 function withdrawAsset(
     WithdrawAssetParams memory params
 ) pure returns (Instruction memory) {
@@ -552,6 +553,7 @@ function withdrawAsset(
 }
 
 /// @notice Creates an `Instruction` struct representing the `ReserveAssetDeposited` variant with the provided `params`.
+/// @param params Parameters for the `ReserveAssetDeposited` instruction.
 function reserveAssetDeposited(
     ReserveAssetDepositedParams memory params
 ) pure returns (Instruction memory) {
@@ -563,6 +565,7 @@ function reserveAssetDeposited(
 }
 
 /// @notice Creates an `Instruction` struct representing the `ReceiveTeleportedAsset` variant with the provided `params`.
+/// @param params Parameters for the `ReceiveTeleportedAsset` instruction.
 function receiveTeleportedAsset(
     ReceiveTeleportedAssetParams memory params
 ) pure returns (Instruction memory) {
@@ -574,6 +577,7 @@ function receiveTeleportedAsset(
 }
 
 /// @notice Creates an `Instruction` struct representing the `QueryResponse` variant with the provided `params`.
+/// @param params Parameters for the `QueryResponse` instruction.
 function queryResponse(
     QueryResponseParams memory params
 ) pure returns (Instruction memory) {
@@ -597,6 +601,7 @@ function queryResponse(
 }
 
 /// @notice Creates an `Instruction` struct representing the `TransferAsset` variant with the provided `params`.
+/// @param params Parameters for the `TransferAsset` instruction.
 function transferAsset(
     TransferAssetParams memory params
 ) pure returns (Instruction memory) {
@@ -611,6 +616,7 @@ function transferAsset(
 }
 
 /// @notice Creates an `Instruction` struct representing the `TransferReserveAsset` variant with the provided `params`.
+/// @param params Parameters for the `TransferReserveAsset` instruction.
 function transferReserveAsset(
     TransferReserveAssetParams memory params
 ) pure returns (Instruction memory) {
@@ -626,6 +632,7 @@ function transferReserveAsset(
 }
 
 /// @notice Creates an `Instruction` struct representing the `Transact` variant with the provided `params`.
+/// @param params Parameters for the `Transact` instruction.
 function transact(
     TransactParams memory params
 ) pure returns (Instruction memory) {
@@ -645,6 +652,7 @@ function transact(
 }
 
 /// @notice Creates an `Instruction` struct representing the `HrmpNewChannelOpenRequest` variant with the provided `params`.
+/// @param params Parameters for the `HrmpNewChannelOpenRequest` instruction.
 function hrmpNewChannelOpenRequest(
     HrmpNewChannelOpenRequestParams memory params
 ) pure returns (Instruction memory) {
@@ -660,6 +668,7 @@ function hrmpNewChannelOpenRequest(
 }
 
 /// @notice Creates an `Instruction` struct representing the `HrmpChannelAccepted` variant with the provided `params`.
+/// @param params Parameters for the `HrmpChannelAccepted` instruction.
 function hrmpChannelAccepted(
     HrmpChannelAcceptedParams memory params
 ) pure returns (Instruction memory) {
@@ -671,6 +680,7 @@ function hrmpChannelAccepted(
 }
 
 /// @notice Creates an `Instruction` struct representing the `HrmpChannelClosing` variant with the provided `params`.
+/// @param params Parameters for the `HrmpChannelClosing` instruction.
 function hrmpChannelClosing(
     HrmpChannelClosingParams memory params
 ) pure returns (Instruction memory) {
@@ -691,6 +701,7 @@ function clearOrigin() pure returns (Instruction memory) {
 }
 
 /// @notice Creates an `Instruction` struct representing the `DescendOrigin` variant with the provided `params`.
+/// @param params Parameters for the `DescendOrigin` instruction.
 function descendOrigin(
     DescendOriginParams memory params
 ) pure returns (Instruction memory) {
@@ -702,6 +713,7 @@ function descendOrigin(
 }
 
 /// @notice Creates an `Instruction` struct representing the `ReportError` variant with the provided `params`.
+/// @param params Parameters for the `ReportError` instruction.
 function reportError(
     ReportErrorParams memory params
 ) pure returns (Instruction memory) {
@@ -713,6 +725,7 @@ function reportError(
 }
 
 /// @notice Creates an `Instruction` struct representing the `DepositAsset` variant with the provided `params`.
+/// @param params Parameters for the `DepositAsset` instruction.
 function depositAsset(
     DepositAssetParams memory params
 ) pure returns (Instruction memory) {
@@ -727,6 +740,7 @@ function depositAsset(
 }
 
 /// @notice Creates an `Instruction` struct representing the `DepositReserveAsset` variant with the provided `params`.
+/// @param params Parameters for the `DepositReserveAsset` instruction.
 function depositReserveAsset(
     DepositReserveAssetParams memory params
 ) pure returns (Instruction memory) {
@@ -742,6 +756,7 @@ function depositReserveAsset(
 }
 
 /// @notice Creates an `Instruction` struct representing the `ExchangeAsset` variant with the provided `params`.
+/// @param params Parameters for the `ExchangeAsset` instruction.
 function exchangeAsset(
     ExchangeAssetParams memory params
 ) pure returns (Instruction memory) {
@@ -757,6 +772,7 @@ function exchangeAsset(
 }
 
 /// @notice Creates an `Instruction` struct representing the `InitiateReserveWithdraw` variant with the provided `params`.
+/// @param params Parameters for the `InitiateReserveWithdraw` instruction.
 function initiateReserveWithdraw(
     InitiateReserveWithdrawParams memory params
 ) pure returns (Instruction memory) {
@@ -772,6 +788,7 @@ function initiateReserveWithdraw(
 }
 
 /// @notice Creates an `Instruction` struct representing the `InitiateTeleport` variant with the provided `params`.
+/// @param params Parameters for the `InitiateTeleport` instruction.
 function initiateTeleport(
     InitiateTeleportParams memory params
 ) pure returns (Instruction memory) {
@@ -787,6 +804,7 @@ function initiateTeleport(
 }
 
 /// @notice Creates an `Instruction` struct representing the `ReportHolding` variant with the provided `params`.
+/// @param params Parameters for the `ReportHolding` instruction.
 function reportHolding(
     ReportHoldingParams memory params
 ) pure returns (Instruction memory) {
@@ -801,6 +819,7 @@ function reportHolding(
 }
 
 /// @notice Creates an `Instruction` struct representing the `BuyExecution` variant with the provided `params`.
+/// @param params Parameters for the `BuyExecution` instruction.
 function buyExecution(
     BuyExecutionParams memory params
 ) pure returns (Instruction memory) {
@@ -821,6 +840,7 @@ function refundSurplus() pure returns (Instruction memory) {
 }
 
 /// @notice Creates an `Instruction` struct representing the `SetErrorHandler` variant with the provided `params`.
+/// @param params Parameters for the `SetErrorHandler` instruction.
 function setErrorHandler(
     SetErrorHandlerParams memory params
 ) pure returns (Instruction memory) {
@@ -832,6 +852,7 @@ function setErrorHandler(
 }
 
 /// @notice Creates an `Instruction` struct representing the `SetAppendix` variant with the provided `params`.
+/// @param params Parameters for the `SetAppendix` instruction.
 function setAppendix(
     SetAppendixParams memory params
 ) pure returns (Instruction memory) {
@@ -848,6 +869,7 @@ function clearError() pure returns (Instruction memory) {
 }
 
 /// @notice Creates an `Instruction` struct representing the `ClaimAsset` variant with the provided `params`.
+/// @param params Parameters for the `ClaimAsset` instruction.
 function claimAsset(
     ClaimAssetParams memory params
 ) pure returns (Instruction memory) {
@@ -862,6 +884,7 @@ function claimAsset(
 }
 
 /// @notice Creates an `Instruction` struct representing the `Trap` variant with the provided `params`.
+/// @param params Parameters for the `Trap` instruction.
 function trap(TrapParams memory params) pure returns (Instruction memory) {
     return
         Instruction({
@@ -871,6 +894,7 @@ function trap(TrapParams memory params) pure returns (Instruction memory) {
 }
 
 /// @notice Creates an `Instruction` struct representing the `SubscribeVersion` variant with the provided `params`.
+/// @param params Parameters for the `SubscribeVersion` instruction.
 function subscribeVersion(
     SubscribeVersionParams memory params
 ) pure returns (Instruction memory) {
@@ -894,6 +918,7 @@ function unsubscribeVersion() pure returns (Instruction memory) {
 }
 
 /// @notice Creates an `Instruction` struct representing the `BurnAsset` variant with the provided `params`.
+/// @param params Parameters for the `BurnAsset` instruction.
 function burnAsset(
     BurnAssetParams memory params
 ) pure returns (Instruction memory) {
@@ -905,6 +930,7 @@ function burnAsset(
 }
 
 /// @notice Creates an `Instruction` struct representing the `ExpectAsset` variant with the provided `params`.
+/// @param params Parameters for the `ExpectAsset` instruction.
 function expectAsset(
     ExpectAssetParams memory params
 ) pure returns (Instruction memory) {
@@ -916,6 +942,7 @@ function expectAsset(
 }
 
 /// @notice Creates an `Instruction` struct representing the `ExpectOrigin` variant with the provided `params`.
+/// @param params Parameters for the `ExpectOrigin` instruction.
 function expectOrigin(
     ExpectOriginParams memory params
 ) pure returns (Instruction memory) {
@@ -934,6 +961,7 @@ function expectOrigin(
 }
 
 /// @notice Creates an `Instruction` struct representing the `ExpectError` variant with the provided `params`.
+/// @param params Parameters for the `ExpectError` instruction.
 function expectError(
     ExpectErrorParams memory params
 ) pure returns (Instruction memory) {
@@ -953,6 +981,7 @@ function expectError(
 }
 
 /// @notice Creates an `Instruction` struct representing the `ExpectTransactStatus` variant with the provided `params`.
+/// @param params Parameters for the `ExpectTransactStatus` instruction.
 function expectTransactStatus(
     ExpectTransactStatusParams memory params
 ) pure returns (Instruction memory) {
@@ -964,6 +993,7 @@ function expectTransactStatus(
 }
 
 /// @notice Creates an `Instruction` struct representing the `QueryPallet` variant with the provided `params`.
+/// @param params Parameters for the `QueryPallet` instruction.
 function queryPallet(
     QueryPalletParams memory params
 ) pure returns (Instruction memory) {
@@ -978,6 +1008,7 @@ function queryPallet(
 }
 
 /// @notice Creates an `Instruction` struct representing the `ExpectPallet` variant with the provided `params`.
+/// @param params Parameters for the `ExpectPallet` instruction.
 function expectPallet(
     ExpectPalletParams memory params
 ) pure returns (Instruction memory) {
@@ -995,6 +1026,7 @@ function expectPallet(
 }
 
 /// @notice Creates an `Instruction` struct representing the `ReportTransactStatus` variant with the provided `params`.
+/// @param params Parameters for the `ReportTransactStatus` instruction.
 function reportTransactStatus(
     ReportTransactStatusParams memory params
 ) pure returns (Instruction memory) {
@@ -1015,6 +1047,7 @@ function clearTransactStatus() pure returns (Instruction memory) {
 }
 
 /// @notice Creates an `Instruction` struct representing the `UniversalOrigin` variant with the provided `params`.
+/// @param params Parameters for the `UniversalOrigin` instruction.
 function universalOrigin(
     UniversalOriginParams memory params
 ) pure returns (Instruction memory) {
@@ -1026,6 +1059,7 @@ function universalOrigin(
 }
 
 /// @notice Creates an `Instruction` struct representing the `ExportMessage` variant with the provided `params`.
+/// @param params Parameters for the `ExportMessage` instruction.
 function exportMessage(
     ExportMessageParams memory params
 ) pure returns (Instruction memory) {
@@ -1041,6 +1075,7 @@ function exportMessage(
 }
 
 /// @notice Creates an `Instruction` struct representing the `LockAsset` variant with the provided `params`.
+/// @param params Parameters for the `LockAsset` instruction.
 function lockAsset(
     LockAssetParams memory params
 ) pure returns (Instruction memory) {
@@ -1055,6 +1090,7 @@ function lockAsset(
 }
 
 /// @notice Creates an `Instruction` struct representing the `UnlockAsset` variant with the provided `params`.
+/// @param params Parameters for the `UnlockAsset` instruction.
 function unlockAsset(
     UnlockAssetParams memory params
 ) pure returns (Instruction memory) {
@@ -1069,6 +1105,7 @@ function unlockAsset(
 }
 
 /// @notice Creates an `Instruction` struct representing the `NoteUnlockable` variant with the provided `params`.
+/// @param params Parameters for the `NoteUnlockable` instruction.
 function noteUnlockable(
     NoteUnlockableParams memory params
 ) pure returns (Instruction memory) {
@@ -1083,6 +1120,7 @@ function noteUnlockable(
 }
 
 /// @notice Creates an `Instruction` struct representing the `RequestUnlock` variant with the provided `params`.
+/// @param params Parameters for the `RequestUnlock` instruction.
 function requestUnlock(
     RequestUnlockParams memory params
 ) pure returns (Instruction memory) {
@@ -1097,6 +1135,7 @@ function requestUnlock(
 }
 
 /// @notice Creates an `Instruction` struct representing the `SetFeesMode` variant with the provided `params`.
+/// @param params Parameters for the `SetFeesMode` instruction.
 function setFeesMode(
     SetFeesModeParams memory params
 ) pure returns (Instruction memory) {
@@ -1108,6 +1147,7 @@ function setFeesMode(
 }
 
 /// @notice Creates an `Instruction` struct representing the `SetTopic` variant with the provided `params`.
+/// @param params Parameters for the `SetTopic` instruction.
 function setTopic(
     SetTopicParams memory params
 ) pure returns (Instruction memory) {
@@ -1124,6 +1164,7 @@ function clearTopic() pure returns (Instruction memory) {
 }
 
 /// @notice Creates an `Instruction` struct representing the `AliasOrigin` variant with the provided `params`.
+/// @param params Parameters for the `AliasOrigin` instruction.
 function aliasOrigin(
     AliasOriginParams memory params
 ) pure returns (Instruction memory) {
@@ -1135,6 +1176,7 @@ function aliasOrigin(
 }
 
 /// @notice Creates an `Instruction` struct representing the `UnpaidExecution` variant with the provided `params`.
+/// @param params Parameters for the `UnpaidExecution` instruction.
 function unpaidExecution(
     UnpaidExecutionParams memory params
 ) pure returns (Instruction memory) {
@@ -1156,6 +1198,7 @@ function unpaidExecution(
 }
 
 /// @notice Creates an `Instruction` struct representing the `PayFees` variant with the provided `params`.
+/// @param params Parameters for the `PayFees` instruction.
 function payFees(
     PayFeesParams memory params
 ) pure returns (Instruction memory) {
@@ -1167,6 +1210,7 @@ function payFees(
 }
 
 /// @notice Creates an `Instruction` struct representing the `InitiateTransfer` variant with the provided `params`.
+/// @param params Parameters for the `InitiateTransfer` instruction.
 function initiateTransfer(
     InitiateTransferParams memory params
 ) pure returns (Instruction memory) {
@@ -1207,6 +1251,7 @@ function initiateTransfer(
 }
 
 /// @notice Creates an `Instruction` struct representing the `ExecuteWithOrigin` variant with the provided `params`.
+/// @param params Parameters for the `ExecuteWithOrigin` instruction.
 function executeWithOrigin(
     ExecuteWithOriginParams memory params
 ) pure returns (Instruction memory) {
@@ -1226,6 +1271,7 @@ function executeWithOrigin(
 }
 
 /// @notice Creates an `Instruction` struct representing the `SetHints` variant with the provided `params`.
+/// @param params Parameters for the `SetHints` instruction.
 function setHints(
     SetHintsParams memory params
 ) pure returns (Instruction memory) {
