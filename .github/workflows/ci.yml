@@ -21,7 +21,7 @@ jobs:
       - run: npm test
       - run: npm run docs:build
 
-  lint:
+  lint-and-format:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -31,3 +31,5 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint:solhint
+      - run: npm run format:prettier:check
+  

@@ -46,8 +46,8 @@
     "lint:solhint": "npx solhint 'src/**/*' --config '.solhint.json' --ignore-path '.solhintignore'",
     "format:prettier": "npx prettier --write --plugin=prettier-plugin-solidity .",
     "format:prettier:check": "npx prettier --check --plugin=prettier-plugin-solidity .",
-    "publish": "changeset publish",
-    "version": "changeset version"
+    "changeset:publish": "npm run format:prettier && changeset publish",
+    "changeset:version": "changeset version"
   },
   "type": "module",
   "devDependencies": {
