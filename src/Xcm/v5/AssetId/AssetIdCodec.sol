@@ -8,7 +8,7 @@ import {AssetId} from "./AssetId.sol";
 /// @title SCALE Codec for XCM v5 `AssetId`
 /// @notice SCALE-compliant encoder/decoder for the `AssetId` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
-/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
+/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5
 library AssetIdCodec {
     /// @notice Encodes an `AssetId` struct into bytes.
     /// @param assetId The `AssetId` struct to encode.

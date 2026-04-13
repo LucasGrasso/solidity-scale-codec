@@ -6,7 +6,7 @@ import {OriginKind} from "./OriginKind.sol";
 /// @title SCALE Codec for XCM v5 `OriginKind`
 /// @notice SCALE-compliant encoder/decoder for the `OriginKind` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
-/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
+/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5
 library OriginKindCodec {
     error InvalidOriginKindLength();
     error InvalidOriginKind(uint8 originKind);

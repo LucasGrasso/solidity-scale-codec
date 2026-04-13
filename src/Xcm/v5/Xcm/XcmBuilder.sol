@@ -7,7 +7,7 @@ import {Xcm, fromInstructions, newXcm} from "./Xcm.sol";
 /// @title XcmBuilder
 /// @notice A library for building XCM v5 `Xcm` programs using a fluent interface.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
-/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
+/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5
 library XcmBuilder {
     /// @notice Creates a new empty XCM program.
     /// @return An `Xcm` instance with no instructions.

@@ -15,7 +15,7 @@ import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 /// @title SCALE Codec for XCM v5 `Response`
 /// @notice SCALE-compliant encoder/decoder for the `Response` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
-/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
+/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5
 library ResponseCodec {
     error InvalidResponseLength();
     error InvalidResponseVariant(uint8 variant);

@@ -10,7 +10,7 @@ import {Asset} from "./Asset.sol";
 /// @title SCALE Codec for XCM v5 `Asset`
 /// @notice SCALE-compliant encoder/decoder for the `Asset` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
-/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
+/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5
 library AssetCodec {
     /// @notice Encodes an `Asset` struct into bytes.
     /// @param asset The `Asset` struct to encode.

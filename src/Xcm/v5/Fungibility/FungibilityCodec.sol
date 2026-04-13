@@ -3,19 +3,14 @@ pragma solidity ^0.8.28;
 
 import {Compact} from "../../../Scale/Compact.sol";
 import {AssetInstanceCodec} from "../AssetInstance/AssetInstanceCodec.sol";
-import {
-    Fungibility,
-    FungibilityVariant,
-    FungibleParams,
-    NonFungibleParams
-} from "./Fungibility.sol";
+import {Fungibility, FungibilityVariant, FungibleParams, NonFungibleParams} from "./Fungibility.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `Fungibility`
 /// @notice SCALE-compliant encoder/decoder for the `Fungibility` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
-/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
+/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5
 library FungibilityCodec {
     error InvalidFungibilityLength();
     error InvalidFungibilityVariant(uint8 variant);

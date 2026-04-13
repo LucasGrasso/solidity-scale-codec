@@ -8,7 +8,7 @@ import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 /// @title SCALE Codec for XCM v5 `Weight`
 /// @notice SCALE-compliant encoder/decoder for the `Weight` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
-/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
+/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5
 library WeightCodec {
     error InvalidWeightLength();
 

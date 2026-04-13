@@ -8,7 +8,7 @@ import {Junctions} from "./Junctions.sol";
 /// @title SCALE Codec for XCM v5 `Junctions`
 /// @notice SCALE-compliant encoder/decoder for the `Junctions` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
-/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
+/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5
 library JunctionsCodec {
     error InvalidJunctionsLength(uint8 count);
     error InvalidJunctionsCount(uint8 count);

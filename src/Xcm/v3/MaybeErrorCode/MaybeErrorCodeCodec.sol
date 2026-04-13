@@ -2,18 +2,13 @@
 pragma solidity ^0.8.28;
 
 import {Bytes} from "../../../Scale/Bytes.sol";
-import {
-    MaybeErrorCode,
-    MaybeErrorCodeVariant,
-    ErrorParams,
-    TruncatedErrorParams
-} from "./MaybeErrorCode.sol";
+import {MaybeErrorCode, MaybeErrorCodeVariant, ErrorParams, TruncatedErrorParams} from "./MaybeErrorCode.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 
 /// @title SCALE Codec for XCM v3 `MaybeErrorCode`
 /// @notice SCALE-compliant encoder/decoder for the `MaybeErrorCode` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
-/// @dev XCM v3 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v3/index.html
+/// @dev XCM v3 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v3
 library MaybeErrorCodeCodec {
     error InvalidMaybeErrorCodeLength();
     error InvalidMaybeErrorCodeVariant(uint8 variant);

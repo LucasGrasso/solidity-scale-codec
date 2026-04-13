@@ -6,22 +6,14 @@ import {Bytes4} from "../../../Scale/Bytes/Bytes4.sol";
 import {Bytes8} from "../../../Scale/Bytes/Bytes8.sol";
 import {Bytes16} from "../../../Scale/Bytes/Bytes16.sol";
 import {Bytes32} from "../../../Scale/Bytes/Bytes32.sol";
-import {
-    AssetInstance,
-    AssetInstanceVariant,
-    IndexParams,
-    Array4Params,
-    Array8Params,
-    Array16Params,
-    Array32Params
-} from "./AssetInstance.sol";
+import {AssetInstance, AssetInstanceVariant, IndexParams, Array4Params, Array8Params, Array16Params, Array32Params} from "./AssetInstance.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `AssetInstance`
 /// @notice SCALE-compliant encoder/decoder for the `AssetInstance` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
-/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
+/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5
 library AssetInstanceCodec {
     error InvalidAssetInstanceLength();
     error InvalidAssetInstanceVariant(uint8 variant);

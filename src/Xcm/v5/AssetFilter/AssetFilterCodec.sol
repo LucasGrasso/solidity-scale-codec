@@ -3,18 +3,13 @@ pragma solidity ^0.8.28;
 
 import {AssetsCodec} from "../Assets/AssetsCodec.sol";
 import {WildAssetCodec} from "../WildAsset/WildAssetCodec.sol";
-import {
-    AssetFilter,
-    AssetFilterVariant,
-    DefiniteParams,
-    WildParams
-} from "./AssetFilter.sol";
+import {AssetFilter, AssetFilterVariant, DefiniteParams, WildParams} from "./AssetFilter.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `AssetFilter`
 /// @notice SCALE-compliant encoder/decoder for the `AssetFilter` type.
 /// @dev SCALE reference: https://docs.polkadot.com/polkadot-protocol/basics/data-encoding
-/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5/index.html
+/// @dev XCM v5 reference: https://paritytech.github.io/polkadot-sdk/master/staging_xcm/v5
 library AssetFilterCodec {
     error InvalidAssetFilterLength();
     error InvalidAssetFilterVariant(uint8 variant);
