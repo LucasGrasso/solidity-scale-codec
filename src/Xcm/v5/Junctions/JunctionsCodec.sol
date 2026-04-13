@@ -44,7 +44,7 @@ library JunctionsCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint256) {
-        if (!(offset < data.length)) {
+        if (offset >= data.length) {
             revert InvalidJunctionsLength(0);
         }
         uint8 count = uint8(data[offset]);
@@ -64,6 +64,7 @@ library JunctionsCodec {
     /// @notice Decodes bytes into a Junctions struct.
     /// @param data The byte array to decode.
     /// @return junctions The decoded Junctions struct.
+    /// @return bytesRead The total number of bytes read during decoding.
     function decode(
         bytes memory data
     ) internal pure returns (Junctions memory junctions, uint256 bytesRead) {
@@ -79,7 +80,7 @@ library JunctionsCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (Junctions memory junctions, uint256 bytesRead) {
-        if (!(offset < data.length)) revert InvalidJunctionsLength(0);
+        if (offset >= data.length) revert InvalidJunctionsLength(0);
 
         uint8 count = uint8(data[offset]);
         if (count > 8) revert InvalidJunctionsCount(count);

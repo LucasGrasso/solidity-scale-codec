@@ -17,6 +17,7 @@ library NetworkIdCodec {
     error InvalidNetworkIdVariant(uint8 variant);
 
     /// @notice Encodes a `NetworkId` struct into SCALE format.
+    /// @param networkId The `NetworkId` struct to encode.
     function encode(
         NetworkId memory networkId
     ) internal pure returns (bytes memory) {
@@ -31,7 +32,7 @@ library NetworkIdCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint256) {
-        if (!(offset < data.length)) revert InvalidNetworkIdLength();
+        if (offset >= data.length) revert InvalidNetworkIdLength();
 
         uint8 variant = uint8(data[offset]);
         uint256 payloadLen;
@@ -65,6 +66,7 @@ library NetworkIdCodec {
     /// @notice Decodes a byte array into a `NetworkId` struct.
     /// @param data The byte array to decode.
     /// @return networkId The decoded `NetworkId` struct.
+    /// @return bytesRead The number of bytes read while decoding.
     function decode(
         bytes memory data
     ) internal pure returns (NetworkId memory networkId, uint256 bytesRead) {
@@ -75,6 +77,7 @@ library NetworkIdCodec {
     /// @param data The byte array to decode.
     /// @param offset The byte offset to start decoding from.
     /// @return networkId The decoded `NetworkId` struct.
+    /// @return bytesRead The number of bytes read while decoding.
     function decodeAt(
         bytes memory data,
         uint256 offset

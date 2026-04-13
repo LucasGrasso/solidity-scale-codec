@@ -1214,6 +1214,9 @@ library InstructionCodec {
 
     /// @notice Returns the encoded size of an XCM byte sequence at offset.
     /// @dev XCM encodes as `Vec<Instruction>`: compact count followed by encoded instructions.
+    /// @param data The byte sequence containing encoded XCM.
+    /// @param offset The starting index in `data` from which to calculate size.
+    /// @return The number of bytes occupied by the XCM sequence starting at `offset`.
     function _xcmEncodedSizeAt(
         bytes memory data,
         uint256 offset

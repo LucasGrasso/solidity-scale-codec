@@ -34,7 +34,7 @@ library XcmCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint256) {
-        if (!(offset < data.length)) revert InvalidXcmLength();
+        if (offset >= data.length) revert InvalidXcmLength();
 
         (uint256 count, uint256 prefixSize) = Compact.decodeAt(data, offset);
         uint256 pos = offset + prefixSize;
@@ -65,7 +65,7 @@ library XcmCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (Xcm memory xcm, uint256 bytesRead) {
-        if (!(offset < data.length)) revert InvalidXcmLength();
+        if (offset >= data.length) revert InvalidXcmLength();
 
         (uint256 count, uint256 prefixSize) = Compact.decodeAt(data, offset);
         Instruction[] memory instructions = new Instruction[](count);

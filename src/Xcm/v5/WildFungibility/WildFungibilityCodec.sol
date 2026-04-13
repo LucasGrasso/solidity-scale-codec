@@ -28,7 +28,7 @@ library WildFungibilityCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint256) {
-        if (!(offset < data.length)) {
+        if (offset >= data.length) {
             revert InvalidWildFungibilityLength();
         }
         return 1;
@@ -61,7 +61,7 @@ library WildFungibilityCodec {
         pure
         returns (WildFungibility wildFungibility, uint256 bytesRead)
     {
-        if (!(offset < data.length)) {
+        if (offset >= data.length) {
             revert InvalidWildFungibilityLength();
         }
         uint8 fType = uint8(data[offset]);

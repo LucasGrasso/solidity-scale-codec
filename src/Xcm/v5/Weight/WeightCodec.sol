@@ -31,12 +31,12 @@ library WeightCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint256) {
-        if (!(offset < data.length)) {
+        if (offset >= data.length) {
             revert InvalidWeightLength();
         }
         uint256 refTimeBytes = Compact.encodedSizeAt(data, offset);
         offset += refTimeBytes;
-        if (!(offset < data.length)) {
+        if (offset >= data.length) {
             revert InvalidWeightLength();
         }
         uint256 proofSizeBytes = Compact.encodedSizeAt(data, offset);
@@ -62,7 +62,7 @@ library WeightCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (Weight memory weight, uint256 bytesRead) {
-        if (!(offset < data.length)) {
+        if (offset >= data.length) {
             revert InvalidWeightLength();
         }
         (uint256 refTime, uint256 refTimeBytes) = Compact.decodeAt(

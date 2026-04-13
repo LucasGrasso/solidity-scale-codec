@@ -34,7 +34,7 @@ library WildAssetCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint256) {
-        if (!(offset < data.length)) {
+        if (offset >= data.length) {
             revert InvalidWildAssetLength();
         }
         uint8 variant = uint8(data[offset]);

@@ -28,7 +28,7 @@ library OriginKindCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint256) {
-        if (!(offset < data.length)) {
+        if (offset >= data.length) {
             revert InvalidOriginKindLength();
         }
         return 1;
@@ -53,7 +53,7 @@ library OriginKindCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (OriginKind originKind, uint256 bytesRead) {
-        if (!(offset < data.length)) {
+        if (offset >= data.length) {
             revert InvalidOriginKindLength();
         }
         uint8 originKindValue = uint8(data[offset]);
