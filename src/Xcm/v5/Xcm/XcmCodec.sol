@@ -17,7 +17,7 @@ library XcmCodec {
     /// @return SCALE-encoded byte sequence representing `xcm`.
     function encode(Xcm memory xcm) internal pure returns (bytes memory) {
         bytes memory encoded = Compact.encode(xcm.instructions.length);
-        for (uint256 i = 0; i < xcm.instructions.length; i++) {
+        for (uint256 i = 0; i < xcm.instructions.length; ++i) {
             encoded = abi.encodePacked(
                 encoded,
                 InstructionCodec.encode(xcm.instructions[i])
@@ -34,12 +34,12 @@ library XcmCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint256) {
-        if (offset >= data.length) revert InvalidXcmLength();
+        if (!(offset < data.length)) revert InvalidXcmLength();
 
         (uint256 count, uint256 prefixSize) = Compact.decodeAt(data, offset);
         uint256 pos = offset + prefixSize;
 
-        for (uint256 i = 0; i < count; i++) {
+        for (uint256 i = 0; i < count; ++i) {
             pos += InstructionCodec.encodedSizeAt(data, pos);
         }
 
@@ -65,13 +65,13 @@ library XcmCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (Xcm memory xcm, uint256 bytesRead) {
-        if (offset >= data.length) revert InvalidXcmLength();
+        if (!(offset < data.length)) revert InvalidXcmLength();
 
         (uint256 count, uint256 prefixSize) = Compact.decodeAt(data, offset);
         Instruction[] memory instructions = new Instruction[](count);
         uint256 pos = offset + prefixSize;
 
-        for (uint256 i = 0; i < count; i++) {
+        for (uint256 i = 0; i < count; ++i) {
             uint256 read;
             (instructions[i], read) = InstructionCodec.decodeAt(data, pos);
             pos += read;

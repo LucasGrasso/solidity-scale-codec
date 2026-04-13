@@ -2,13 +2,7 @@
 pragma solidity ^0.8.28;
 
 import {Compact} from "../../../Scale/Compact.sol";
-import {
-    NetworkId,
-    NetworkIdVariant,
-    ByForkParams,
-    ByGenesisParams,
-    EthereumParams
-} from "./NetworkId.sol";
+import {NetworkId, NetworkIdVariant, ByForkParams, ByGenesisParams, EthereumParams} from "./NetworkId.sol";
 import {LittleEndianU64} from "../../../LittleEndian/LittleEndianU64.sol";
 import {Bytes32} from "../../../Scale/Bytes.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
@@ -37,7 +31,7 @@ library NetworkIdCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint256) {
-        if (offset >= data.length) revert InvalidNetworkIdLength();
+        if (!(offset < data.length)) revert InvalidNetworkIdLength();
 
         uint8 variant = uint8(data[offset]);
         uint256 payloadLen;

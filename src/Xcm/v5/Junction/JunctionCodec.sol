@@ -7,19 +7,7 @@ import {NetworkIdCodec} from "../NetworkId/NetworkIdCodec.sol";
 import {Bytes32} from "../../../Scale/Bytes.sol";
 import {Address} from "../../../Scale/Address.sol";
 import {Compact} from "../../../Scale/Compact.sol";
-import {
-    Junction,
-    JunctionVariant,
-    ParachainParams,
-    AccountId32Params,
-    PluralityParams,
-    AccountIndex64Params,
-    AccountKey20Params,
-    GeneralKeyParams,
-    PalletInstanceParams,
-    GeneralIndexParams,
-    GlobalConsensusParams
-} from "./Junction.sol";
+import {Junction, JunctionVariant, ParachainParams, AccountId32Params, PluralityParams, AccountIndex64Params, AccountKey20Params, GeneralKeyParams, PalletInstanceParams, GeneralIndexParams, GlobalConsensusParams} from "./Junction.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 
@@ -49,7 +37,7 @@ library JunctionCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint256) {
-        if (offset >= data.length) revert InvalidJunctionLength();
+        if (!(offset < data.length)) revert InvalidJunctionLength();
         uint8 variant = uint8(data[offset]);
         uint256 payloadLength;
         ++offset; // Move past the type byte
@@ -70,7 +58,7 @@ library JunctionCodec {
         } else if (variant == uint8(JunctionVariant.GeneralIndex)) {
             payloadLength = Compact.encodedSizeAt(data, offset);
         } else if (variant == uint8(JunctionVariant.GeneralKey)) {
-            if (offset >= data.length) revert InvalidJunctionLength();
+            if (!(offset < data.length)) revert InvalidJunctionLength();
             uint8 length = uint8(data[offset]);
             if (length == 0 || length > 32) revert InvalidJunctionPayload();
             payloadLength = 1 + 32; // 1 byte for the length + the fixed key bytes
@@ -254,7 +242,7 @@ library JunctionCodec {
         bytes memory data,
         uint256 offset
     ) private pure returns (uint256) {
-        if (offset >= data.length) revert InvalidJunctionLength();
+        if (!(offset < data.length)) revert InvalidJunctionLength();
         bool hasNetwork = data[offset] != 0;
         uint256 size = 1; // for the hasNetwork byte
         if (hasNetwork) {

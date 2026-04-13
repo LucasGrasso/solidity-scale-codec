@@ -20,7 +20,7 @@ library AssetsCodec {
     /// @return SCALE-encoded byte sequence representing the `Assets`.
     function encode(Assets memory assets) internal pure returns (bytes memory) {
         bytes memory encoded = Compact.encode(assets.items.length);
-        for (uint256 i = 0; i < assets.items.length; i++) {
+        for (uint256 i = 0; i < assets.items.length; ++i) {
             encoded = abi.encodePacked(
                 encoded,
                 AssetCodec.encode(assets.items[i])
@@ -45,7 +45,7 @@ library AssetsCodec {
             revert InvalidAssetsPayload();
         }
         uint256 currentOffset = offset + bytesRead;
-        for (uint256 i = 0; i < length; i++) {
+        for (uint256 i = 0; i < length; ++i) {
             uint256 assetSize = AssetCodec.encodedSizeAt(data, currentOffset);
             currentOffset += assetSize;
         }
@@ -80,7 +80,7 @@ library AssetsCodec {
         }
         Asset[] memory items = new Asset[](length);
         uint256 currentOffset = offset + compactBytesRead;
-        for (uint256 i = 0; i < length; i++) {
+        for (uint256 i = 0; i < length; ++i) {
             (Asset memory asset, uint256 assetBytesRead) = AssetCodec.decodeAt(
                 data,
                 currentOffset

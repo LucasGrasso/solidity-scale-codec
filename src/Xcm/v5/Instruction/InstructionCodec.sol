@@ -1,56 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {
-    AliasOriginParams,
-    BurnAssetParams,
-    BuyExecutionParams,
-    ClaimAssetParams,
-    DepositAssetParams,
-    DepositReserveAssetParams,
-    DescendOriginParams,
-    ExecuteWithOriginParams,
-    ExchangeAssetParams,
-    ExpectAssetParams,
-    ExpectErrorParams,
-    ExpectOriginParams,
-    ExpectPalletParams,
-    ExpectTransactStatusParams,
-    ExportMessageParams,
-    HrmpChannelAcceptedParams,
-    HrmpChannelClosingParams,
-    HrmpNewChannelOpenRequestParams,
-    InitiateReserveWithdrawParams,
-    InitiateTeleportParams,
-    InitiateTransferParams,
-    Instruction,
-    InstructionVariant,
-    LockAssetParams,
-    NoteUnlockableParams,
-    PayFeesParams,
-    QueryPalletParams,
-    QueryResponseParams,
-    ReceiveTeleportedAssetParams,
-    ReportErrorParams,
-    ReportHoldingParams,
-    ReportTransactStatusParams,
-    RequestUnlockParams,
-    ReserveAssetDepositedParams,
-    SetAppendixParams,
-    SetErrorHandlerParams,
-    SetFeesModeParams,
-    SetHintsParams,
-    SetTopicParams,
-    SubscribeVersionParams,
-    TransactParams,
-    TransferAssetParams,
-    TransferReserveAssetParams,
-    TrapParams,
-    UnlockAssetParams,
-    UniversalOriginParams,
-    UnpaidExecutionParams,
-    WithdrawAssetParams
-} from "./Instruction.sol";
+import {AliasOriginParams, BurnAssetParams, BuyExecutionParams, ClaimAssetParams, DepositAssetParams, DepositReserveAssetParams, DescendOriginParams, ExecuteWithOriginParams, ExchangeAssetParams, ExpectAssetParams, ExpectErrorParams, ExpectOriginParams, ExpectPalletParams, ExpectTransactStatusParams, ExportMessageParams, HrmpChannelAcceptedParams, HrmpChannelClosingParams, HrmpNewChannelOpenRequestParams, InitiateReserveWithdrawParams, InitiateTeleportParams, InitiateTransferParams, Instruction, InstructionVariant, LockAssetParams, NoteUnlockableParams, PayFeesParams, QueryPalletParams, QueryResponseParams, ReceiveTeleportedAssetParams, ReportErrorParams, ReportHoldingParams, ReportTransactStatusParams, RequestUnlockParams, ReserveAssetDepositedParams, SetAppendixParams, SetErrorHandlerParams, SetFeesModeParams, SetHintsParams, SetTopicParams, SubscribeVersionParams, TransactParams, TransferAssetParams, TransferReserveAssetParams, TrapParams, UnlockAssetParams, UniversalOriginParams, UnpaidExecutionParams, WithdrawAssetParams} from "./Instruction.sol";
 import {AssetTransferFilter} from "../AssetTransferFilter/AssetTransferFilter.sol";
 import {Hint} from "../Hint/Hint.sol";
 import {QueryId} from "../Types/QueryId.sol";
@@ -130,7 +81,7 @@ library InstructionCodec {
             pos += ResponseCodec.encodedSizeAt(data, pos);
             pos += WeightCodec.encodedSizeAt(data, pos);
             bool hasQuerier = Bool.decodeAt(data, pos);
-            pos += 1;
+            ++pos;
             if (hasQuerier) {
                 pos += LocationCodec.encodedSizeAt(data, pos);
             }
@@ -154,7 +105,7 @@ library InstructionCodec {
         } else if (variant == InstructionVariant.Transact) {
             pos += OriginKindCodec.encodedSizeAt(data, pos);
             bool hasFallbackMaxWeight = Bool.decodeAt(data, pos);
-            pos += 1;
+            ++pos;
             if (hasFallbackMaxWeight) {
                 pos += WeightCodec.encodedSizeAt(data, pos);
             }
@@ -192,7 +143,7 @@ library InstructionCodec {
         } else if (variant == InstructionVariant.ExchangeAsset) {
             pos += AssetFilterCodec.encodedSizeAt(data, pos);
             pos += AssetsCodec.encodedSizeAt(data, pos);
-            pos += 1;
+            ++pos;
         } else if (variant == InstructionVariant.ReportHolding) {
             pos += QueryResponseInfoCodec.encodedSizeAt(data, pos);
             pos += AssetFilterCodec.encodedSizeAt(data, pos);
@@ -214,13 +165,13 @@ library InstructionCodec {
             pos += WeightCodec.encodedSizeAt(data, pos);
         } else if (variant == InstructionVariant.ExpectOrigin) {
             bool hasOrigin = Bool.decodeAt(data, pos);
-            pos += 1;
+            ++pos;
             if (hasOrigin) {
                 pos += LocationCodec.encodedSizeAt(data, pos);
             }
         } else if (variant == InstructionVariant.ExpectError) {
             bool hasError = Bool.decodeAt(data, pos);
-            pos += 1;
+            ++pos;
             if (hasError) {
                 pos += Compact.encodedSizeAt(data, pos);
                 pos += XcmErrorCodec.encodedSizeAt(data, pos);
@@ -251,7 +202,7 @@ library InstructionCodec {
             pos += AssetCodec.encodedSizeAt(data, pos);
             pos += LocationCodec.encodedSizeAt(data, pos);
         } else if (variant == InstructionVariant.SetFeesMode) {
-            pos += 1;
+            ++pos;
         } else if (variant == InstructionVariant.SetTopic) {
             if (data.length < pos + 32) revert InvalidInstructionPayload();
             pos += 32;
@@ -260,7 +211,7 @@ library InstructionCodec {
         } else if (variant == InstructionVariant.UnpaidExecution) {
             pos += WeightLimitCodec.encodedSizeAt(data, pos);
             bool hasCheckOrigin = Bool.decodeAt(data, pos);
-            pos += 1;
+            ++pos;
             if (hasCheckOrigin) {
                 pos += LocationCodec.encodedSizeAt(data, pos);
             }
@@ -273,7 +224,7 @@ library InstructionCodec {
             if (hasRemoteFees) {
                 pos += AssetTransferFilterCodec.encodedSizeAt(data, pos);
             }
-            pos += 1; // preserveOrigin bool
+            ++pos; // preserveOrigin bool
             (uint256 assetsCount, uint256 assetsCountBytes) = Compact.decodeAt(
                 data,
                 pos
@@ -293,7 +244,7 @@ library InstructionCodec {
             pos += remoteXcmLen;
         } else if (variant == InstructionVariant.ExecuteWithOrigin) {
             bool hasDescendantOrigin = Bool.decodeAt(data, pos);
-            pos += 1;
+            ++pos;
             if (hasDescendantOrigin) {
                 pos += JunctionsCodec.encodedSizeAt(data, pos);
             }
@@ -409,7 +360,7 @@ library InstructionCodec {
         pos += bytesRead;
 
         params.hasQuerier = Bool.decodeAt(payload, pos);
-        pos += 1;
+        ++pos;
 
         if (params.hasQuerier) {
             (params.querier, bytesRead) = LocationCodec.decodeAt(payload, pos);
@@ -470,7 +421,7 @@ library InstructionCodec {
         pos += bytesRead;
 
         params.hasFallbackMaxWeight = Bool.decodeAt(payload, pos);
-        pos += 1;
+        ++pos;
 
         if (params.hasFallbackMaxWeight) {
             (params.fallbackMaxWeight, bytesRead) = WeightCodec.decodeAt(
@@ -639,7 +590,7 @@ library InstructionCodec {
         pos += bytesRead;
 
         params.maximal = Bool.decodeAt(payload, pos);
-        pos += 1;
+        ++pos;
     }
 
     /// @notice Extracts the decoded `InitiateReserveWithdrawParams` from a `InitiateReserveWithdraw` instruction. Reverts if the instruction is not of type `InitiateReserveWithdraw`.
@@ -855,7 +806,7 @@ library InstructionCodec {
         uint256 bytesRead;
 
         params.hasOrigin = Bool.decodeAt(payload, pos);
-        pos += 1;
+        ++pos;
 
         if (params.hasOrigin) {
             (params.origin, bytesRead) = LocationCodec.decodeAt(payload, pos);
@@ -876,7 +827,7 @@ library InstructionCodec {
         uint256 value;
 
         params.hasError = Bool.decodeAt(payload, pos);
-        pos += 1;
+        ++pos;
 
         if (params.hasError) {
             (value, bytesRead) = Compact.decodeAt(payload, pos);

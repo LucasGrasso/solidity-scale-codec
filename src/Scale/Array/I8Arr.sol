@@ -64,7 +64,7 @@ library I8Arr {
         arr = new int8[](length);
         for (uint256 i = 0; i < length; ++i) {
             arr[i] = I8.decodeAt(data, pos);
-            pos += 1;
+            ++pos;
         }
 
         bytesRead = pos - offset;

@@ -56,7 +56,7 @@ library Bytes {
         }
         value = new bytes(length);
         bytesRead = lengthBytes + length;
-        for (uint256 i = 0; i < length; i++) {
+        for (uint256 i = 0; i < length; ++i) {
             value[i] = data[offset + lengthBytes + i];
         }
     }

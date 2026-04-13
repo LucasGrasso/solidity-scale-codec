@@ -31,7 +31,7 @@ library BodyPartCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint256) {
-        if (offset >= data.length) revert InvalidBodyPartLength();
+        if (!(offset < data.length)) revert InvalidBodyPartLength();
 
         uint8 variant = uint8(data[offset]);
         uint256 payloadLength;

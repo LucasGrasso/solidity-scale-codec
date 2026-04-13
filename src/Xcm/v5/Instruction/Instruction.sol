@@ -1188,7 +1188,7 @@ function initiateTransfer(
         Bool.encode(params.preserveOrigin),
         Compact.encode(params.assets.length)
     );
-    for (uint256 i = 0; i < params.assets.length; i++) {
+    for (uint256 i = 0; i < params.assets.length; ++i) {
         payload = abi.encodePacked(
             payload,
             AssetTransferFilterCodec.encode(params.assets[i])
@@ -1233,7 +1233,7 @@ function setHints(
         revert InvalidInstruction();
     }
     bytes memory payload = Compact.encode(params.hints.length);
-    for (uint256 i = 0; i < params.hints.length; i++) {
+    for (uint256 i = 0; i < params.hints.length; ++i) {
         payload = abi.encodePacked(payload, HintCodec.encode(params.hints[i]));
     }
     return

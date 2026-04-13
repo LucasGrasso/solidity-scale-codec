@@ -18,7 +18,7 @@ library BytesUtils {
             revert InvalidBounds();
         }
         bytes memory result = new bytes(count);
-        for (uint256 i = 0; i < count; i++) {
+        for (uint256 i = 0; i < count; ++i) {
             result[i] = src[from + i];
         }
         return result;

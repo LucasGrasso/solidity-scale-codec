@@ -27,7 +27,7 @@ library JunctionsCodec {
         }
 
         bytes memory encoded = abi.encodePacked(junctions.count);
-        for (uint8 i = 0; i < junctions.count; i++) {
+        for (uint8 i = 0; i < junctions.count; ++i) {
             encoded = abi.encodePacked(
                 encoded,
                 JunctionCodec.encode(junctions.items[i])
@@ -44,7 +44,7 @@ library JunctionsCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint256) {
-        if (offset >= data.length) {
+        if (!(offset < data.length)) {
             revert InvalidJunctionsLength(0);
         }
         uint8 count = uint8(data[offset]);
@@ -53,7 +53,7 @@ library JunctionsCodec {
         }
         uint256 size = 1; // for the count byte
         uint256 pos = offset + 1;
-        for (uint8 i = 0; i < count; i++) {
+        for (uint8 i = 0; i < count; ++i) {
             uint256 inner = JunctionCodec.encodedSizeAt(data, pos);
             size += inner;
             pos += inner;
@@ -79,7 +79,7 @@ library JunctionsCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (Junctions memory junctions, uint256 bytesRead) {
-        if (offset >= data.length) revert InvalidJunctionsLength(0);
+        if (!(offset < data.length)) revert InvalidJunctionsLength(0);
 
         uint8 count = uint8(data[offset]);
         if (count > 8) revert InvalidJunctionsCount(count);
@@ -87,7 +87,7 @@ library JunctionsCodec {
         Junction[] memory items = new Junction[](count);
         uint256 pos = offset + 1;
 
-        for (uint8 i = 0; i < count; i++) {
+        for (uint8 i = 0; i < count; ++i) {
             (Junction memory item, uint256 itemBytes) = JunctionCodec.decodeAt(
                 data,
                 pos

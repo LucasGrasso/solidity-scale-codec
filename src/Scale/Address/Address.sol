@@ -47,7 +47,7 @@ library Address {
             revert InvalidAddressLength();
         }
         bytes memory addrBytes = new bytes(20);
-        for (uint256 i = 0; i < 20; i++) {
+        for (uint256 i = 0; i < 20; ++i) {
             addrBytes[i] = data[offset + i];
         }
         return address(bytes20(addrBytes));

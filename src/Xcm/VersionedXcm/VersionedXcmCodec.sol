@@ -63,7 +63,7 @@ library VersionedXcmCodec {
             if (data.length < offset + 1 + xcmByteLength)
                 revert InvalidVersionedXcmLength();
             xcmBytes = new bytes(xcmByteLength);
-            for (uint256 i = 0; i < xcmByteLength; i++)
+            for (uint256 i = 0; i < xcmByteLength; ++i)
                 xcmBytes[i] = data[offset + 1 + i];
             versionedXcm = VersionedXcm({version: version, xcm: xcmBytes});
             bytesRead = 1 + xcmByteLength;

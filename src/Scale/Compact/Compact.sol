@@ -52,7 +52,7 @@ library Compact {
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint256 size) {
-        if (offset >= data.length) revert OffsetOutOfBounds();
+        if (!(offset < data.length)) revert OffsetOutOfBounds();
         uint8 header;
         assembly {
             header := shr(248, mload(add(add(data, 32), offset)))
@@ -93,7 +93,7 @@ library Compact {
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint256 value, uint256 bytesRead) {
-        if (offset >= data.length) revert OffsetOutOfBounds();
+        if (!(offset < data.length)) revert OffsetOutOfBounds();
         uint8 header;
         assembly {
             header := shr(248, mload(add(add(data, 32), offset)))
@@ -105,12 +105,14 @@ library Compact {
         } else if (mode == MODE_TWO) {
             if (data.length < offset + 2) revert OffsetOutOfBounds();
             value =
-                uint256(LittleEndianU16.fromLittleEndian(data, offset)) >> 2;
+                uint256(LittleEndianU16.fromLittleEndian(data, offset)) >>
+                2;
             bytesRead = 2;
         } else if (mode == MODE_FOUR) {
             if (data.length < offset + 4) revert OffsetOutOfBounds();
             value =
-                uint256(LittleEndianU32.fromLittleEndian(data, offset)) >> 2;
+                uint256(LittleEndianU32.fromLittleEndian(data, offset)) >>
+                2;
             bytesRead = 4;
         } else {
             uint8 m = (header >> 2) + 4;
@@ -169,7 +171,7 @@ library Compact {
         result[0] = bytes1(header);
 
         uint256 v = value;
-        for (uint8 i = 0; i < bytesNeeded; i++) {
+        for (uint8 i = 0; i < bytesNeeded; ++i) {
             result[1 + i] = bytes1(uint8(v & 0xFF));
             v >>= 8;
         }
