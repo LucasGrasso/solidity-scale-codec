@@ -52,7 +52,7 @@ library Compact {
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint256 size) {
-        if (offset >= data.length) revert OffsetOutOfBounds();
+        if (!(offset < data.length)) revert OffsetOutOfBounds();
         uint8 header;
         assembly {
             header := shr(248, mload(add(add(data, 32), offset)))
@@ -93,7 +93,7 @@ library Compact {
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint256 value, uint256 bytesRead) {
-        if (offset >= data.length) revert OffsetOutOfBounds();
+        if (!(offset < data.length)) revert OffsetOutOfBounds();
         uint8 header;
         assembly {
             header := shr(248, mload(add(add(data, 32), offset)))

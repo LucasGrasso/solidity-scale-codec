@@ -32,7 +32,7 @@ library NetworkIdCodec {
         bytes memory data,
         uint256 offset
     ) internal pure returns (uint256) {
-        if (offset >= data.length) revert InvalidNetworkIdLength();
+        if (!(offset < data.length)) revert InvalidNetworkIdLength();
 
         uint8 variant = uint8(data[offset]);
         uint256 payloadLen;

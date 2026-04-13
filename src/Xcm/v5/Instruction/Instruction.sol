@@ -399,14 +399,14 @@ struct QueryPalletParams {
 struct ExpectPalletParams {
     /// @custom:property Expected pallet index.
     uint32 index;
-    /// @custom:property Expected pallet name.
-    bytes name;
-    /// @custom:property Expected pallet module name.
-    bytes moduleName;
     /// @custom:property Expected crate major version.
     uint32 crateMajor;
     /// @custom:property Minimum acceptable crate minor version.
     uint32 minCrateMinor;
+    /// @custom:property Expected pallet name.
+    bytes name;
+    /// @custom:property Expected pallet module name.
+    bytes moduleName;
 }
 
 /// @notice Params for `ReportTransactStatus`.
@@ -501,14 +501,14 @@ struct PayFeesParams {
 struct InitiateTransferParams {
     /// @custom:property Location of the program next hop.
     Location destination;
-    /// @custom:property Whether `remoteFees` is provided.
-    bool hasRemoteFees;
-    /// @custom:property Optional fee-reserved transfer filter used first on remote side.
+    /// @custom:property Whether `remoteFees` is provided.nsfer filter used first on remote side.
     AssetTransferFilter remoteFees;
-    /// @custom:property Whether to preserve origin (`AliasOrigin`) instead of clearing it.
-    bool preserveOrigin;
     /// @custom:property Transfer filters matched against holding assets for this leg.
     AssetTransferFilter[] assets;
+    /// @custom:property Whether `remoteFees` is provided.
+    bool hasRemoteFees;
+    /// @custom:property Whether to preserve origin (`AliasOrigin`) instead of clearing it.
+    bool preserveOrigin;
     /// @custom:property Custom instructions to run on destination. SCALE-encoded Xcm<()>.
     bytes remoteXcm;
 }

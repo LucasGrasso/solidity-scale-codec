@@ -62,9 +62,9 @@ struct PluralityParams {
 /// @notice Parameters for an `AccountIndex64` junction, containing optional network information and a 64-bit account index.
 struct AccountIndex64Params {
     /// @custom:property Indicates whether the junction includes network information. If true, the `network` field contains valid data; if false, the `network` field should be ignored.
-    bool hasNetwork;
-    /// @custom:property Indicates whether the junction includes network information. If true, the `network` field contains valid data; if false, the `network` field should be ignored.
     NetworkId network;
+    /// @custom:property Indicates whether the junction includes network information. If true, the `network` field contains valid data; if false, the `network` field should be ignored.
+    bool hasNetwork;
     /// @custom:property The 8-byte index identifier for the account.
     uint64 index;
 }
@@ -72,9 +72,9 @@ struct AccountIndex64Params {
 /// @notice Parameters for an `AccountKey20` junction, containing optional network information and a 20-byte account key.
 struct AccountKey20Params {
     /// @custom:property Indicates whether the junction includes network information. If true, the `network` field contains valid data; if false, the `network` field should be ignored.
-    bool hasNetwork;
-    /// @custom:property Indicates whether the junction includes network information. If true, the `network` field contains valid data; if false, the `network` field should be ignored.
     NetworkId network;
+    /// @custom:property Indicates whether the junction includes network information. If true, the `network` field contains valid data; if false, the `network` field should be ignored.
+    bool hasNetwork;
     /// @custom:property The 20-byte key identifier for the account, represented as an `address` in Solidity.
     address key;
 }
