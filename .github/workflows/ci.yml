@@ -32,4 +32,3 @@ jobs:
       - run: npm ci
       - run: npm run lint:solhint
       - run: npm run format:prettier:check
-  
