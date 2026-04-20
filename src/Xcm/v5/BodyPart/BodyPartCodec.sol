@@ -1,15 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {Compact} from "../../../Scale/Compact.sol";
-import {
-    BodyPart,
-    BodyPartVariant,
-    MembersParams,
-    FractionParams,
-    AtLeastProportionParams,
-    MoreThanProportionParams
-} from "./BodyPart.sol";
+import {Compact} from "../../../Scale/Compact/Compact.sol";
+import {BodyPart, BodyPartVariant, MembersParams, FractionParams, AtLeastProportionParams, MoreThanProportionParams} from "./BodyPart.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 

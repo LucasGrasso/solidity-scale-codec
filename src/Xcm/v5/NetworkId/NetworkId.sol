@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {Compact} from "../../../Scale/Compact.sol";
+import {Compact} from "../../../Scale/Compact/Compact.sol";
 import {LittleEndianU64} from "../../../LittleEndian/LittleEndianU64.sol";
 
 /// @dev Discriminant for the different types of NetworkIds in XCM v5.

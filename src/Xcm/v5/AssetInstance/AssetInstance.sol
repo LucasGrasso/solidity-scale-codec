@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {Compact} from "../../../Scale/Compact.sol";
+import {Compact} from "../../../Scale/Compact/Compact.sol";
 import {Bytes4} from "../../../Scale/Bytes/Bytes4.sol";
 import {Bytes8} from "../../../Scale/Bytes/Bytes8.sol";
 import {Bytes16} from "../../../Scale/Bytes/Bytes16.sol";

@@ -7,9 +7,9 @@ import {BodyPart} from "../BodyPart/BodyPart.sol";
 import {BodyPartCodec} from "../BodyPart/BodyPartCodec.sol";
 import {NetworkId} from "../NetworkId/NetworkId.sol";
 import {NetworkIdCodec} from "../NetworkId/NetworkIdCodec.sol";
-import {Bytes32} from "../../../Scale/Bytes.sol";
-import {Address} from "../../../Scale/Address.sol";
-import {Compact} from "../../../Scale/Compact.sol";
+import {Bytes32} from "../../../Scale/Bytes/Bytes32.sol";
+import {Address} from "../../../Scale/Address/Address.sol";
+import {Compact} from "../../../Scale/Compact/Compact.sol";
 
 /// @dev Discriminant for the different types of junctions in XCM v5. Each variant corresponds to a specific structure of the payload.
 enum JunctionVariant {

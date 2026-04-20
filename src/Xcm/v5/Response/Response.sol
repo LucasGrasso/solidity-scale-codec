@@ -9,7 +9,7 @@ import {PalletInfo} from "../PalletInfo/PalletInfo.sol";
 import {PalletInfoCodec} from "../PalletInfo/PalletInfoCodec.sol";
 import {MaybeErrorCode} from "../../v3/MaybeErrorCode/MaybeErrorCode.sol";
 import {MaybeErrorCodeCodec} from "../../v3/MaybeErrorCode/MaybeErrorCodeCodec.sol";
-import {Compact} from "../../../Scale/Compact.sol";
+import {Compact} from "../../../Scale/Compact/Compact.sol";
 import {LittleEndianU32} from "../../../LittleEndian/LittleEndianU32.sol";
 
 /// @notice Discriminant for the `Response` enum.

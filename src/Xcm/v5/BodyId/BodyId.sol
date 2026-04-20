@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {Bytes4} from "../../../Scale/Bytes.sol";
-import {Compact} from "../../../Scale/Compact.sol";
+import {Bytes4} from "../../../Scale/Bytes/Bytes4.sol";
+import {Compact} from "../../../Scale/Compact/Compact.sol";
 
 /// @dev Discriminant for the different types of BodyIds in XCM v5. Each variant corresponds to a specific structure of the payload.
 enum BodyIdVariant {

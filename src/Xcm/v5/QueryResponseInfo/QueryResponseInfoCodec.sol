@@ -6,7 +6,7 @@ import {LocationCodec} from "../Location/LocationCodec.sol";
 import {Weight} from "../Weight/Weight.sol";
 import {WeightCodec} from "../Weight/WeightCodec.sol";
 import {QueryId} from "../Types/QueryId.sol";
-import {Compact} from "../../../Scale/Compact.sol";
+import {Compact} from "../../../Scale/Compact/Compact.sol";
 import {QueryResponseInfo} from "./QueryResponseInfo.sol";
 
 /// @title SCALE Codec for XCM v5 `QueryResponseInfo`

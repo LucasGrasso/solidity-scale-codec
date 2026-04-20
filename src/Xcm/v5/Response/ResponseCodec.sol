@@ -6,17 +6,9 @@ import {XcmErrorCodec} from "../XcmError/XcmErrorCodec.sol";
 import {PalletInfo} from "../PalletInfo/PalletInfo.sol";
 import {PalletInfoCodec} from "../PalletInfo/PalletInfoCodec.sol";
 import {MaybeErrorCodeCodec} from "../../v3/MaybeErrorCode/MaybeErrorCodeCodec.sol";
-import {Compact} from "../../../Scale/Compact.sol";
+import {Compact} from "../../../Scale/Compact/Compact.sol";
 import {LittleEndianU32} from "../../../LittleEndian/LittleEndianU32.sol";
-import {
-    Response,
-    ResponseVariant,
-    AssetsParams,
-    VersionParams,
-    DispatchResultParams,
-    ExecutionResultParams,
-    PalletsInfoParams
-} from "./Response.sol";
+import {Response, ResponseVariant, AssetsParams, VersionParams, DispatchResultParams, ExecutionResultParams, PalletsInfoParams} from "./Response.sol";
 
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 

@@ -4,22 +4,10 @@ pragma solidity ^0.8.28;
 import {BodyIdCodec} from "../BodyId/BodyIdCodec.sol";
 import {BodyPartCodec} from "../BodyPart/BodyPartCodec.sol";
 import {NetworkIdCodec} from "../NetworkId/NetworkIdCodec.sol";
-import {Bytes32} from "../../../Scale/Bytes.sol";
-import {Address} from "../../../Scale/Address.sol";
-import {Compact} from "../../../Scale/Compact.sol";
-import {
-    Junction,
-    JunctionVariant,
-    ParachainParams,
-    AccountId32Params,
-    PluralityParams,
-    AccountIndex64Params,
-    AccountKey20Params,
-    GeneralKeyParams,
-    PalletInstanceParams,
-    GeneralIndexParams,
-    GlobalConsensusParams
-} from "./Junction.sol";
+import {Bytes32} from "../../../Scale/Bytes/Bytes32.sol";
+import {Address} from "../../../Scale/Address/Address.sol";
+import {Compact} from "../../../Scale/Compact/Compact.sol";
+import {Junction, JunctionVariant, ParachainParams, AccountId32Params, PluralityParams, AccountIndex64Params, AccountKey20Params, GeneralKeyParams, PalletInstanceParams, GeneralIndexParams, GlobalConsensusParams} from "./Junction.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 

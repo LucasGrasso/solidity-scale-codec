@@ -37,7 +37,7 @@ import {MaybeErrorCodeCodec} from "../../v3/MaybeErrorCode/MaybeErrorCodeCodec.s
 
 import {MAX_ASSET_TRANSFER_FILTERS, HINT_NUM_VARIANTS} from "../Constants.sol";
 
-import {Compact} from "../../../Scale/Compact.sol";
+import {Compact} from "../../../Scale/Compact/Compact.sol";
 import {Bool} from "../../../Scale/Bool/Bool.sol";
 import {Bytes32} from "../../../Scale/Bytes/Bytes32.sol";
 import {Bytes} from "../../../Scale/Bytes/Bytes.sol";

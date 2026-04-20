@@ -3,7 +3,7 @@ pragma solidity ^0.8.28;
 
 import {Asset} from "../Asset/Asset.sol";
 import {AssetCodec} from "../Asset/AssetCodec.sol";
-import {Compact} from "../../../Scale/Compact.sol";
+import {Compact} from "../../../Scale/Compact/Compact.sol";
 import {MAX_ITEMS_IN_ASSETS} from "../Constants.sol";
 import {Assets} from "./Assets.sol";
 

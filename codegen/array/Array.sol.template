@@ -2,7 +2,7 @@
 pragma solidity ^0.8.28;
 
 import {Compact} from "../Compact/Compact.sol";
-import { {{Type}} } from "../{{metaType}}.sol";
+import { {{Type}} } from "../{{metaType}}/{{Type}}.sol";
 
 /// @title Scale Codec for the `{{type}}[]` type.
 /// @notice SCALE-compliant encoder/decoder for the `{{type}}[]` type.

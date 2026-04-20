@@ -1,16 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {Compact} from "../../../Scale/Compact.sol";
-import {
-    NetworkId,
-    NetworkIdVariant,
-    ByForkParams,
-    ByGenesisParams,
-    EthereumParams
-} from "./NetworkId.sol";
+import {Compact} from "../../../Scale/Compact/Compact.sol";
+import {NetworkId, NetworkIdVariant, ByForkParams, ByGenesisParams, EthereumParams} from "./NetworkId.sol";
 import {LittleEndianU64} from "../../../LittleEndian/LittleEndianU64.sol";
-import {Bytes32} from "../../../Scale/Bytes.sol";
+import {Bytes32} from "../../../Scale/Bytes/Bytes32.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 

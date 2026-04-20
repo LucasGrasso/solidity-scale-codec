@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {Bytes} from "../../../Scale/Bytes.sol";
+import {Bytes} from "../../../Scale/Bytes/Bytes.sol";
 import {MAX_DISPATCH_ERROR_LEN} from "../Constants.sol";
 
 /// @notice Discriminant for the `MaybeErrorCode` enum.
