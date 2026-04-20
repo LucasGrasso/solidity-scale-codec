@@ -6,7 +6,15 @@ import {Bytes4} from "../../../Scale/Bytes/Bytes4.sol";
 import {Bytes8} from "../../../Scale/Bytes/Bytes8.sol";
 import {Bytes16} from "../../../Scale/Bytes/Bytes16.sol";
 import {Bytes32} from "../../../Scale/Bytes/Bytes32.sol";
-import {AssetInstance, AssetInstanceVariant, IndexParams, Array4Params, Array8Params, Array16Params, Array32Params} from "./AssetInstance.sol";
+import {
+    AssetInstance,
+    AssetInstanceVariant,
+    IndexParams,
+    Array4Params,
+    Array8Params,
+    Array16Params,
+    Array32Params
+} from "./AssetInstance.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 

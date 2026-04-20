@@ -2,7 +2,12 @@
 pragma solidity ^0.8.28;
 
 import {Bytes} from "../../../Scale/Bytes/Bytes.sol";
-import {MaybeErrorCode, MaybeErrorCodeVariant, ErrorParams, TruncatedErrorParams} from "./MaybeErrorCode.sol";
+import {
+    MaybeErrorCode,
+    MaybeErrorCodeVariant,
+    ErrorParams,
+    TruncatedErrorParams
+} from "./MaybeErrorCode.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 
 /// @title SCALE Codec for XCM v3 `MaybeErrorCode`
