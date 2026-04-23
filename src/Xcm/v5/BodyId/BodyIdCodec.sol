@@ -3,7 +3,12 @@ pragma solidity ^0.8.28;
 
 import {Bytes4} from "../../../Scale/Bytes/Bytes4.sol";
 import {Compact} from "../../../Scale/Compact/Compact.sol";
-import {BodyId, BodyIdVariant, MonikerParams, BodyIndexParams} from "./BodyId.sol";
+import {
+    BodyId,
+    BodyIdVariant,
+    MonikerParams,
+    BodyIndexParams
+} from "./BodyId.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 

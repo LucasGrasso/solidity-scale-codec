@@ -30,3 +30,6 @@
 
 #forge
 out/
+
+# rust-encoder target
+rust-encoder/target/
