@@ -60,7 +60,7 @@
     "prettier": "^3.8.1",
     "prettier-plugin-solidity": "^2.2.1",
     "solhint": "^6.2.1",
-    "solidity-doc-generator": "^1.6.0",
+    "solidity-doc-generator": "^1.7.4",
     "typescript": "~5.8.0",
     "viem": "^2.40.3",
     "vitepress": "^1.6.4",
