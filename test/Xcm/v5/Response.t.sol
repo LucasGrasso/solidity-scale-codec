@@ -1,46 +1,16 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {
-    Response,
-    ResponseVariant,
-    null_,
-    assets,
-    executionResult,
-    version,
-    palletsInfo,
-    dispatchResult,
-    AssetsParams,
-    ExecutionResultParams,
-    VersionParams,
-    PalletsInfoParams,
-    DispatchResultParams
-} from "../../../src/Xcm/v5/Response/Response.sol";
+import {Response, ResponseVariant, null_, assets, executionResult, version, palletsInfo, dispatchResult, AssetsParams, ExecutionResultParams, VersionParams, PalletsInfoParams, DispatchResultParams} from "../../../src/Xcm/v5/Response/Response.sol";
 import {ResponseCodec as Codec} from "../../../src/Xcm/v5/Response/ResponseCodec.sol";
 import {Assets} from "../../../src/Xcm/v5/Assets/Assets.sol";
 import {Asset} from "../../../src/Xcm/v5/Asset/Asset.sol";
 import {AssetId} from "../../../src/Xcm/v5/AssetId/AssetId.sol";
-import {
-    Fungibility,
-    fungible,
-    FungibleParams
-} from "../../../src/Xcm/v5/Fungibility/Fungibility.sol";
+import {Fungibility, fungible, FungibleParams} from "../../../src/Xcm/v5/Fungibility/Fungibility.sol";
 import {Location, parent} from "../../../src/Xcm/v5/Location/Location.sol";
-import {
-    XcmError,
-    XcmErrorVariant,
-    unit,
-    trap,
-    UnitParams,
-    TrapParams
-} from "../../../src/Xcm/v5/XcmError/XcmError.sol";
+import {XcmError, XcmErrorVariant, unit, trap, UnitParams, TrapErrorParams} from "../../../src/Xcm/v5/XcmError/XcmError.sol";
 import {PalletInfo} from "../../../src/Xcm/v5/PalletInfo/PalletInfo.sol";
-import {
-    MaybeErrorCode,
-    success,
-    error,
-    ErrorParams
-} from "../../../src/Xcm/v3/MaybeErrorCode/MaybeErrorCode.sol";
+import {MaybeErrorCode, success, error, ErrorParams} from "../../../src/Xcm/v3/MaybeErrorCode/MaybeErrorCode.sol";
 import {Test} from "forge-std/Test.sol";
 
 contract ResponseWrapper {
@@ -112,7 +82,7 @@ contract ResponseTest is Test {
                 ExecutionResultParams({
                     hasError: true,
                     index: 3,
-                    err: trap(TrapParams({code: 7}))
+                    err: trap(TrapErrorParams({code: 7}))
                 })
             ),
             hex"020103000000150700000000000000"

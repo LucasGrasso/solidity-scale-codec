@@ -1,14 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {
-    XcmError,
-    XcmErrorVariant,
-    unit,
-    trap,
-    UnitParams,
-    TrapParams
-} from "../../../src/Xcm/v5/XcmError/XcmError.sol";
+import {XcmError, XcmErrorVariant, unit, trap, UnitParams, TrapErrorParams} from "../../../src/Xcm/v5/XcmError/XcmError.sol";
 import {XcmErrorCodec as Codec} from "../../../src/Xcm/v5/XcmError/XcmErrorCodec.sol";
 import {Test} from "forge-std/Test.sol";
 
@@ -287,12 +280,15 @@ contract XcmErrorTest is Test {
     }
 
     function testEncodeDecodeTrapWithCode() public view {
-        _assertRoundTrip(trap(TrapParams({code: 9})), hex"150900000000000000");
+        _assertRoundTrip(
+            trap(TrapErrorParams({code: 9})),
+            hex"150900000000000000"
+        );
     }
 
     function testEncodeDecodeTrapWithLargeCode() public view {
         _assertRoundTrip(
-            trap(TrapParams({code: 0x0807060504030201})),
+            trap(TrapErrorParams({code: 0x0807060504030201})),
             hex"150102030405060708"
         );
     }

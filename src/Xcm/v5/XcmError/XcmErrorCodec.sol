@@ -2,7 +2,7 @@
 pragma solidity ^0.8.28;
 
 import {LittleEndianU64} from "../../../LittleEndian/LittleEndianU64.sol";
-import {XcmError, XcmErrorVariant, TrapParams} from "./XcmError.sol";
+import {XcmError, XcmErrorVariant, TrapErrorParams} from "./XcmError.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 
 /// @title SCALE Codec for XCM v5 `Error`
@@ -69,10 +69,10 @@ library XcmErrorCodec {
 
     /// @notice Decodes the trap code from a `Trap` error.
     /// @param e The `XcmError` struct to decode, which must be of type `Trap`.
-    /// @return params A `TrapParams` struct containing the decoded trap code.
+    /// @return params A `TrapErrorParams` struct containing the decoded trap code.
     function asTrap(
         XcmError memory e
-    ) internal pure returns (TrapParams memory params) {
+    ) internal pure returns (TrapErrorParams memory params) {
         _assertVariant(e, XcmErrorVariant.Trap);
         params.code = LittleEndianU64.fromLittleEndian(e.payload, 0);
     }

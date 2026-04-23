@@ -94,7 +94,7 @@ struct UnitParams {
 }
 
 /// @notice Parameters for the `Trap` error variant.
-struct TrapParams {
+struct TrapErrorParams {
     /// @custom:property Trap code.
     uint64 code;
 }
@@ -113,7 +113,7 @@ function unit(UnitParams memory params) pure returns (XcmError memory) {
 /// @notice Creates a `Trap` error with the given u64 code.
 /// @param params Parameters for the trap error.
 /// @return The `XcmError` struct representing the trap.
-function trap(TrapParams memory params) pure returns (XcmError memory) {
+function trap(TrapErrorParams memory params) pure returns (XcmError memory) {
     return
         XcmError({
             variant: XcmErrorVariant.Trap,

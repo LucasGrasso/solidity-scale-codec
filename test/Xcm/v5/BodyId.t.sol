@@ -1,21 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {
-    BodyId,
-    unit,
-    moniker,
-    index,
-    executive,
-    technical,
-    legislative,
-    judicial,
-    defense,
-    administration,
-    treasury,
-    MonikerParams,
-    IndexParams
-} from "../../../src/Xcm/v5/BodyId/BodyId.sol";
+import {BodyId, unit, moniker, index, executive, technical, legislative, judicial, defense, administration, treasury, MonikerParams, BodyIndexParams} from "../../../src/Xcm/v5/BodyId/BodyId.sol";
 import {BodyIdCodec as Codec} from "../../../src/Xcm/v5/BodyId/BodyIdCodec.sol";
 import {Test} from "forge-std/Test.sol";
 
@@ -57,7 +43,7 @@ contract BodyIdTest is Test {
     }
 
     function testEncodeDecodeIndex() public view {
-        _assertRoundTrip(index(IndexParams({index: 42})), hex"02a8");
+        _assertRoundTrip(index(BodyIndexParams({index: 42})), hex"02a8");
     }
 
     function testEncodeDecodeExecutive() public view {

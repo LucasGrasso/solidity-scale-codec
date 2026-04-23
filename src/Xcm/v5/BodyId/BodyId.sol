@@ -43,7 +43,7 @@ struct MonikerParams {
 }
 
 /// @notice Parameters for the `Index` variant.
-struct IndexParams {
+struct BodyIndexParams {
     /// @custom:property The index of the body.
     uint32 index;
 }
@@ -70,7 +70,7 @@ function moniker(MonikerParams memory params) pure returns (BodyId memory) {
 /// @notice Creates a `BodyId` representing an `Index` body with the given index.
 /// @param params Parameters for the index variant.
 /// @return A `BodyId` with `variant` set to `Index` and the provided index encoded in the payload.
-function index(IndexParams memory params) pure returns (BodyId memory) {
+function index(BodyIndexParams memory params) pure returns (BodyId memory) {
     return
         BodyId({
             variant: BodyIdVariant.Index,

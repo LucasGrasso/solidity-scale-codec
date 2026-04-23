@@ -3,7 +3,7 @@ pragma solidity ^0.8.28;
 
 import {Bytes4} from "../../../Scale/Bytes/Bytes4.sol";
 import {Compact} from "../../../Scale/Compact/Compact.sol";
-import {BodyId, BodyIdVariant, MonikerParams, IndexParams} from "./BodyId.sol";
+import {BodyId, BodyIdVariant, MonikerParams, BodyIndexParams} from "./BodyId.sol";
 import {BytesUtils} from "../../../Utils/BytesUtils.sol";
 import {UnsignedUtils} from "../../../Utils/UnsignedUtils.sol";
 
@@ -101,10 +101,10 @@ library BodyIdCodec {
 
     /// @notice Helper function to decode a `BodyId` and extract the index if the type is `Index`.
     /// @param bodyId The `BodyId` to extract the index from.
-    /// @return params An `IndexParams` struct containing the index if the `variant` is `Index`.
+    /// @return params An `BodyIndexParams` struct containing the index if the `variant` is `Index`.
     function asIndex(
         BodyId memory bodyId
-    ) internal pure returns (IndexParams memory params) {
+    ) internal pure returns (BodyIndexParams memory params) {
         _assertVariant(bodyId, BodyIdVariant.Index);
         (uint256 decodedIndex, ) = Compact.decode(bodyId.payload);
         params.index = UnsignedUtils.toU32(decodedIndex);
