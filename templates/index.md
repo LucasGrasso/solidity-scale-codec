@@ -41,6 +41,12 @@ Low-level byte encoding for unsigned integers:
 
 - U8, U16, U32, U64, U128, U256
 
+```solidity
+import "solidity-scale-codec/src/LittleEndian/U8.sol";
+//...
+import "solidity-scale-codec/src/LittleEndian/U256.sol";
+```
+
 ### **Scale**
 
 High-level SCALE codec for various data types:
@@ -52,11 +58,46 @@ High-level SCALE codec for various data types:
 - **Signed** — Two's complement signed integers
 - **Unsigned** — Standard unsigned integers
 
+```solidity
+// Unsigned integers
+import "solidity-scale-codec/src/Scale/Unsigned.sol";
+// Signed integers
+import "solidity-scale-codec/src/Scale/Signed.sol";
+// Booleans
+import "solidity-scale-codec/src/Scale/Bool.sol";
+/// Fixed-size and variable-size byte arrays
+import "solidity-scale-codec/src/Scale/Bytes.sol";
+/// Compact integer encoding
+import "solidity-scale-codec/src/Scale/Compact.sol";
+/// Ethereum address encoding
+import "solidity-scale-codec/src/Scale/Address.sol";
+/// Arrays
+import "solidity-scale-codec/src/Scale/Arrays.sol";
+```
+
 ### **Xcm**
 
 Cross-consensus message format support:
 
-- **v5** — XCM protocol version 5 with full instruction codec.
+#### **v5**
+
+You may find all type definitions and factory functions for those types at
+
+```solidity
+import "solidity-scale-codec/src/Xcm/v5/v5.sol";
+```
+
+(or more specific paths for specific types, for example)
+
+```solidity
+import "solidity-scale-codec/src/Xcm/v5/Location/Location.sol";
+```
+
+Type-specific Codecs are found at their respective paths, for example:
+
+```solidity
+import { WeightCodec } from "solidity-scale-codec/src/Xcm/v5/Weight/WeightCodec.sol";
+```
 
 ## Getting Started
 

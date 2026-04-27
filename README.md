@@ -12,6 +12,17 @@
 
 This library provides a Highly-Modular implementation of SCALE in solidity.
 
+## Instalation
+
+```bash
+# Install with npm
+npm install solidity-scale-codec
+# Or with yarn
+yarn add solidity-scale-codec
+# Or with pnpm
+pnpm add solidity-scale-codec
+```
+
 ## Examples of different types
 
 | Type      | Description                                                                                                                                                                                                                                             | Example | Encoding   |
