@@ -4,9 +4,12 @@ Check Polkadot's docs on [the XCM precompile](https://docs.polkadot.com/smart-co
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.28;
 
-import {VersionedXcmCodec} from "solidity-scale-codec/src/Xcm/VersionedXcm/VersionedXcmCodec.sol";
-import {VersionedXcm, v5} from "solidity-scale-codec/src/Xcm/VersionedXcm/VersionedXcm.sol";
-import {IXcm, XCM_PRECOMPILE_ADDRESS} from "./IXcm.sol";
+import { VersionedXcmCodec } from "solidity-scale-codec/src/Xcm/VersionedXcm/VersionedXcmCodec.sol";
+import {
+  VersionedXcm,
+  v5
+} from "solidity-scale-codec/src/Xcm/VersionedXcm/VersionedXcm.sol";
+import { IXcm, XCM_PRECOMPILE_ADDRESS } from "./IXcm.sol";
 import "solidity-scale-codec/src/Xcm/v5/v5.sol";
 
 contract XcmCaller {
